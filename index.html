@@ -118,6 +118,46 @@ html, body {
 .num-btn.empty { background: transparent; cursor: default; pointer-events: none; }
 .login-error { font-size: 12px; color: var(--red); text-align: center; margin-top: 12px; min-height: 16px; }
 
+/* FONT SIZE SELECTOR */
+.font-size-bar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; background: var(--surface);
+  border-top: 0.5px solid var(--border); flex-shrink: 0;
+}
+.font-size-label { font-size: 11px; color: var(--text-muted); flex: 1; }
+.fs-btn {
+  width: 30px; height: 30px; border-radius: 8px;
+  border: 0.5px solid var(--border); background: var(--gray-bg);
+  cursor: pointer; font-family: inherit; color: var(--text);
+  display: flex; align-items: center; justify-content: center; font-weight: 600;
+}
+.fs-btn:active { background: var(--blue); color: white; }
+.fs-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+/* quick link row */
+.quick-links {
+  display: flex; gap: 6px; padding: 6px 12px;
+  background: var(--gray-bg); border-bottom: 0.5px solid var(--border);
+  flex-shrink: 0; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.quick-link {
+  display: flex; align-items: center; gap: 4px;
+  padding: 5px 10px; border-radius: 20px;
+  background: var(--surface); border: 0.5px solid var(--border);
+  font-size: 11px; font-weight: 500; color: var(--blue);
+  white-space: nowrap; cursor: pointer; text-decoration: none;
+  font-family: inherit;
+}
+.quick-link:active { opacity: .7; }
+.quick-link.admin { color: var(--orange); border-color: var(--orange); }
+
+/* LOGIN admin link */
+.login-admin-link {
+  margin-top: 16px; font-size: 12px; color: var(--text-muted);
+  text-align: center;
+}
+.login-admin-link a { color: var(--orange); text-decoration: none; }
+
 /* CHAT */
 #screen-chat { background: var(--white); }
 .chat-header { background: var(--surface); border-bottom: 0.5px solid var(--border); padding: calc(var(--safe-top)+10px) 16px 10px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
@@ -306,6 +346,9 @@ html, body {
     </div>
     <div class="login-error" id="login-error"></div>
   </div>
+  <div class="login-admin-link" id="login-admin-link" style="display:none;">
+    <a href="./admin.html">⚙️ Admin Panel</a>
+  </div>
 </div>
 
 <!-- CHAT -->
@@ -329,6 +372,19 @@ html, body {
     <input id="search-input" type="search" placeholder="Search messages..." autocomplete="off">
     <span id="search-count"></span>
     <button id="search-close" onclick="toggleSearch()">Cancel</button>
+  </div>
+  <!-- Quick links bar -->
+  <div class="quick-links" id="quick-links">
+    <a class="quick-link" href="./seasons.html">📅 <span id="ql-seasons">Seasons</span></a>
+    <button class="quick-link admin" id="ql-admin-btn" style="display:none;" onclick="location.href='./admin.html'">⚙️ <span id="ql-admin">Admin</span></button>
+  </div>
+  <!-- Font size bar -->
+  <div class="font-size-bar">
+    <span class="font-size-label" id="fs-label">Text size:</span>
+    <button class="fs-btn" id="fs-s" onclick="setFontSize('s')" style="font-size:11px;">A</button>
+    <button class="fs-btn active" id="fs-m" onclick="setFontSize('m')" style="font-size:14px;">A</button>
+    <button class="fs-btn" id="fs-l" onclick="setFontSize('l')" style="font-size:17px;">A</button>
+    <button class="fs-btn" id="fs-xl" onclick="setFontSize('xl')" style="font-size:20px;">A</button>
   </div>
   <div id="messages">
     <div class="sys-row">🔥 Steak Teppei Staff Chat</div>
@@ -364,7 +420,7 @@ import { getDatabase, ref, push, onChildAdded, onValue, update, get }
 // ============================================================
 // VERSION
 // ============================================================
-const CHAT_VERSION = '2.3';
+const CHAT_VERSION = '2.4';
 // v2.0 - First names only, admin panel, dark mode, update notification popup
 // v1.9 - Delete, badge, date divider, read receipt, save image, mention, search, announce
 // v1.8 - iMessage UI + emoji picker
@@ -626,6 +682,7 @@ function enterChat() {
   if (isAdmin()) document.getElementById('announce-btn').style.display = 'flex';
   lastSeenTs = parseInt(localStorage.getItem('lastSeen_' + currentUser.id) || '0');
   show('screen-chat');
+  updateQuickLinks();
   listenMessages();
   checkUpdateNotification();
   if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone && !localStorage.getItem('ib_dismissed')) {
@@ -998,14 +1055,52 @@ document.getElementById('messages').addEventListener('scroll',()=>{
 });
 document.body.addEventListener('touchmove',e=>{if(e.target.closest('#messages,.emoji-grid'))return;e.preventDefault();},{passive:false});
 
+// ── Font size ──
+const FS_SIZES = { s:'12px', m:'15px', l:'17px', xl:'20px' };
+const FS_KEY   = 'teppei_fs';
+function setFontSize(size) {
+  localStorage.setItem(FS_KEY, size);
+  document.getElementById('messages').style.fontSize = FS_SIZES[size];
+  document.getElementById('msg-input').style.fontSize = FS_SIZES[size];
+  ['s','m','l','xl'].forEach(s => {
+    document.getElementById('fs-'+s).classList.toggle('active', s===size);
+  });
+}
+function loadFontSize() {
+  const s = localStorage.getItem(FS_KEY) || 'm';
+  setFontSize(s);
+}
+
+// ── Quick link i18n ──
+const QL_I18N = {
+  ja: { seasons:'繁忙期・閑散期', admin:'管理画面', fsLabel:'文字サイズ：' },
+  en: { seasons:'Seasons',        admin:'Admin',    fsLabel:'Text size:' },
+  zh: { seasons:'旺季/淡季',      admin:'管理后台',  fsLabel:'字体大小：' },
+};
+function updateQuickLinks() {
+  const lang = currentUser?.lang || 'en';
+  const t = QL_I18N[lang] || QL_I18N.en;
+  const qlS = document.getElementById('ql-seasons'); if(qlS) qlS.textContent = t.seasons;
+  const qlA = document.getElementById('ql-admin');   if(qlA) qlA.textContent = t.admin;
+  const fsL = document.getElementById('fs-label');   if(fsL) fsL.textContent = t.fsLabel;
+  // Show admin button only for admins
+  const adminBtn = document.getElementById('ql-admin-btn');
+  if(adminBtn) adminBtn.style.display = isAdmin() ? 'flex' : 'none';
+  // Show admin link on login screen (always visible so admins can find it)
+  const loginAdminLink = document.getElementById('login-admin-link');
+  if(loginAdminLink) loginAdminLink.style.display = 'block';
+}
+
 // ── Init ──
 document.getElementById('ver-display').textContent = 'v' + CHAT_VERSION;
 buildEmojiPicker();
+loadFontSize();
 
 (async () => {
   await loadMembers();
   const saved = localStorage.getItem(USER_KEY);
   if (saved && MEMBERS[saved]) { currentUser=MEMBERS[saved]; enterChat(); }
+  else updateQuickLinks(); // show admin link on login
 })();
 </script>
 </body>
