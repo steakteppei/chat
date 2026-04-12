@@ -1,9 +1,10 @@
-const CACHE = 'st-chat-v1.9';
+const CACHE = 'st-chat-v2.0';
 const ASSETS = [
   './',
   './index.html',
   './home-chat.html',
   './version-chat.html',
+  './admin.html',
 ];
 
 // Install: cache assets

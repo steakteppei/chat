@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffffff">
+<title>Teppei Chat — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --blue: #007AFF; --red: #FF3B30; --green: #34C759; --orange: #FF9500;
+  --gray-bg: #F2F2F7; --surface: #FFF;
+  --text: #000; --text-muted: #8E8E93; --border: #C6C6C8;
+  --gray-light: #C7C7CC;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --gray-bg:#1C1C1E; --surface:#2C2C2E; --text:#FFF; --text-muted:#8E8E93; --border:#38383A; --gray-light:#3A3A3C; }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { min-height: 100%; background: var(--gray-bg); color: var(--text); font-family: 'Noto Sans JP',-apple-system,'Helvetica Neue',sans-serif; -webkit-font-smoothing: antialiased; }
+
+/* LOGIN */
+#login-screen { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: calc(var(--safe-top)+20px) 32px calc(var(--safe-bottom)+20px); }
+.admin-logo { width: 72px; height: 72px; background: linear-gradient(145deg,#FF6B35,#CC3300); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 34px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(204,51,0,.25); }
+.admin-title { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.admin-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 32px; }
+.pin-box { width: 100%; max-width: 300px; background: var(--surface); border-radius: 18px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,.1); }
+.pin-label { font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 18px; }
+.pin-dots { display: flex; justify-content: center; gap: 14px; margin-bottom: 24px; }
+.pin-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--gray-light); transition: all .15s; }
+.pin-dot.filled { background: var(--blue); transform: scale(1.1); }
+.pin-dot.error { background: var(--red); }
+.numpad { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.num-btn { height: 56px; background: var(--gray-bg); border: none; border-radius: 14px; color: var(--text); font-size: 20px; font-weight: 400; cursor: pointer; font-family: inherit; transition: all .1s; display: flex; align-items: center; justify-content: center; }
+.num-btn:active { background: var(--gray-light); transform: scale(.96); }
+.num-btn.del { font-size: 16px; color: var(--text-muted); }
+.num-btn.empty { background: transparent; cursor: default; }
+.pin-error { font-size: 12px; color: var(--red); text-align: center; margin-top: 12px; min-height: 16px; }
+
+/* ADMIN PANEL */
+#admin-screen { display: none; min-height: 100vh; flex-direction: column; }
+.admin-header { background: var(--surface); border-bottom: 0.5px solid var(--border); padding: calc(var(--safe-top)+12px) 16px 12px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 10; }
+.admin-header-logo { width: 32px; height: 32px; background: linear-gradient(145deg,#FF6B35,#CC3300); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.admin-header h1 { font-size: 16px; font-weight: 600; flex: 1; }
+.header-logout { background: none; border: none; color: var(--blue); font-size: 14px; cursor: pointer; font-family: inherit; }
+
+.admin-body { padding: 16px; max-width: 600px; margin: 0 auto; width: 100%; }
+
+.section-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; padding: 0 4px; margin-bottom: 8px; margin-top: 20px; }
+.section-title:first-child { margin-top: 0; }
+
+.card { background: var(--surface); border-radius: 14px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.06); margin-bottom: 16px; }
+
+/* Member list */
+.member-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 0.5px solid var(--border); }
+.member-row:last-child { border-bottom: none; }
+.member-av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: white; flex-shrink: 0; }
+.member-info { flex: 1; min-width: 0; }
+.member-name-row { font-size: 14px; font-weight: 500; color: var(--text); }
+.member-detail { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+.member-actions { display: flex; gap: 6px; }
+.btn-sm { padding: 5px 12px; border: none; border-radius: 8px; font-size: 12px; font-family: inherit; cursor: pointer; font-weight: 500; }
+.btn-edit { background: var(--blue); color: white; }
+.btn-del  { background: var(--red);  color: white; }
+.btn-sm:active { opacity: .8; }
+
+/* Add member form */
+.add-form { padding: 16px; }
+.form-row { margin-bottom: 14px; }
+.form-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: block; }
+.form-input { width: 100%; background: var(--gray-bg); border: 0.5px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 15px; font-family: inherit; color: var(--text); outline: none; }
+.form-input:focus { border-color: var(--blue); }
+.form-select { width: 100%; background: var(--gray-bg); border: 0.5px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 15px; font-family: inherit; color: var(--text); outline: none; -webkit-appearance: none; }
+.lang-options { display: flex; gap: 8px; }
+.lang-opt { flex: 1; padding: 10px 0; border: 1px solid var(--border); border-radius: 10px; background: var(--gray-bg); color: var(--text); font-size: 14px; font-family: inherit; cursor: pointer; text-align: center; transition: all .1s; }
+.lang-opt.selected { background: var(--blue); color: white; border-color: var(--blue); }
+.btn-primary { width: 100%; padding: 14px; background: var(--blue); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 4px; }
+.btn-primary:active { opacity: .85; }
+.btn-primary:disabled { background: var(--gray-light); cursor: not-allowed; }
+
+/* Color picker */
+.color-picker-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.color-opt { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all .1s; }
+.color-opt.selected { border-color: var(--text); transform: scale(1.15); }
+
+/* Modal */
+#edit-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 100; align-items: flex-end; justify-content: center; }
+#edit-modal.open { display: flex; }
+.modal-box { background: var(--surface); border-radius: 20px 20px 0 0; padding: 20px 20px calc(var(--safe-bottom)+20px); width: 100%; max-width: 600px; }
+.modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+.btn-cancel { flex: 1; padding: 12px; background: var(--gray-bg); color: var(--text); border: none; border-radius: 12px; font-size: 15px; font-family: inherit; cursor: pointer; }
+
+.toast { position: fixed; bottom: calc(var(--safe-bottom)+80px); left: 50%; transform: translateX(-50%); background: rgba(0,0,0,.75); color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 200; white-space: nowrap; }
+.toast.show { opacity: 1; }
+
+/* stats */
+.stat-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 0.5px solid var(--border); }
+.stat-row:last-child { border-bottom: none; }
+.stat-label { font-size: 14px; color: var(--text); }
+.stat-value { font-size: 14px; font-weight: 600; color: var(--blue); }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<!-- EDIT MODAL -->
+<div id="edit-modal">
+  <div class="modal-box">
+    <div class="modal-title">Edit Member</div>
+    <div class="form-row">
+      <label class="form-label">First Name</label>
+      <input id="edit-name" class="form-input" type="text" placeholder="Name">
+    </div>
+    <div class="form-row">
+      <label class="form-label">PIN (6 digits)</label>
+      <input id="edit-pin" class="form-input" type="number" placeholder="123456" maxlength="6">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Language</label>
+      <div class="lang-options">
+        <button class="lang-opt" data-lang="en" onclick="selectEditLang('en')">🇺🇸 English</button>
+        <button class="lang-opt" data-lang="ja" onclick="selectEditLang('ja')">🇯🇵 日本語</button>
+        <button class="lang-opt" data-lang="zh" onclick="selectEditLang('zh')">🇨🇳 中文</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-primary" style="flex:2;" onclick="saveEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="admin-logo">⚙️</div>
+  <div class="admin-title">Admin Panel</div>
+  <div class="admin-sub">Steak Teppei Chat</div>
+  <div class="pin-box">
+    <div class="pin-label">Admin PIN</div>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+    </div>
+    <div class="numpad">
+      <button class="num-btn" onclick="pinInput('1')">1</button>
+      <button class="num-btn" onclick="pinInput('2')">2</button>
+      <button class="num-btn" onclick="pinInput('3')">3</button>
+      <button class="num-btn" onclick="pinInput('4')">4</button>
+      <button class="num-btn" onclick="pinInput('5')">5</button>
+      <button class="num-btn" onclick="pinInput('6')">6</button>
+      <button class="num-btn" onclick="pinInput('7')">7</button>
+      <button class="num-btn" onclick="pinInput('8')">8</button>
+      <button class="num-btn" onclick="pinInput('9')">9</button>
+      <button class="num-btn empty"></button>
+      <button class="num-btn" onclick="pinInput('0')">0</button>
+      <button class="num-btn del" onclick="pinDelete()">⌫</button>
+    </div>
+    <div class="pin-error" id="pin-error"></div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-screen">
+  <div class="admin-header">
+    <div class="admin-header-logo">⚙️</div>
+    <h1>Admin Panel</h1>
+    <button class="header-logout" onclick="adminLogout()">Sign out</button>
+  </div>
+  <div class="admin-body">
+    <div class="section-title">Staff Members</div>
+    <div class="card" id="member-list"></div>
+
+    <div class="section-title">Add New Member</div>
+    <div class="card">
+      <div class="add-form">
+        <div class="form-row">
+          <label class="form-label">First Name</label>
+          <input id="new-name" class="form-input" type="text" placeholder="e.g. Hiroshi" autocomplete="off">
+        </div>
+        <div class="form-row">
+          <label class="form-label">PIN (6 digits)</label>
+          <input id="new-pin" class="form-input" type="number" placeholder="e.g. 999999" maxlength="6" autocomplete="off">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Language</label>
+          <div class="lang-options" id="lang-options">
+            <button class="lang-opt" data-lang="en" onclick="selectLang('en')">🇺🇸 English</button>
+            <button class="lang-opt" data-lang="ja" onclick="selectLang('ja')">🇯🇵 日本語</button>
+            <button class="lang-opt" data-lang="zh" onclick="selectEditLang('zh',true)">🇨🇳 中文</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Avatar Color</label>
+          <div class="color-picker-row" id="color-picker"></div>
+        </div>
+        <button class="btn-primary" id="add-btn" onclick="addMember()">Add Member</button>
+      </div>
+    </div>
+
+    <div class="section-title">Stats</div>
+    <div class="card">
+      <div class="stat-row"><span class="stat-label">Total members</span><span class="stat-value" id="stat-total">—</span></div>
+      <div class="stat-row"><span class="stat-label">🇯🇵 Japanese</span><span class="stat-value" id="stat-ja">—</span></div>
+      <div class="stat-row"><span class="stat-label">🇺🇸 English</span><span class="stat-value" id="stat-en">—</span></div>
+      <div class="stat-row"><span class="stat-label">🇨🇳 Chinese</span><span class="stat-value" id="stat-zh">—</span></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getDatabase, ref, get, set, remove, onValue } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyDQlD7lEEByed6wZaX9N6kd0Fr6gGrT-bs",
+  authDomain:        "steak-teppei-chat.firebaseapp.com",
+  databaseURL:       "https://steak-teppei-chat-default-rtdb.firebaseio.com",
+  projectId:         "steak-teppei-chat",
+  storageBucket:     "steak-teppei-chat.firebasestorage.app",
+  messagingSenderId: "67146857127",
+  appId:             "1:67146857127:web:78222bd497284eab8ef982"
+};
+
+// Admin PINs
+const ADMIN_PINS = { '111111': 'David', '222222': 'Kacee' };
+
+const COLORS = ['#FF9500','#007AFF','#34C759','#5856D6','#FF2D55','#FF6B35','#00C7BE','#AF52DE','#30B0C7','#32ADE6','#FF3B30','#636366'];
+const LANG_FLAGS = { ja:'🇯🇵', en:'🇺🇸', zh:'🇨🇳' };
+const LANG_NAMES_DISPLAY = { ja:'日本語', en:'English', zh:'中文' };
+
+const DEFAULT_MEMBERS = {
+  '111111': { id:'david',    lang:'ja', initials:'DA', bg:'#FF9500', name:'David' },
+  '222222': { id:'kacee',    lang:'en', initials:'KT', bg:'#007AFF', name:'Kacee' },
+  '333333': { id:'shaine',   lang:'en', initials:'ST', bg:'#34C759', name:'Shaine' },
+  '444444': { id:'kai',      lang:'en', initials:'KS', bg:'#5856D6', name:'Kai' },
+  '555555': { id:'qiongmei', lang:'zh', initials:'QH', bg:'#FF2D55', name:'Qiongmei' },
+  '666666': { id:'shouling', lang:'zh', initials:'SX', bg:'#FF6B35', name:'Shouling' },
+  '777777': { id:'xingyu',   lang:'zh', initials:'XW', bg:'#00C7BE', name:'Xingyu' },
+  '888888': { id:'yoshimi',  lang:'zh', initials:'YK', bg:'#AF52DE', name:'Yoshimi' },
+  '123456': { id:'yu',       lang:'zh', initials:'YM', bg:'#30B0C7', name:'Yu' },
+  '654321': { id:'zhu',      lang:'zh', initials:'ZH', bg:'#32ADE6', name:'Zhu' },
+};
+
+let currentAdmin = null;
+let pinBuffer    = '';
+let members      = {};
+let selectedLang = 'en';
+let selectedColor= COLORS[0];
+let editPin      = null;
+let editLang     = 'en';
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ── PIN login ──
+window.pinInput = d => {
+  if (pinBuffer.length >= 6) return;
+  pinBuffer += d; updateDots();
+  if (pinBuffer.length === 6) setTimeout(checkPin, 80);
+};
+window.pinDelete = () => {
+  pinBuffer = pinBuffer.slice(0,-1); updateDots();
+  document.getElementById('pin-error').textContent = '';
+  document.querySelectorAll('.pin-dot').forEach(d=>d.classList.remove('error'));
+};
+function updateDots() {
+  document.querySelectorAll('.pin-dot').forEach((d,i) => {
+    d.classList.toggle('filled', i < pinBuffer.length);
+    d.classList.remove('error');
+  });
+}
+function checkPin() {
+  const name = ADMIN_PINS[pinBuffer];
+  if (name) {
+    currentAdmin = { pin: pinBuffer, name };
+    pinBuffer = ''; updateDots();
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'flex';
+    loadMembers();
+  } else {
+    document.querySelectorAll('.pin-dot').forEach(d=>d.classList.add('error'));
+    document.getElementById('pin-error').textContent = 'Incorrect PIN';
+    setTimeout(() => {
+      pinBuffer = ''; updateDots();
+      document.querySelectorAll('.pin-dot').forEach(d=>d.classList.remove('error'));
+      document.getElementById('pin-error').textContent = '';
+    }, 1000);
+  }
+}
+window.adminLogout = () => {
+  currentAdmin = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-screen').style.display = 'none';
+  pinBuffer = ''; updateDots();
+};
+
+// ── Load members ──
+async function loadMembers() {
+  const snap = await get(ref(db, 'members'));
+  if (snap.exists()) {
+    members = { ...DEFAULT_MEMBERS, ...snap.val() };
+  } else {
+    members = { ...DEFAULT_MEMBERS };
+  }
+  renderMembers();
+  updateStats();
+  buildColorPicker();
+}
+
+// ── Render member list ──
+function renderMembers() {
+  const list = document.getElementById('member-list');
+  list.innerHTML = '';
+  Object.entries(members).forEach(([pin, m]) => {
+    const row = document.createElement('div');
+    row.className = 'member-row';
+    const isDefault = pin in DEFAULT_MEMBERS;
+    row.innerHTML = `
+      <div class="member-av" style="background:${m.bg};">${m.initials}</div>
+      <div class="member-info">
+        <div class="member-name-row">${m.name}</div>
+        <div class="member-detail">PIN: ${pin} · ${LANG_FLAGS[m.lang]} ${LANG_NAMES_DISPLAY[m.lang]}</div>
+      </div>
+      <div class="member-actions">
+        <button class="btn-sm btn-edit" onclick="openEdit('${pin}')">Edit</button>
+        ${!isDefault ? `<button class="btn-sm btn-del" onclick="deleteMember('${pin}')">Remove</button>` : ''}
+      </div>`;
+    list.appendChild(row);
+  });
+}
+
+function updateStats() {
+  const vals = Object.values(members);
+  document.getElementById('stat-total').textContent = vals.length;
+  document.getElementById('stat-ja').textContent = vals.filter(m=>m.lang==='ja').length;
+  document.getElementById('stat-en').textContent = vals.filter(m=>m.lang==='en').length;
+  document.getElementById('stat-zh').textContent = vals.filter(m=>m.lang==='zh').length;
+}
+
+function buildColorPicker() {
+  const cp = document.getElementById('color-picker');
+  cp.innerHTML = '';
+  COLORS.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'color-opt' + (c === selectedColor ? ' selected' : '');
+    el.style.background = c;
+    el.onclick = () => { selectedColor = c; buildColorPicker(); };
+    cp.appendChild(el);
+  });
+}
+
+// ── Language select ──
+window.selectLang = lang => {
+  selectedLang = lang;
+  document.querySelectorAll('#lang-options .lang-opt').forEach(b => b.classList.toggle('selected', b.dataset.lang === lang));
+};
+window.selectEditLang = (lang, isNew=false) => {
+  if (isNew) { selectLang(lang); return; }
+  editLang = lang;
+  document.querySelectorAll('#edit-modal .lang-opt').forEach(b => b.classList.toggle('selected', b.dataset.lang === lang));
+};
+
+// ── Add member ──
+window.addMember = async () => {
+  const name = document.getElementById('new-name').value.trim();
+  const pin  = document.getElementById('new-pin').value.trim();
+  if (!name) { toast('Enter a name'); return; }
+  if (!/^\d{6}$/.test(pin)) { toast('PIN must be exactly 6 digits'); return; }
+  if (members[pin]) { toast('This PIN is already in use'); return; }
+  const initials = name.slice(0,2).toUpperCase();
+  const id = name.toLowerCase().replace(/\s+/g,'_') + '_' + Date.now();
+  const newMember = { id, name, lang: selectedLang, initials, bg: selectedColor };
+  await set(ref(db, 'members/' + pin), newMember);
+  members[pin] = newMember;
+  document.getElementById('new-name').value = '';
+  document.getElementById('new-pin').value = '';
+  renderMembers(); updateStats();
+  toast(`✅ ${name} added successfully`);
+};
+
+// ── Edit member ──
+window.openEdit = pin => {
+  editPin  = pin;
+  editLang = members[pin].lang;
+  document.getElementById('edit-name').value = members[pin].name;
+  document.getElementById('edit-pin').value  = pin;
+  document.querySelectorAll('#edit-modal .lang-opt').forEach(b => b.classList.toggle('selected', b.dataset.lang === editLang));
+  document.getElementById('edit-modal').classList.add('open');
+};
+window.closeEditModal = () => document.getElementById('edit-modal').classList.remove('open');
+window.saveEdit = async () => {
+  const name   = document.getElementById('edit-name').value.trim();
+  const newPin = document.getElementById('edit-pin').value.trim();
+  if (!name) { toast('Enter a name'); return; }
+  if (!/^\d{6}$/.test(newPin)) { toast('PIN must be 6 digits'); return; }
+  if (newPin !== editPin && members[newPin]) { toast('PIN already in use'); return; }
+  const updated = { ...members[editPin], name, lang: editLang, initials: name.slice(0,2).toUpperCase() };
+  if (newPin !== editPin) {
+    await set(ref(db, 'members/' + newPin), updated);
+    await set(ref(db, 'members/' + editPin), null);
+    delete members[editPin];
+  } else {
+    await set(ref(db, 'members/' + newPin), updated);
+  }
+  members[newPin] = updated;
+  closeEditModal();
+  renderMembers(); updateStats();
+  toast(`✅ ${name} updated`);
+};
+
+// ── Delete member ──
+window.deleteMember = async pin => {
+  const m = members[pin];
+  if (!confirm(`Remove ${m.name} from staff list?`)) return;
+  await set(ref(db, 'members/' + pin), null);
+  delete members[pin];
+  renderMembers(); updateStats();
+  toast(`🗑 ${m.name} removed`);
+};
+
+// Init color picker
+buildColorPicker();
+</script>
+</body>
+</html>
