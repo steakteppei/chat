@@ -1,4 +1,4 @@
-const CACHE = 'st-chat-v2.2';
+const CACHE = 'st-chat-v2.3';
 const ASSETS = [
   './',
   './index.html',

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Teppei Chat">
@@ -55,7 +55,7 @@ html, body {
 }
 .update-icon { font-size: 40px; margin-bottom: 12px; }
 .update-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-.update-msg { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+.update-msg { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; white-space: pre-line; text-align: left; }
 .update-ok {
   width: 100%; padding: 14px; background: var(--blue);
   color: white; border: none; border-radius: 14px;
@@ -115,7 +115,7 @@ html, body {
 .num-btn { height: 60px; background: var(--gray-bg); border: none; border-radius: 14px; color: var(--text); font-size: 22px; font-weight: 400; cursor: pointer; font-family: inherit; transition: all .1s; display: flex; align-items: center; justify-content: center; }
 .num-btn:active { background: var(--gray-light); transform: scale(.96); }
 .num-btn.del { font-size: 18px; color: var(--text-sub); }
-.num-btn.empty { background: transparent; cursor: default; }
+.num-btn.empty { background: transparent; cursor: default; pointer-events: none; }
 .login-error { font-size: 12px; color: var(--red); text-align: center; margin-top: 12px; min-height: 16px; }
 
 /* CHAT */
@@ -364,7 +364,7 @@ import { getDatabase, ref, push, onChildAdded, onValue, update, get }
 // ============================================================
 // VERSION
 // ============================================================
-const CHAT_VERSION = '2.2';
+const CHAT_VERSION = '2.3';
 // v2.0 - First names only, admin panel, dark mode, update notification popup
 // v1.9 - Delete, badge, date divider, read receipt, save image, mention, search, announce
 // v1.8 - iMessage UI + emoji picker
@@ -388,7 +388,7 @@ const firebaseConfig = {
 
 // Default members — will be overridden by Firebase /members if available
 const DEFAULT_MEMBERS = {
-  '111111': { id:'david',    lang:'ja', initials:'DA', bg:'#FF9500', name:'David' },
+  '111111': { id:'david',    lang:'ja', initials:'AK', bg:'#FF9500', name:'Aki' },
   '222222': { id:'kacee',    lang:'en', initials:'KT', bg:'#007AFF', name:'Kacee' },
   '333333': { id:'shaine',   lang:'en', initials:'ST', bg:'#34C759', name:'Shaine' },
   '444444': { id:'kai',      lang:'en', initials:'KS', bg:'#5856D6', name:'Kai' },
@@ -411,9 +411,38 @@ const PLACEHOLDERS = { ja:'メッセージを入力...', en:'Message...', zh:'�
 
 // Update notifications per language
 const UPDATE_MSGS = {
-  ja: { title:'アプリが更新されました 🎉', msg:`バージョン ${CHAT_VERSION} に更新されました。\n新機能が追加されています。` },
-  en: { title:'App Updated 🎉',            msg:`Updated to version ${CHAT_VERSION}.\nNew features are available.` },
-  zh: { title:'应用已更新 🎉',              msg:`已更新至版本 ${CHAT_VERSION}。\n新功能已可用。` },
+  ja: {
+    title: 'アプリが更新されました 🎉',
+    msg: `v${CHAT_VERSION} の主な改善点：
+
+✅ 翻訳精度が向上
+直前の会話の流れを踏まえて翻訳するようになりました。「それ」「あれ」「やっといた」などの短い文章でも、文脈から正しく翻訳されます。
+
+✅ あいまいな文章を自動検出
+主語や目的語が抜けていると判断した場合、送信前に確認画面が出ます。そのまま送るか、AIが補完した文章で送るかを選べます。
+
+✅ 表示名が「Aki」に変更されました。`
+  },
+  en: {
+    title: 'App Updated 🎉',
+    msg: `What's new in v${CHAT_VERSION}:
+
+✅ Smarter translations
+The app now reads the last few messages for context before translating. Short or vague messages like "done" or "it broke" are now translated more accurately.
+
+✅ Clarity check before sending
+If your message is missing a subject or object, a quick confirmation screen appears. You can send it as-is or use the AI-suggested clearer version.`
+  },
+  zh: {
+    title: '应用更新了 🎉',
+    msg: `v${CHAT_VERSION} 更新内容：
+
+✅ 翻译更准确了
+以前有时候翻译出来的话让人看不懂。现在好了——手机会看一看你们刚才说了什么，再来翻译，这样意思就对了。
+
+✅ 说话说不清楚？手机帮你补
+比如你发"坏了"，手机会问你："你是说烤炉坏了吗？"你点确认就发出去，日本老板和美国同事就能看懂你说的是什么。不用担心说错，手机帮你补充清楚。`
+  },
 };
 
 const USER_KEY = 'teppei_pin_v1';
