@@ -218,8 +218,18 @@ html, body {
 .sending-dots span { width: 4px; height: 4px; background: rgba(255,255,255,.8); border-radius: 50%; animation: sdot 1.2s infinite; }
 .sending-dots span:nth-child(2){animation-delay:.2s}.sending-dots span:nth-child(3){animation-delay:.4s}
 @keyframes sdot{0%,80%,100%{opacity:.3;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
-.mention { font-weight: 600; color: var(--blue); }
-.msg-wrap.own .mention { color: #a8d4ff; }
+.mention { font-weight: 700; color: var(--blue); background: rgba(0,122,255,.12); border-radius: 6px; padding: 1px 5px; }
+.msg-wrap.own .mention { color: #a8d4ff; background: rgba(168,212,255,.2); }
+/* メンションされた本人のメッセージ全体を強調 */
+.msg-wrap.mentioned-me { animation: mentionPulse .6s ease-out; }
+@keyframes mentionPulse {
+  0%   { background: rgba(0,122,255,.18); }
+  100% { background: transparent; }
+}
+.msg-wrap.mentioned-me .bubble:not(.own .bubble) { border: 1.5px solid var(--blue) !important; }
+.msg-wrap.own.mentioned-me .bubble { border: 1.5px solid #a8d4ff !important; }
+/* 自分宛てメンションバッジ */
+.mention-me { font-weight: 700; color: #fff; background: var(--blue); border-radius: 6px; padding: 1px 6px; font-size: .9em; box-shadow: 0 1px 4px rgba(0,122,255,.4); }
 .orig-text { font-size: 10px; color: var(--text-muted); margin-top: 3px; padding: 0 4px; line-height: 1.4; }
 .trans-block { margin-top: 3px; display: flex; flex-direction: column; gap: 1px; }
 .trans-item { font-size: 10px; color: var(--text-muted); padding: 2px 4px; line-height: 1.5; }
@@ -509,7 +519,7 @@ import { getDatabase, ref, push, onChildAdded, onValue, update, get, set, server
 // ============================================================
 // VERSION
 // ============================================================
-const CHAT_VERSION = '2.7';
+const CHAT_VERSION = '2.9';
 // v2.0 - First names only, admin panel, dark mode, update notification popup
 // v1.9 - Delete, badge, date divider, read receipt, save image, mention, search, announce
 // v1.8 - iMessage UI + emoji picker
@@ -727,8 +737,19 @@ window.selectMention = name => {
   document.getElementById('mention-picker').classList.remove('open');
   input.dispatchEvent(new Event('input'));
 };
-function highlightMentions(text) {
-  return text.replace(/@(\w+)/g, '<span class="mention">@$1</span>');
+function highlightMentions(text, isSelfMentioned) {
+  return text.replace(/@(\w+)/g, (match, name) => {
+    // 自分の名前にマッチした場合は強調バッジ
+    if (currentUser && name.toLowerCase() === currentUser.name.toLowerCase()) {
+      return `<span class="mention-me">@${name}</span>`;
+    }
+    return `<span class="mention">@${name}</span>`;
+  });
+}
+function checkSelfMention(text) {
+  if (!currentUser || !text) return false;
+  const re = new RegExp('@' + currentUser.name + '\\b', 'i');
+  return re.test(text);
 }
 
 // ── PIN ──
@@ -953,10 +974,13 @@ function renderMessage(key, msg) {
   const m=getMember(msg.uid); const hasImage=!msg.deleted&&!!msg.imageUrl; const hasText=!!(mainTxt&&mainTxt.trim());
   let bubbleContent='';
   if (hasImage) bubbleContent+=`<img class="msg-image" src="${msg.imageUrl}" alt="photo" onclick="openLightbox('${msg.imageUrl}')">`;
+  const selfMentioned = !isOwn && !msg.deleted && checkSelfMention(mainTxt);
   if (hasText) bubbleContent+=msg.deleted?mainTxt:highlightMentions(esc(mainTxt));
   const readers=msg.readBy?Object.keys(msg.readBy).filter(id=>id!==currentUser.id):[];
-  const wrap=document.createElement('div'); wrap.className='msg-wrap'+(isOwn?' own':''); wrap.dataset.key=key;
   const isSending = !!msg._sending;
+  const wrap=document.createElement('div');
+  wrap.className='msg-wrap'+(isOwn?' own':'')+(selfMentioned?' mentioned-me':'');
+  wrap.dataset.key=key;
   wrap.innerHTML=`
     ${!isOwn?`<div class="msg-av" style="background:${m.bg};color:#fff;" data-uid="${msg.uid}">${m.initials}${onlineUsers[msg.uid]?'<div class="online-dot"></div>':''}</div>`:''}
     <div class="msg-body">
@@ -1291,7 +1315,6 @@ function sendNotification(msg) {
 }
 
 // ── Edit message ──
-let editingKey = null;
 window.ctxEdit = () => {
   closeCtxMenu();
   if (!ctxMsgData || !ctxMsgKey) return;
