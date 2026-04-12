@@ -191,7 +191,7 @@ import { getDatabase, ref, push, onChildAdded, onValue }
 // ============================================================
 // VERSION
 // ============================================================
-const CHAT_VERSION = '1.5';
+const CHAT_VERSION = '1.6';
 // CHANGELOG:
 // v1.4 - Fix: Gemini 2.5 Flash-Lite thinkingBudget:0 to resolve 404/translation failure
 // v1.3 - Fix: Gemini model name -> gemini-2.5-flash-lite (stable)
@@ -425,7 +425,7 @@ Return ONLY valid JSON with language codes as keys. No markdown, no explanation,
 Message: """${text}"""`;
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
