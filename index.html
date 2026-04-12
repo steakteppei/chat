@@ -156,7 +156,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     <div class="ch-logo">🥩</div>
     <div class="ch-info">
       <h2>STEAK TEPPEI</h2>
-      <p>Auto-translated · 自動翻訳 · 自动翻译</p>
+      <p>Auto-translated · 自動翻訳 · 自动翻译 · <span id="ver-display"></span></p>
     </div>
     <button class="logout-btn" onclick="logout()">Sign out</button>
   </div>
@@ -188,6 +188,16 @@ import { initializeApp }  from "https://www.gstatic.com/firebasejs/11.0.0/fireba
 import { getDatabase, ref, push, onChildAdded, onValue }
                            from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
 
+// ============================================================
+// VERSION
+// ============================================================
+const CHAT_VERSION = '1.4';
+// CHANGELOG:
+// v1.4 - Fix: Gemini 2.5 Flash-Lite thinkingBudget:0 to resolve 404/translation failure
+// v1.3 - Fix: Gemini model name -> gemini-2.5-flash-lite (stable)
+// v1.2 - Switch image storage from Firebase Storage to Cloudinary (25GB free)
+// v1.1 - Add image upload + lightbox feature
+// v1.0 - Initial release: PIN login, Firebase Realtime DB, Gemini translation
 // ============================================================
 // OWNER CONFIG
 // ============================================================
@@ -486,6 +496,9 @@ document.body.addEventListener('touchmove',e=>{
   if(e.target.closest('#messages'))return;
   e.preventDefault();
 },{passive:false});
+
+// ── Version display ──
+document.getElementById('ver-display').textContent = 'v' + CHAT_VERSION;
 
 // ── Auto-login ──
 const saved = localStorage.getItem(USER_KEY);
