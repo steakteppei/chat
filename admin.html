@@ -23,7 +23,7 @@
 html, body { min-height: 100%; background: var(--gray-bg); color: var(--text); font-family: 'Noto Sans JP',-apple-system,'Helvetica Neue',sans-serif; -webkit-font-smoothing: antialiased; }
 
 /* LOGIN */
-#login-screen { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: calc(var(--safe-top)+20px) 32px calc(var(--safe-bottom)+20px); }
+#login-screen { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: calc(var(--safe-top)+20px) 32px calc(var(--safe-bottom)+20px); }
 .admin-logo { width: 72px; height: 72px; background: linear-gradient(145deg,#FF6B35,#CC3300); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 34px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(204,51,0,.25); }
 .admin-title { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
 .admin-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 32px; }
@@ -137,6 +137,7 @@ html, body { min-height: 100%; background: var(--gray-bg); color: var(--text); f
 
 <!-- LOGIN -->
 <div id="login-screen">
+  <a href="./index.html" style="position:absolute;top:calc(env(safe-area-inset-top,0px)+14px);left:16px;color:var(--blue);font-size:14px;text-decoration:none;">‹ Chat</a>
   <div class="admin-logo">⚙️</div>
   <div class="admin-title">Admin Panel</div>
   <div class="admin-sub">Steak Teppei Chat</div>
@@ -170,6 +171,7 @@ html, body { min-height: 100%; background: var(--gray-bg); color: var(--text); f
   <div class="admin-header">
     <div class="admin-header-logo">⚙️</div>
     <h1>Admin Panel</h1>
+    <a href="./index.html" style="color:var(--blue);font-size:13px;text-decoration:none;margin-right:8px;">💬 Chat</a>
     <button class="header-logout" onclick="adminLogout()">Sign out</button>
   </div>
   <div class="admin-body">

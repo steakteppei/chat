@@ -10,65 +10,64 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f5f4f2;--card:#fff;--border:rgba(0,0,0,.08);--border-md:rgba(0,0,0,.14);
-  --text:#1a1a1a;--text-sub:#555;--text-hint:#999;
+  --bg:#F2F2F7;--card:#FFF;--border:rgba(0,0,0,.08);--border-md:rgba(0,0,0,.14);
+  --text:#000;--text-sub:#3C3C43;--text-hint:#8E8E93;
+  --surface:#FFF;
   --radius:16px;--radius-sm:10px;
   --orange:#E8440A;--orange-light:#fff2ed;
+  --blue:#007AFF;--red:#FF3B30;--green:#34C759;
   --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
 }
 @media(prefers-color-scheme:dark){
-  :root{--bg:#1a1a1a;--card:#252525;--border:rgba(255,255,255,.1);--border-md:rgba(255,255,255,.18);
-  --text:#f0f0f0;--text-sub:#aaa;--text-hint:#666;--orange-light:#2a1206;}
+  :root{
+    --bg:#1C1C1E;--card:#2C2C2E;--border:rgba(255,255,255,.1);--border-md:rgba(255,255,255,.18);
+    --text:#FFF;--text-sub:#EBEBF5;--text-hint:#8E8E93;
+    --surface:#2C2C2E;--orange-light:#2a1206;
+  }
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{background:var(--bg);font-family:'Noto Sans JP','Noto Sans SC',-apple-system,'SF Pro Text',sans-serif;color:var(--text);}
+html,body{background:var(--bg);font-family:'Noto Sans JP','Noto Sans SC',-apple-system,'Helvetica Neue',sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;}
 
-/* HEADER */
-.sn-header{background:var(--orange);color:#fff;padding:calc(var(--safe-top) + 12px) 16px 14px;position:sticky;top:0;z-index:100;}
+.sn-header{background:var(--orange);color:#fff;padding:calc(var(--safe-top)+12px) 16px 14px;position:sticky;top:0;z-index:100;}
 .sn-header-top{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
-.sn-back{background:rgba(255,255,255,.22);border:none;border-radius:20px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;padding:5px 13px;font-family:inherit;}
+.sn-back{background:rgba(255,255,255,.22);border:none;border-radius:20px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;padding:5px 13px;font-family:inherit;display:flex;align-items:center;gap:4px;}
 .sn-back:active{opacity:.7;}
-.sn-title{font-size:18px;font-weight:800;letter-spacing:-.3px;}
+.sn-title{font-size:18px;font-weight:700;letter-spacing:-.3px;}
 .sn-sub{font-size:11px;opacity:.75;}
 
-/* LANG SWITCH */
-.lang-bar{display:flex;gap:6px;padding:10px 13px;background:var(--bg);border-bottom:.5px solid var(--border);}
+.lang-bar{display:flex;gap:6px;padding:10px 13px;background:var(--bg);border-bottom:.5px solid var(--border-md);}
 .lang-btn{padding:5px 14px;border-radius:20px;border:.5px solid var(--border-md);background:var(--card);font-size:12px;font-weight:600;cursor:pointer;color:var(--text-hint);font-family:inherit;}
 .lang-btn.active{background:var(--orange-light);color:var(--orange);border-color:var(--orange);}
 
-/* VIEW SWITCH */
-.view-bar{display:flex;gap:0;padding:10px 13px;background:var(--bg);}
+.view-bar{display:flex;padding:10px 13px 0;background:var(--bg);}
 .view-btn{flex:1;padding:8px 0;border:.5px solid var(--border-md);background:var(--card);font-size:13px;font-weight:600;cursor:pointer;color:var(--text-hint);font-family:inherit;}
 .view-btn:first-child{border-radius:10px 0 0 10px;}
 .view-btn:last-child{border-radius:0 10px 10px 0;}
 .view-btn.active{background:var(--orange-light);color:var(--orange);border-color:var(--orange);}
 
-/* YEAR TABS */
-.year-tabs{display:flex;gap:8px;padding:0 13px 10px;background:var(--bg);}
+.year-tabs{display:flex;gap:8px;padding:10px 13px;background:var(--bg);}
 .year-btn{flex:1;padding:9px 4px;border-radius:var(--radius-sm);border:.5px solid var(--border-md);background:var(--card);font-size:13px;font-weight:700;cursor:pointer;color:var(--text-hint);text-align:center;font-family:inherit;}
 .year-btn.active{background:var(--orange-light);color:var(--orange);border-color:var(--orange);}
 
-/* FILTER */
 .filter-wrap{display:flex;gap:6px;padding:0 13px 10px;flex-wrap:wrap;background:var(--bg);}
 .filter-btn{padding:5px 11px;border-radius:20px;border:.5px solid var(--border-md);background:var(--card);font-size:11px;font-weight:600;cursor:pointer;color:var(--text-hint);font-family:inherit;}
 .filter-btn.active-us{background:#e8f0fe;color:#1a56db;border-color:#1a56db;}
 .filter-btn.active-jp{background:#fce7f3;color:#be185d;border-color:#be185d;}
-.filter-btn.active-hi{background:#fff2ed;color:var(--orange);border-color:var(--orange);}
+.filter-btn.active-hi{background:var(--orange-light);color:var(--orange);border-color:var(--orange);}
 .filter-btn.active-ca{background:#fef3c7;color:#92400e;border-color:#d97706;}
 .filter-btn.active-slow{background:#f1f5f9;color:#475569;border-color:#94a3b8;}
 .filter-btn.active-hidoe{background:#e0f2fe;color:#0369a1;border-color:#0369a1;}
 .filter-btn.active-all{background:var(--orange-light);color:var(--orange);border-color:var(--orange);}
 
-/* LEGEND */
 .legend{display:flex;flex-wrap:wrap;gap:6px;padding:0 13px 10px;background:var(--bg);}
 .legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-hint);}
 .legend-bar{width:4px;height:14px;border-radius:2px;}
 
-/* LIST VIEW */
-.content{padding:10px 13px calc(var(--safe-bottom) + 48px);}
+.content{padding:10px 13px calc(var(--safe-bottom)+48px);}
 .month-head{font-size:11px;font-weight:700;color:var(--text-hint);text-transform:uppercase;letter-spacing:.08em;padding:14px 0 6px;border-bottom:.5px solid var(--border);margin-bottom:6px;}
 .month-head:first-child{padding-top:4px;}
-.period-card{display:flex;align-items:flex-start;gap:10px;background:var(--card);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 12px;margin-bottom:6px;}
+
+.period-card{display:flex;align-items:flex-start;gap:10px;background:var(--card);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 12px;margin-bottom:6px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
 .period-card.busy-us{border-left:3px solid #1a56db;}
 .period-card.busy-jp{border-left:3px solid #be185d;}
 .period-card.busy-hi{border-left:3px solid var(--orange);}
@@ -84,46 +83,40 @@ html,body{background:var(--bg);font-family:'Noto Sans JP','Noto Sans SC',-apple-
 .region-badge{font-size:9px;font-weight:700;padding:3px 7px;border-radius:10px;white-space:nowrap;}
 .badge-us{background:#e8f0fe;color:#1a56db;}
 .badge-jp{background:#fce7f3;color:#be185d;}
-.badge-hi{background:#fff2ed;color:var(--orange);}
+.badge-hi{background:var(--orange-light);color:var(--orange);}
 .badge-ca{background:#fef3c7;color:#92400e;}
 .badge-slow{background:#f1f5f9;color:#475569;}
 .badge-hidoe{background:#e0f2fe;color:#0369a1;}
-.now-badge{font-size:9px;font-weight:700;background:#dc2626;color:#fff;padding:3px 7px;border-radius:10px;}
+.now-badge{font-size:9px;font-weight:700;background:var(--red);color:#fff;padding:3px 7px;border-radius:10px;}
 .no-results{text-align:center;padding:32px 0;font-size:13px;color:var(--text-hint);}
 
-/* CALENDAR VIEW */
-#cal-view{display:none;padding:10px 13px calc(var(--safe-bottom) + 48px);}
+#cal-view{display:none;padding:10px 13px calc(var(--safe-bottom)+48px);}
 .cal-month{margin-bottom:20px;}
 .cal-month-title{font-size:14px;font-weight:700;color:var(--text);padding:10px 0 8px;border-bottom:.5px solid var(--border);margin-bottom:8px;}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
 .cal-dow{text-align:center;font-size:9px;font-weight:700;color:var(--text-hint);padding:4px 0;text-transform:uppercase;}
-.cal-day{min-height:44px;border-radius:8px;border:.5px solid transparent;padding:3px 4px;position:relative;background:var(--card);cursor:default;}
+.cal-day{min-height:44px;border-radius:8px;border:.5px solid transparent;padding:3px 4px;background:var(--card);cursor:default;}
 .cal-day.empty{background:transparent;border-color:transparent;}
 .cal-day.today{border-color:var(--orange)!important;}
 .cal-day-num{font-size:11px;font-weight:600;color:var(--text);line-height:1;}
 .cal-day.today .cal-day-num{color:var(--orange);font-weight:800;}
 .cal-dots{display:flex;flex-wrap:wrap;gap:2px;margin-top:2px;}
 .cal-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.cal-day.has-us{border-left:2px solid #1a56db;}
-.cal-day.has-jp{border-left:2px solid #be185d;}
-.cal-day.has-hi{border-color:var(--orange);}
-.cal-day.has-slow{opacity:.7;}
-.cal-legend-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
 
-/* period tooltip popup */
-.cal-popup{display:none;position:fixed;bottom:calc(var(--safe-bottom)+80px);left:13px;right:13px;background:var(--card);border-radius:14px;padding:14px;box-shadow:0 4px 24px rgba(0,0,0,.18);z-index:200;border:.5px solid var(--border);}
-.cal-popup.open{display:block;}
-.cal-popup-title{font-size:14px;font-weight:700;margin-bottom:4px;}
+.cal-popup-wrap{position:fixed;bottom:0;left:0;right:0;z-index:200;display:none;align-items:flex-end;justify-content:center;}
+.cal-popup-wrap.open{display:flex;}
+.cal-popup{background:var(--surface);border-radius:20px 20px 0 0;padding:16px 16px calc(var(--safe-bottom)+16px);width:100%;max-width:600px;box-shadow:0 -4px 24px rgba(0,0,0,.15);border:.5px solid var(--border);}
+.cal-popup-title{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--text);}
 .cal-popup-date{font-size:11px;color:var(--text-hint);margin-bottom:6px;}
-.cal-popup-tip{font-size:12px;color:var(--text-sub);line-height:1.6;}
-.cal-popup-close{position:absolute;top:10px;right:12px;background:none;border:none;font-size:18px;color:var(--text-hint);cursor:pointer;}
+.cal-popup-tip{font-size:13px;color:var(--text-sub);line-height:1.6;}
+.cal-popup-close{float:right;background:none;border:none;font-size:20px;color:var(--text-hint);cursor:pointer;margin-top:-2px;}
 </style>
 </head>
 <body>
 
 <div class="sn-header">
   <div class="sn-header-top">
-    <button class="sn-back" onclick="history.length>1?history.back():location.href='index.html'">&#8249; Back</button>
+    <button class="sn-back" onclick="location.href='./index.html'">💬 Chat</button>
   </div>
   <div class="sn-title" id="page-title">Busy &amp; Slow Seasons</div>
   <div class="sn-sub">Honolulu · Ala Moana Center</div>
@@ -172,12 +165,12 @@ html,body{background:var(--bg);font-family:'Noto Sans JP','Noto Sans SC',-apple-
 <div id="cal-view"></div>
 
 <!-- Calendar popup -->
-<div class="cal-popup" id="cal-popup">
-  <button class="cal-popup-close" onclick="document.getElementById('cal-popup').classList.remove('open')">✕</button>
+<div class="cal-popup-wrap" id="cal-popup-wrap" onclick="this.classList.remove('open')"><div class="cal-popup" id="cal-popup" onclick="event.stopPropagation()">
+  <button class="cal-popup-close" onclick="document.getElementById('cal-popup-wrap').classList.remove('open')">✕</button>
   <div class="cal-popup-title" id="cal-popup-title"></div>
   <div class="cal-popup-date" id="cal-popup-date"></div>
   <div class="cal-popup-tip" id="cal-popup-tip"></div>
-</div>
+</div></div>
 
 <script>
 var currentLang   = 'en';
@@ -563,8 +556,17 @@ function showCalPopup(name,date,tip) {
   document.getElementById('cal-popup-title').textContent=name;
   document.getElementById('cal-popup-date').textContent=date;
   document.getElementById('cal-popup-tip').textContent=tip;
-  document.getElementById('cal-popup').classList.add('open');
+  document.getElementById('cal-popup-wrap').classList.add('open');
 }
+
+// 4. Auto-detect language from URL param (set by chat app)
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var lang = params.get('lang');
+  if (lang && ['en','ja','zh'].includes(lang)) {
+    currentLang = lang;
+  }
+})();
 
 // init
 applyI18n();
