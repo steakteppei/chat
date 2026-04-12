@@ -308,6 +308,75 @@ html, body {
 #install-banner { display: none; background: #EBF5FF; border-bottom: 0.5px solid #B3D7FF; padding: 8px 14px; align-items: center; gap: 8px; font-size: 12px; color: var(--blue); flex-shrink: 0; }
 .ib-btn { background: var(--blue); color: white; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-family: inherit; cursor: pointer; margin-left: auto; }
 .ib-close { background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; }
+
+/* ── NEW FEATURES CSS ── */
+
+/* conn status improvement */
+#conn-status { font-size: 12px; padding: 8px 16px; text-align: center; background: #FF9500; color: white; display: none; flex-shrink: 0; font-weight: 600; letter-spacing: .2px; }
+
+/* scroll-to-bottom button */
+#scroll-btn { display: none; position: absolute; bottom: 12px; right: 14px; width: 36px; height: 36px; background: var(--blue); border: none; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,122,255,.4); z-index: 100; align-items: center; justify-content: center; }
+#scroll-btn.show { display: flex; }
+#scroll-badge { position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; background: var(--red); color: white; font-size: 9px; font-weight: 700; border-radius: 8px; display: none; align-items: center; justify-content: center; padding: 0 3px; }
+
+/* logout confirm */
+#logout-toast { display: none; position: fixed; bottom: calc(var(--safe-bottom)+80px); left: 50%; transform: translateX(-50%); background: var(--surface); border: 0.5px solid var(--border); color: var(--text); padding: 10px 16px; border-radius: 14px; font-size: 13px; z-index: 400; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,.15); gap: 10px; align-items: center; }
+#logout-toast.show { display: flex; }
+#logout-undo { background: var(--blue); color: white; border: none; border-radius: 8px; padding: 4px 12px; font-size: 12px; cursor: pointer; font-family: inherit; }
+
+/* image preview tap to enlarge */
+#img-preview { width: 72px; height: 72px; object-fit: cover; border-radius: 12px; border: 0.5px solid var(--border); cursor: pointer; }
+
+/* search nav arrows */
+.search-nav { display: flex; gap: 4px; align-items: center; }
+.search-nav-btn { background: var(--gray-bg); border: none; border-radius: 6px; color: var(--text); font-size: 14px; padding: 3px 8px; cursor: pointer; font-family: inherit; }
+.search-nav-btn:active { opacity: .7; }
+
+/* reaction bar in ctx menu */
+.ctx-reactions { display: flex; gap: 2px; padding: 8px 10px; border-bottom: 0.5px solid var(--border); }
+.ctx-react-btn { flex: 1; background: var(--gray-bg); border: none; border-radius: 8px; font-size: 20px; padding: 6px 0; cursor: pointer; }
+.ctx-react-btn:active { transform: scale(1.2); }
+
+/* reactions on bubble */
+.msg-reactions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; padding: 0 4px; }
+.reaction-pill { display: flex; align-items: center; gap: 3px; background: var(--gray-bg); border: 0.5px solid var(--border); border-radius: 12px; padding: 3px 8px; font-size: 13px; cursor: pointer; }
+.reaction-pill.mine { background: rgba(0,122,255,.12); border-color: var(--blue); }
+.reaction-pill span { font-size: 11px; color: var(--text-muted); }
+
+/* typing indicator row */
+.typing-wrap { display: flex; gap: 6px; align-items: flex-end; margin: 2px 0; min-height: 32px; }
+.typing-name { font-size: 10px; color: var(--text-muted); padding: 0 4px; margin-bottom: 2px; }
+
+/* reply bar */
+#reply-bar { display: none; background: var(--gray-bg); border-top: 0.5px solid var(--border); border-left: 3px solid var(--blue); padding: 6px 12px; flex-shrink: 0; gap: 8px; align-items: center; }
+#reply-bar.open { display: flex; }
+#reply-preview { font-size: 11px; color: var(--text-muted); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#reply-cancel { background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; }
+
+/* reply quote in bubble */
+.reply-quote { background: rgba(0,0,0,.06); border-left: 2px solid rgba(0,0,0,.2); border-radius: 6px; padding: 4px 8px; margin-bottom: 6px; font-size: 11px; color: var(--text-sub); cursor: pointer; }
+.msg-wrap.own .reply-quote { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.4); color: rgba(255,255,255,.8); }
+.reply-quote-author { font-weight: 700; margin-bottom: 1px; }
+.reply-quote-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* bookmark star */
+.msg-star { font-size: 12px; padding: 0 4px; cursor: pointer; opacity: 0; transition: opacity .15s; }
+.msg-body:hover .msg-star { opacity: .6; }
+.msg-star.starred { opacity: 1; color: #FFD60A; }
+
+/* pin bar */
+#pin-bar { display: none; background: var(--announce-bg); border-bottom: 1px solid var(--announce-border); padding: 8px 14px; flex-shrink: 0; align-items: center; gap: 8px; }
+#pin-bar.show { display: flex; }
+#pin-bar-text { font-size: 12px; color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#pin-bar-label { font-size: 10px; font-weight: 700; color: #856404; white-space: nowrap; }
+@media (prefers-color-scheme: dark) { #pin-bar-label { color: #FFD60A; } }
+#pin-bar-close { background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; }
+
+/* dark bubble fix */
+@media (prefers-color-scheme: dark) {
+  .msg-wrap:not(.own) .bubble { background: #3A3A3C; }
+  .reply-quote { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.2); }
+}
 </style>
 </head>
 <body>
@@ -346,6 +415,16 @@ html, body {
 <!-- CONTEXT MENU -->
 <div id="ctx-backdrop" onclick="closeCtxMenu()"></div>
 <div id="ctx-menu">
+  <div class="ctx-reactions">
+    <button class="ctx-react-btn" onclick="ctxReact('👍')">👍</button>
+    <button class="ctx-react-btn" onclick="ctxReact('❤️')">❤️</button>
+    <button class="ctx-react-btn" onclick="ctxReact('😂')">😂</button>
+    <button class="ctx-react-btn" onclick="ctxReact('✅')">✅</button>
+    <button class="ctx-react-btn" onclick="ctxReact('🙏')">🙏</button>
+  </div>
+  <div class="ctx-item" id="ctx-reply" onclick="ctxReply()">↩️ Reply</div>
+  <div class="ctx-item" id="ctx-bookmark" onclick="ctxBookmark()">⭐ Bookmark</div>
+  <div class="ctx-item" id="ctx-pin" onclick="ctxPin()">📌 Pin</div>
   <div class="ctx-item" id="ctx-edit" onclick="ctxEdit()">✏️ Edit</div>
   <div class="ctx-item" id="ctx-copy" onclick="ctxCopy()">📋 Copy</div>
   <div class="ctx-item" id="ctx-search-from" onclick="ctxSearchFrom()">🔍 Search similar</div>
@@ -446,7 +525,8 @@ html, body {
     <button class="ib-btn" onclick="showInstallGuide()">How to</button>
     <button class="ib-close" onclick="dismissBanner()">✕</button>
   </div>
-  <div id="conn-status">Reconnecting...</div>
+  <div id="conn-status">⚠️ Reconnecting...</div>
+  <div id="pin-bar"><span id="pin-bar-label">📌 Pinned</span><span id="pin-bar-text"></span><button id="pin-bar-close" onclick="dismissPinBar()">✕</button></div>
   <div class="chat-header">
     <div class="ch-av" style="overflow:hidden;padding:2px;">
       <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="120 100 375 600" preserveAspectRatio="xMidYMid meet" style="display:block;">
@@ -463,7 +543,7 @@ html, body {
   </div>
   <div id="search-bar">
     <input id="search-input" type="search" placeholder="Search messages..." autocomplete="off">
-    <span id="search-count"></span>
+    <div class="search-nav"><button class="search-nav-btn" onclick="searchNav(-1)">↑</button><span id="search-count"></span><button class="search-nav-btn" onclick="searchNav(1)">↓</button></div>
     <button id="search-close" onclick="toggleSearch()">Cancel</button>
   </div>
   <!-- Quick links bar -->
@@ -472,6 +552,8 @@ html, body {
     <button class="quick-link notif-btn" id="ql-notif-btn" onclick="toggleNotifications()">🔔 <span id="ql-notif">Notify</span></button>
     <button class="quick-link admin" id="ql-admin-btn" style="display:none;" onclick="location.href='./admin.html'">⚙️ <span id="ql-admin">Admin</span></button>
   </div>
+  <!-- Reply bar -->
+  <div id="reply-bar"><span id="reply-preview"></span><button id="reply-cancel" onclick="cancelReply()">✕</button></div>
   <!-- Edit bar -->
   <div id="edit-bar">
     <span id="edit-orig"></span>
@@ -485,9 +567,12 @@ html, body {
     <button class="fs-btn" id="fs-l" onclick="setFontSize('l')" style="font-size:17px;">A</button>
     <button class="fs-btn" id="fs-xl" onclick="setFontSize('xl')" style="font-size:20px;">A</button>
   </div>
+  <div style="position:relative;flex:1;display:flex;flex-direction:column;overflow:hidden;">
+  <button id="scroll-btn" onclick="scrollBottom()">↓<div id="scroll-badge"></div></button>
   <div id="messages">
     <div class="sys-row">🔥 Steak Teppei Staff Chat</div>
     <div class="sys-row">Messages are automatically translated for everyone</div>
+  </div>
   </div>
   <div id="emoji-panel">
     <div class="emoji-tabs" id="emoji-tabs"></div>
@@ -511,6 +596,9 @@ html, body {
   </div>
 </div>
 
+<!-- Logout toast -->
+<div id="logout-toast">🚪 <span id="logout-toast-text">Signed out</span><button id="logout-undo" onclick="undoLogout()">Undo</button></div>
+
 <script type="module">
 import { initializeApp }  from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import { getDatabase, ref, push, onChildAdded, onValue, update, get, set, serverTimestamp, onDisconnect as fbOnDisconnect }
@@ -519,7 +607,7 @@ import { getDatabase, ref, push, onChildAdded, onValue, update, get, set, server
 // ============================================================
 // VERSION
 // ============================================================
-const CHAT_VERSION = '2.9';
+const CHAT_VERSION = '3.1';
 // v2.0 - First names only, admin panel, dark mode, update notification popup
 // v1.9 - Delete, badge, date divider, read receipt, save image, mention, search, announce
 // v1.8 - iMessage UI + emoji picker
@@ -627,6 +715,15 @@ let lightboxUrl   = '';
 let editingKey    = null;
 let onlineUsers   = {};
 let notifEnabled  = false;
+let replyingTo    = null;   // { key, name, text }
+let pinnedMsg     = null;   // { key, text }
+let typingTimer   = null;
+let searchHits    = [];
+let searchIdx     = 0;
+let lastDateStr   = '';
+let logoutTimer   = null;
+let savedUser     = null;   // for undo logout
+let savedPin      = null;
 
 const fbApp   = initializeApp(firebaseConfig);
 const db      = getDatabase(fbApp);
@@ -700,10 +797,12 @@ function insertEmoji(emoji) {
 }
 window.toggleEmoji = () => {
   emojiOpen = !emojiOpen;
+  // B6: blur input first to dismiss keyboard before showing emoji panel
+  if (emojiOpen) document.getElementById('msg-input').blur();
   document.getElementById('emoji-panel').classList.toggle('open', emojiOpen);
   document.getElementById('emoji-toggle-btn').style.color = emojiOpen ? '#FF9500' : '#007AFF';
   if (!emojiOpen) document.getElementById('msg-input').focus();
-  scrollBottom();
+  setTimeout(()=>scrollBottom(true), 100);
 };
 
 // ── Announce ──
@@ -806,12 +905,34 @@ function enterChat() {
 }
 
 window.logout = () => {
-  if (currentUser) localStorage.setItem('lastSeen_' + currentUser.id, Date.now().toString());
-  currentUser = null; localStorage.removeItem(USER_KEY);
+  // Confirm via toast with undo (U5)
+  savedUser = currentUser;
+  savedPin  = localStorage.getItem(USER_KEY);
+  const lang = currentUser?.lang || 'en';
+  const msgs = { ja:'サインアウトしました', en:'Signed out', zh:'已退出登录' };
+  document.getElementById('logout-toast-text').textContent = msgs[lang] || msgs.en;
+  document.getElementById('logout-toast').classList.add('show');
+  logoutTimer = setTimeout(() => doLogout(), 4000);
+};
+function doLogout() {
+  clearTimeout(logoutTimer);
+  document.getElementById('logout-toast').classList.remove('show');
+  if (!savedUser) return;
+  localStorage.setItem('lastSeen_' + savedUser.id, Date.now().toString());
+  // clear typing
+  if (savedUser) set(ref(db,'typing/'+savedUser.id), null).catch(()=>{});
+  currentUser = null; savedUser = null; savedPin = null;
+  localStorage.removeItem(USER_KEY);
   document.getElementById('messages').querySelectorAll('.msg-wrap,.date-divider,.announce-wrap').forEach(e=>e.remove());
-  shownIds.clear(); allMessages = {}; listening = false; unreadCount = 0;
+  shownIds.clear(); allMessages = {}; listening = false; unreadCount = 0; replyingTo = null; lastDateStr = '';
   removeImage(); if (emojiOpen) toggleEmoji(); if (announceMode) toggleAnnounce();
-  updateBadge(0); show('screen-login');
+  updateBadge(0); lastDateStr = '';
+  show('screen-login');
+}
+window.undoLogout = () => {
+  clearTimeout(logoutTimer);
+  document.getElementById('logout-toast').classList.remove('show');
+  savedUser = null; savedPin = null;
 };
 window.dismissBanner    = () => { localStorage.setItem('ib_dismissed','1'); document.getElementById('install-banner').style.display='none'; };
 window.showInstallGuide = () => { dismissBanner(); alert('[ iPhone / Safari ]\nTap Share (□↑) → "Add to Home Screen"\n\n[ iPhone ]\n共有（□↑）→「ホーム画面に追加」'); };
@@ -829,6 +950,9 @@ document.getElementById('file-input').addEventListener('change', e => {
   const reader = new FileReader();
   reader.onload = ev => { document.getElementById('img-preview').src=ev.target.result; document.getElementById('img-preview-wrap').style.display='block'; };
   reader.readAsDataURL(file); e.target.value='';
+});
+document.getElementById('img-preview').addEventListener('click', () => {
+  if (document.getElementById('img-preview').src) openLightbox(document.getElementById('img-preview').src);
 });
 window.removeImage = () => { selectedFile=null; document.getElementById('img-preview-wrap').style.display='none'; document.getElementById('img-preview').src=''; };
 async function uploadImage(file) {
@@ -882,7 +1006,70 @@ window.ctxDelete = async () => {
   await update(ref(db,'messages/'+ctxMsgKey),{deleted:true,orig:'',tr:{}});
 };
 
+// ── Reactions (F1 / F4) ──
+window.ctxReact = async emoji => {
+  closeCtxMenu();
+  if (!ctxMsgKey || !currentUser) return;
+  const path = 'messages/' + ctxMsgKey + '/reactions/' + emoji.replace(/️/g,'_fe0f') + '/' + currentUser.id;
+  const snap = await get(ref(db, path));
+  if (snap.exists()) await set(ref(db, path), null); // toggle off
+  else await set(ref(db, path), true);
+};
+
+// ── Bookmark (F9) ──
+window.ctxBookmark = () => {
+  closeCtxMenu();
+  if (!ctxMsgKey) return;
+  const stars = JSON.parse(localStorage.getItem('teppei_stars') || '[]');
+  const idx = stars.indexOf(ctxMsgKey);
+  if (idx >= 0) stars.splice(idx, 1); else stars.push(ctxMsgKey);
+  localStorage.setItem('teppei_stars', JSON.stringify(stars));
+  // update star icon on message
+  const star = document.querySelector('[data-key="'+ctxMsgKey+'"] .msg-star');
+  if (star) { star.classList.toggle('starred', idx < 0); star.textContent = idx < 0 ? '⭐' : '☆'; }
+};
+
+// ── Pin message (F3) ──
+window.ctxPin = async () => {
+  closeCtxMenu();
+  if (!ctxMsgKey || !isAdmin()) return;
+  const txt = ctxMsgData?.orig?.slice(0,60) || '';
+  await set(ref(db, 'pinned'), { key: ctxMsgKey, text: txt, uid: currentUser.id, ts: Date.now() });
+};
+window.dismissPinBar = () => { document.getElementById('pin-bar').classList.remove('show'); };
+
+// ── Reply (F5) ──
+window.ctxReply = () => {
+  closeCtxMenu();
+  if (!ctxMsgKey || !ctxMsgData) return;
+  replyingTo = { key: ctxMsgKey, name: getMember(ctxMsgData.uid).name, text: (ctxMsgData.orig||'').slice(0,50) };
+  const bar = document.getElementById('reply-bar');
+  document.getElementById('reply-preview').textContent = replyingTo.name + ': ' + replyingTo.text;
+  bar.classList.add('open');
+  document.getElementById('msg-input').focus();
+};
+window.toggleReaction = async (key, emoji) => {
+  if (!currentUser) return;
+  const path = 'messages/' + key + '/reactions/' + emoji.replace(/️/g,'_fe0f') + '/' + currentUser.id;
+  const snap = await get(ref(db, path));
+  if (snap.exists()) await set(ref(db, path), null);
+  else await set(ref(db, path), true);
+};
+window.scrollToMsg = key => {
+  const el = document.querySelector('[data-key="'+key+'"]');
+  if (el) { el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.background='rgba(0,122,255,.1)'; setTimeout(()=>el.style.background='',800); }
+};
+window.cancelReply = () => {
+  replyingTo = null;
+  document.getElementById('reply-bar').classList.remove('open');
+};
+
 // ── Firebase ──
+let unsubscribers = [];
+function cleanupListeners() {
+  unsubscribers.forEach(u => { try { u(); } catch(e){} });
+  unsubscribers = [];
+}
 function listenMessages() {
   if (listening) return; listening=true;
   onValue(ref(db,'.info/connected'), snap => { document.getElementById('conn-status').style.display=snap.val()?'none':'block'; });
@@ -895,8 +1082,12 @@ function listenMessages() {
     if (msg.ts>lastSeenTs && msg.uid!==currentUser?.id && !msg.announce) {
       unreadCount++; updateBadge(unreadCount);
       sendNotification(msg);
+      // Show scroll-to-bottom button if not at bottom
+      const el=document.getElementById('messages');
+      const atBottom = el ? el.scrollHeight-el.scrollTop-el.clientHeight<80 : true;
+      if (!atBottom) { updateScrollBtn(true, unreadCount); return; }
     }
-    scrollBottom();
+    scrollBottom(true);
   });
   onValue(msgsRef, snap => {
     const data=snap.val()||{};
@@ -921,6 +1112,33 @@ function listenMessages() {
     });
   });
   setTimeout(()=>markAllRead(),2000);
+  listenTyping();
+  // Listen for pinned message
+  onValue(ref(db,'pinned'), snap => {
+    if (!snap.exists()) { document.getElementById('pin-bar').classList.remove('show'); return; }
+    const p = snap.val();
+    pinnedMsg = p;
+    document.getElementById('pin-bar-text').textContent = p.text || '';
+    document.getElementById('pin-bar').classList.add('show');
+  });
+  // Listen for reactions
+  onValue(ref(db,'messages'), snap => {
+    const data = snap.val() || {};
+    Object.entries(data).forEach(([key, msg]) => {
+      if (!msg || !msg.reactions) return;
+      const container = document.getElementById('reactions-' + key);
+      if (!container) return;
+      const counts = {};
+      Object.entries(msg.reactions).forEach(([emoji, users]) => {
+        const realEmoji = emoji.replace(/_fe0f/g,'️');
+        counts[realEmoji] = Object.keys(users).length;
+      });
+      container.innerHTML = Object.entries(counts).map(([em, n]) => {
+        const mine = msg.reactions[em.replace(/️/g,'_fe0f')]?.[currentUser?.id];
+        return `<div class="reaction-pill${mine?' mine':''}" onclick="toggleReaction('${key}','${em}')">${em}<span>${n}</span></div>`;
+      }).join('');
+    });
+  });
 }
 
 async function markAllRead() {
@@ -935,7 +1153,6 @@ async function markAllRead() {
 }
 
 // ── Date divider ──
-let lastDateStr='';
 function getDateStr(ts) {
   const d=new Date(ts); const now=new Date();
   const diff=Math.floor((now-d)/86400000);
@@ -973,6 +1190,15 @@ function renderMessage(key, msg) {
   const transHtml=others.map(([l,t])=>`<div class="trans-item"><span class="trans-lbl">${LANG_FLAGS[l]||''}</span>${esc(t)}</div>`).join('');
   const m=getMember(msg.uid); const hasImage=!msg.deleted&&!!msg.imageUrl; const hasText=!!(mainTxt&&mainTxt.trim());
   let bubbleContent='';
+  // Reply quote (F5)
+  if (msg.replyTo && !msg.deleted) {
+    const rq = allMessages[msg.replyTo];
+    if (rq) {
+      const rqAuthor = getMember(rq.uid).name;
+      const rqText = (rq.orig||'').slice(0,50);
+      bubbleContent += `<div class="reply-quote" onclick="scrollToMsg('${msg.replyTo}')"><div class="reply-quote-author">${esc(rqAuthor)}</div><div class="reply-quote-text">${esc(rqText)}</div></div>`;
+    }
+  }
   if (hasImage) bubbleContent+=`<img class="msg-image" src="${msg.imageUrl}" alt="photo" onclick="openLightbox('${msg.imageUrl}')">`;
   const selfMentioned = !isOwn && !msg.deleted && checkSelfMention(mainTxt);
   if (hasText) bubbleContent+=msg.deleted?mainTxt:highlightMentions(esc(mainTxt));
@@ -992,6 +1218,8 @@ function renderMessage(key, msg) {
       ${showOrig&&hasText?`<div class="orig-text">${esc(msg.orig)}</div>`:''}
       ${transHtml?`<div class="trans-block">${transHtml}</div>`:''}
       ${msg.edited?`<div style="font-size:9px;color:var(--text-muted);padding:0 4px;">edited</div>`:''}
+      <div id="reactions-${key}" class="msg-reactions"></div>
+      <button class="msg-star ${localStorage.getItem('teppei_stars')&&JSON.parse(localStorage.getItem('teppei_stars')||'[]').includes(key)?'starred':''}" onclick="event.stopPropagation();ctxMsgKey='${key}';ctxMsgData=allMessages['${key}'];ctxBookmark()">${localStorage.getItem('teppei_stars')&&JSON.parse(localStorage.getItem('teppei_stars')||'[]').includes(key)?'⭐':'☆'}</button>
       ${isOwn&&!msg.deleted?`<div class="read-receipt">${readers.map(id=>{const rm=getMember(id);return `<div class="read-av" style="background:${rm.bg};" title="${rm.name}">${rm.initials}</div>`;}).join('')}</div>`:''} 
     </div>`;
   if (!msg.deleted) {
@@ -1010,7 +1238,26 @@ window.deleteAnnounce = async key => {
   }
 };
 
-function scrollBottom() { setTimeout(()=>{const el=document.getElementById('messages');el.scrollTop=el.scrollHeight;},60); }
+function scrollBottom(force=true) {
+  const el = document.getElementById('messages');
+  if (!el) return;
+  const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+  if (force || atBottom) {
+    setTimeout(()=>{ el.scrollTop = el.scrollHeight; updateScrollBtn(false); },60);
+  }
+}
+function updateScrollBtn(show, newMsgCount=0) {
+  const btn = document.getElementById('scroll-btn');
+  const badge = document.getElementById('scroll-badge');
+  if (!btn) return;
+  btn.classList.toggle('show', show);
+  if (newMsgCount > 0) {
+    badge.textContent = newMsgCount > 9 ? '9+' : newMsgCount;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
 
 // ── Search ──
 window.toggleSearch = (prefill='') => {
@@ -1022,14 +1269,22 @@ window.toggleSearch = (prefill='') => {
 document.getElementById('search-input').addEventListener('input',e=>doSearch(e.target.value));
 function doSearch(q) {
   document.querySelectorAll('.msg-highlight').forEach(e=>e.classList.remove('msg-highlight'));
+  searchHits = []; searchIdx = 0;
   if (!q.trim()) { document.getElementById('search-count').textContent=''; return; }
-  const lq=q.toLowerCase(); let count=0;
+  const lq=q.toLowerCase();
   document.querySelectorAll('.msg-wrap').forEach(wrap=>{
     const msg=allMessages[wrap.dataset.key]; if (!msg) return;
     const text=(msg.orig||'')+Object.values(msg.tr||{}).join(' ');
-    if (text.toLowerCase().includes(lq)) { wrap.classList.add('msg-highlight'); count++; if (count===1) wrap.scrollIntoView({behavior:'smooth',block:'center'}); }
+    if (text.toLowerCase().includes(lq)) { wrap.classList.add('msg-highlight'); searchHits.push(wrap); }
   });
-  document.getElementById('search-count').textContent=count?`${count} found`:'No results';
+  if (searchHits.length) { searchHits[0].scrollIntoView({behavior:'smooth',block:'center'}); }
+  document.getElementById('search-count').textContent = searchHits.length ? `1/${searchHits.length}` : 'No results';
+}
+function searchNav(dir) {
+  if (!searchHits.length) return;
+  searchIdx = (searchIdx + dir + searchHits.length) % searchHits.length;
+  searchHits[searchIdx].scrollIntoView({behavior:'smooth',block:'center'});
+  document.getElementById('search-count').textContent = `${searchIdx+1}/${searchHits.length}`;
 }
 
 // ── Build context from recent messages (last 5) ──
@@ -1045,11 +1300,15 @@ function getRecentContext() {
 async function checkClarify(text, srcLang) {
   try {
     const context = getRecentContext();
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout (B5)
     const res = await fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, srcLang, mode: 'clarify', context })
+      body: JSON.stringify({ text, srcLang, mode: 'clarify', context }),
+      signal: controller.signal
     });
+    clearTimeout(timeout);
     if (!res.ok) return { ambiguous: false };
     const data = await res.json();
     return data;
@@ -1137,8 +1396,13 @@ async function doSend(text, imageFile, isAnnounce, overrideKey=null) {
     return;
   }
 
-  // Show sending bubble immediately
+  // Show sending bubble immediately (with 15s timeout failsafe B2)
   const tempKey = 'sending_' + Date.now();
+  const sendTimeout = setTimeout(() => {
+    const el = document.querySelector('[data-key="'+tempKey+'"]');
+    if (el) { el.remove(); shownIds.delete(tempKey); delete allMessages[tempKey]; }
+    document.getElementById('send-btn').disabled = false;
+  }, 15000);
   const tempMsg = { uid:currentUser.id, sLang:currentUser.lang, orig:text||'', tr:{}, ts:Date.now(), _sending:true };
   allMessages[tempKey] = { ...tempMsg, _key:tempKey };
   shownIds.add(tempKey);
@@ -1157,12 +1421,15 @@ async function doSend(text, imageFile, isAnnounce, overrideKey=null) {
     const payload = { uid:currentUser.id, sLang:currentUser.lang, orig:text||'', tr, ts:Date.now() };
     if (isAnnounce) payload.announce = true;
     if (imageUrl) payload.imageUrl = imageUrl;
+    if (replyingTo) { payload.replyTo = replyingTo.key; cancelReply(); }
     // Remove temp bubble
+    clearTimeout(sendTimeout);
     document.querySelector(`[data-key="${tempKey}"]`)?.remove();
     shownIds.delete(tempKey); delete allMessages[tempKey];
     await push(msgsRef, payload);
     if (isAnnounce && announceMode) toggleAnnounce();
   } catch(e) {
+    clearTimeout(sendTimeout);
     document.querySelector(`[data-key="${tempKey}"]`)?.remove();
     shownIds.delete(tempKey); delete allMessages[tempKey];
     console.error('Send:', e); alert('Failed to send. Please try again.');
@@ -1185,6 +1452,7 @@ async function sendMessage() {
   if (emojiOpen) toggleEmoji();
   document.getElementById('mention-picker').classList.remove('open');
 
+  updateTyping(false); clearTimeout(typingTimer);
   // Edit mode: skip clarify
   if (editingKey) { await doSend(text, null, false); return; }
 
@@ -1213,11 +1481,48 @@ async function sendMessage() {
 document.getElementById('send-btn').onclick=sendMessage;
 document.getElementById('msg-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
 document.getElementById('msg-input').addEventListener('input',function(){
+  // typing indicator
+  if (this.value.trim()) {
+    updateTyping(true);
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(()=>updateTyping(false), 3000);
+  } else {
+    updateTyping(false);
+  }
   this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,120)+'px';
   const before=this.value.slice(0,this.selectionStart); const atMatch=before.match(/@(\w*)$/);
   if (atMatch) updateMentionPicker(atMatch[1]);
   else document.getElementById('mention-picker').classList.remove('open');
 });
+// ── Typing indicator ──
+function updateTyping(isTyping) {
+  if (!currentUser) return;
+  const tref = ref(db, 'typing/' + currentUser.id);
+  if (isTyping) {
+    set(tref, { name: currentUser.name, bg: currentUser.bg, initials: currentUser.initials, ts: Date.now() });
+  } else {
+    set(tref, null);
+  }
+}
+function listenTyping() {
+  onValue(ref(db,'typing'), snap => {
+    const data = snap.val() || {};
+    // Remove existing typing indicators
+    document.querySelectorAll('.typing-wrap').forEach(e=>e.remove());
+    Object.entries(data).forEach(([uid, info]) => {
+      if (uid === currentUser?.id) return;
+      // Only show if recently active (< 5s)
+      if (Date.now() - info.ts > 5000) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'typing-wrap';
+      wrap.innerHTML = \`<div class="msg-av" style="background:\${info.bg};color:#fff;">\${info.initials}</div>
+        <div class="msg-body"><div class="msg-meta"><span style="font-weight:500;color:var(--text);">\${info.name}</span></div>
+        <div class="typing-dots"><span></span><span></span><span></span></div></div>\`;
+      document.getElementById('messages').appendChild(wrap);
+    });
+    scrollBottom(false);
+  });
+}
 document.getElementById('msg-input').addEventListener('focus',()=>{
   if (emojiOpen) { emojiOpen=false; document.getElementById('emoji-panel').classList.remove('open'); document.getElementById('emoji-toggle-btn').style.color='#007AFF'; }
   setTimeout(scrollBottom,300);
@@ -1225,7 +1530,9 @@ document.getElementById('msg-input').addEventListener('focus',()=>{
 });
 document.getElementById('messages').addEventListener('scroll',()=>{
   const el=document.getElementById('messages');
-  if (el.scrollTop+el.clientHeight>=el.scrollHeight-60) { unreadCount=0; updateBadge(0); markAllRead(); }
+  const atBottom = el.scrollTop+el.clientHeight>=el.scrollHeight-80;
+  if (atBottom) { unreadCount=0; updateBadge(0); markAllRead(); updateScrollBtn(false); }
+  else updateScrollBtn(true);
 });
 document.body.addEventListener('touchmove',e=>{if(e.target.closest('#messages,.emoji-grid'))return;e.preventDefault();},{passive:false});
 
@@ -1366,6 +1673,60 @@ loadFontSize();
   const saved = localStorage.getItem(USER_KEY);
   if (saved && MEMBERS[saved]) { currentUser=MEMBERS[saved]; enterChat(); }
   else updateQuickLinks(); // show admin link on login
+})();
+</script>
+
+<script>
+// ── Service Worker 登録・強制更新 ──
+// type="module" の外に置くことで確実に実行される
+(function() {
+  if (!('serviceWorker' in navigator)) return;
+
+  // SW更新メッセージを受け取ったら強制リロード
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data?.type === 'SW_UPDATED') {
+      console.log('[App] New SW activated:', e.data.cache);
+      // すでにキャッシュクリア済みなのでそのままリロード
+      if (!sessionStorage.getItem('sw_reloaded')) {
+        sessionStorage.setItem('sw_reloaded', '1');
+        location.reload(true);
+      }
+    }
+  });
+
+  navigator.serviceWorker.register('./sw-chat.js', { updateViaCache: 'none' })
+    .then(reg => {
+      // 待機中のSWがあれば即座に有効化
+      if (reg.waiting) {
+        reg.waiting.postMessage('skipWaiting');
+      }
+
+      // 新しいSWのインストールを検知
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            newWorker.postMessage('skipWaiting');
+          }
+        });
+      });
+
+      // 定期的に更新チェック（visibility changeのタイミング）
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) reg.update();
+      });
+    })
+    .catch(err => console.warn('[SW] Registration failed:', err));
+
+  // controllerchange = 新しいSWが制御を取得 → リロード
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) {
+      refreshing = true;
+      sessionStorage.setItem('sw_reloaded', '1');
+      location.reload(true);
+    }
+  });
 })();
 </script>
 </body>
