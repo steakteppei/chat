@@ -14,6 +14,7 @@
 :root {
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --msg-font: 15px;
   --blue: #007AFF; --blue-dark: #0062CC;
   --gray-bg: #F2F2F7; --gray-bubble: #E5E5EA;
   --gray-mid: #8E8E93; --gray-light: #C7C7CC;
@@ -177,7 +178,7 @@ html, body {
 .announce-wrap { background: var(--announce-bg); border: 1px solid var(--announce-border); border-radius: 12px; padding: 10px 14px; margin: 4px 0; position: relative; }
 .announce-label { font-size: 10px; font-weight: 600; color: #856404; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
 @media (prefers-color-scheme: dark) { .announce-label { color: #FFD60A; } }
-.announce-text { font-size: 14px; color: var(--text); line-height: 1.5; word-break: break-word; }
+.announce-text { font-size: var(--msg-font); color: var(--text); line-height: 1.5; word-break: break-word; }
 .announce-time { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
 .announce-del { position: absolute; top: 8px; right: 10px; background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; padding: 2px 6px; }
 
@@ -188,7 +189,7 @@ html, body {
 .msg-meta { font-size: 10px; color: var(--text-muted); margin-bottom: 2px; display: flex; align-items: center; gap: 4px; padding: 0 4px; }
 .msg-wrap.own .msg-meta { flex-direction: row-reverse; }
 .read-receipt { font-size: 10px; color: var(--blue); margin-top: 2px; padding: 0 4px; text-align: right; }
-.bubble { padding: 9px 13px; font-size: 15px; line-height: 1.5; word-break: break-word; border-radius: 18px; position: relative; cursor: default; user-select: text; }
+.bubble { padding: 9px 13px; font-size: var(--msg-font); line-height: 1.5; word-break: break-word; border-radius: 18px; position: relative; cursor: default; user-select: text; }
 .msg-wrap:not(.own) .bubble { background: var(--gray-bubble); color: var(--text); border-bottom-left-radius: 4px; }
 .msg-wrap.own .bubble { background: var(--blue); color: #FFF; border-bottom-right-radius: 4px; }
 .msg-image { max-width: 220px; width: 100%; border-radius: 14px; display: block; margin-bottom: 2px; cursor: pointer; }
@@ -474,7 +475,7 @@ import { getDatabase, ref, push, onChildAdded, onValue, update, get }
 // ============================================================
 // VERSION
 // ============================================================
-const CHAT_VERSION = '2.5';
+const CHAT_VERSION = '2.6';
 // v2.0 - First names only, admin panel, dark mode, update notification popup
 // v1.9 - Delete, badge, date divider, read receipt, save image, mention, search, announce
 // v1.8 - iMessage UI + emoji picker
@@ -1110,11 +1111,12 @@ document.getElementById('messages').addEventListener('scroll',()=>{
 document.body.addEventListener('touchmove',e=>{if(e.target.closest('#messages,.emoji-grid'))return;e.preventDefault();},{passive:false});
 
 // ── Font size ──
-const FS_SIZES = { s:'12px', m:'15px', l:'17px', xl:'20px' };
+const FS_SIZES = { s:'12px', m:'15px', l:'18px', xl:'21px' };
 const FS_KEY   = 'teppei_fs';
 function setFontSize(size) {
   localStorage.setItem(FS_KEY, size);
-  document.getElementById('messages').style.fontSize = FS_SIZES[size];
+  // Set CSS custom property on root — all em-based elements inherit
+  document.documentElement.style.setProperty('--msg-font', FS_SIZES[size]);
   document.getElementById('msg-input').style.fontSize = FS_SIZES[size];
   ['s','m','l','xl'].forEach(s => {
     document.getElementById('fs-'+s).classList.toggle('active', s===size);
