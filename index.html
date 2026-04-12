@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Teppei Chat">
+<meta name="theme-color" content="#1a0f08">
+<title>Steak Teppei Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#1a1410;--bg2:#150e08;--bg3:#2d1b0e;--bg4:#1f1208;
+  --border:#3d2510;--border2:#4a2e15;
+  --accent:#8B4513;--accent2:#cc5500;--gold:#f0c080;
+  --text:#e8d4b8;--text2:#c8a878;--text3:#9a7a5a;--text4:#6b4a2a;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Noto Sans SC',-apple-system,sans-serif;overflow:hidden;position:fixed;width:100%;}
+.screen{display:none;flex-direction:column;height:100%;}
+.screen.active{display:flex;}
+
+/* LOGIN */
+#screen-login{background:var(--bg2);justify-content:center;align-items:center;padding:calc(var(--safe-top)+20px) 24px calc(var(--safe-bottom)+20px);}
+.login-logo{width:80px;height:80px;background:linear-gradient(145deg,#8B4513,#cc3300);border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:16px;box-shadow:0 8px 32px rgba(139,69,19,.5);}
+.login-title{font-size:22px;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:4px;}
+.login-sub{font-size:11px;color:var(--text3);margin-bottom:36px;}
+.pin-box{width:100%;max-width:320px;background:var(--bg3);border:1px solid var(--border2);border-radius:18px;padding:28px 24px;}
+.pin-label{font-size:12px;color:var(--text3);text-align:center;margin-bottom:16px;}
+.pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:24px;}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:var(--border2);border:2px solid var(--border);transition:all .2s;}
+.pin-dot.filled{background:var(--accent);border-color:var(--accent2);box-shadow:0 0 8px rgba(139,69,19,.6);}
+.pin-dot.error{background:#cc2200;border-color:#ff4422;}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.num-btn{height:56px;background:var(--bg4);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:20px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .1s;display:flex;align-items:center;justify-content:center;}
+.num-btn:active{background:var(--accent);border-color:var(--accent2);transform:scale(.95);}
+.num-btn.del{font-size:16px;color:var(--text3);}
+.num-btn.empty{background:transparent;border:none;cursor:default;}
+.login-error{font-size:12px;color:#ff6644;text-align:center;margin-top:14px;min-height:18px;}
+
+/* CHAT */
+#screen-chat{background:var(--bg);}
+.chat-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:calc(var(--safe-top)+10px) 14px 10px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.ch-logo{width:32px;height:32px;background:linear-gradient(145deg,#8B4513,#cc3300);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ch-info{flex:1;}
+.ch-info h2{font-size:14px;font-weight:700;color:var(--gold);}
+.ch-info p{font-size:10px;color:var(--text3);}
+.logout-btn{background:rgba(139,69,19,.2);border:1px solid rgba(139,69,19,.4);border-radius:8px;padding:6px 10px;color:var(--text3);font-size:11px;cursor:pointer;font-family:inherit;}
+
+#messages{flex:1;overflow-y:auto;padding:12px 12px 8px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;}
+.sys-row{text-align:center;font-size:10px;color:var(--text4);padding:2px 0;}
+
+.msg-wrap{display:flex;gap:8px;align-items:flex-end;animation:pop .2s ease;}
+.msg-wrap.own{flex-direction:row-reverse;}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;border:1.5px solid rgba(255,255,255,.08);}
+.msg-body{max-width:78%;}
+.msg-meta{font-size:10px;color:var(--text4);margin-bottom:3px;display:flex;align-items:center;gap:4px;}
+.msg-wrap.own .msg-meta{flex-direction:row-reverse;}
+.bubble{background:var(--bg3);border:1px solid var(--border2);border-radius:16px 16px 16px 4px;padding:9px 12px;font-size:14px;line-height:1.55;color:var(--text);word-break:break-word;}
+.msg-wrap.own .bubble{background:#3a2010;border-color:var(--accent);border-radius:16px 16px 4px 16px;}
+.msg-image{max-width:220px;width:100%;border-radius:10px;display:block;margin-bottom:4px;cursor:pointer;}
+.bubble.image-only{padding:6px;}
+.orig-text{font-size:10px;color:var(--text4);margin-top:4px;padding:3px 8px;background:rgba(0,0,0,.2);border-radius:6px;border-left:2px solid var(--border);line-height:1.5;}
+.trans-block{margin-top:4px;display:flex;flex-direction:column;gap:2px;}
+.trans-item{font-size:10px;color:var(--text3);padding:3px 7px;background:rgba(0,0,0,.15);border-radius:5px;border-left:2px solid var(--border);line-height:1.5;}
+.trans-lbl{color:var(--text4);margin-right:3px;font-size:9px;}
+.typing-dots{display:flex;gap:3px;align-items:center;padding:8px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:16px 16px 16px 4px;}
+.typing-dots span{width:5px;height:5px;background:var(--accent);border-radius:50%;animation:tdot 1.4s infinite;}
+.typing-dots span:nth-child(2){animation-delay:.2s}.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,80%,100%{transform:scale(.5);opacity:.3}40%{transform:scale(1);opacity:1}}
+
+/* INPUT BAR */
+.input-bar{background:var(--bg4);border-top:1px solid var(--border);padding:8px 12px calc(var(--safe-bottom)+8px);flex-shrink:0;}
+#img-preview-wrap{display:none;margin-bottom:8px;position:relative;width:fit-content;}
+#img-preview{width:80px;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--border2);}
+#img-remove{position:absolute;top:-6px;right:-6px;width:20px;height:20px;background:#cc2200;border:none;border-radius:50%;color:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.input-row{display:flex;gap:8px;align-items:flex-end;}
+.img-btn{width:40px;height:40px;background:var(--bg3);border:1px solid var(--border2);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;}
+.img-btn:active{background:var(--accent);}
+#msg-input{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:10px 14px;color:var(--text);font-family:inherit;font-size:15px;outline:none;resize:none;max-height:120px;min-height:40px;line-height:1.4;-webkit-appearance:none;}
+#msg-input:focus{border-color:var(--accent);}
+#msg-input::placeholder{color:var(--text4);}
+#send-btn{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-appearance:none;}
+#send-btn:active{transform:scale(.9);}
+#send-btn:disabled{opacity:.35;}
+#send-btn svg{width:18px;height:18px;fill:white;}
+#upload-progress{display:none;font-size:11px;color:var(--text3);text-align:center;padding:4px 0;}
+.progress-bar{height:3px;background:var(--border);border-radius:2px;margin-top:4px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s;width:0%;}
+
+/* LIGHTBOX */
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:1000;align-items:center;justify-content:center;}
+#lightbox.open{display:flex;}
+#lightbox img{max-width:95vw;max-height:90vh;border-radius:10px;object-fit:contain;}
+#lightbox-close{position:absolute;top:calc(var(--safe-top)+14px);right:16px;background:rgba(255,255,255,.15);border:none;color:white;font-size:22px;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+
+#conn-status{font-size:10px;padding:3px 10px;text-align:center;background:rgba(200,50,0,.15);color:#ff8866;display:none;flex-shrink:0;}
+#install-banner{display:none;background:rgba(139,69,19,.15);border-bottom:1px solid rgba(139,69,19,.3);padding:8px 14px;align-items:center;gap:8px;font-size:11px;color:var(--text2);flex-shrink:0;}
+.ib-btn{background:var(--accent);color:white;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-family:inherit;cursor:pointer;margin-left:auto;}
+.ib-close{background:transparent;border:none;color:var(--text4);font-size:18px;cursor:pointer;padding:2px 6px;}
+</style>
+</head>
+<body>
+
+<input type="file" id="file-input" accept="image/*" style="display:none;">
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- LOGIN -->
+<div id="screen-login" class="screen active">
+  <div class="login-logo">🥩</div>
+  <div class="login-title">STEAK TEPPEI</div>
+  <div class="login-sub">Staff Chat · Enter your PIN</div>
+  <div class="pin-box">
+    <div class="pin-label">Enter your PIN code</div>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+    </div>
+    <div class="numpad">
+      <button class="num-btn" onclick="pinInput('1')">1</button>
+      <button class="num-btn" onclick="pinInput('2')">2</button>
+      <button class="num-btn" onclick="pinInput('3')">3</button>
+      <button class="num-btn" onclick="pinInput('4')">4</button>
+      <button class="num-btn" onclick="pinInput('5')">5</button>
+      <button class="num-btn" onclick="pinInput('6')">6</button>
+      <button class="num-btn" onclick="pinInput('7')">7</button>
+      <button class="num-btn" onclick="pinInput('8')">8</button>
+      <button class="num-btn" onclick="pinInput('9')">9</button>
+      <button class="num-btn empty"></button>
+      <button class="num-btn" onclick="pinInput('0')">0</button>
+      <button class="num-btn del" onclick="pinDelete()">⌫</button>
+    </div>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="screen-chat" class="screen">
+  <div id="install-banner">
+    <span>📲 Add to Home Screen for app experience</span>
+    <button class="ib-btn" onclick="showInstallGuide()">How to</button>
+    <button class="ib-close" onclick="dismissBanner()">✕</button>
+  </div>
+  <div id="conn-status">Reconnecting...</div>
+  <div class="chat-header">
+    <div class="ch-logo">🥩</div>
+    <div class="ch-info">
+      <h2>STEAK TEPPEI</h2>
+      <p>Auto-translated · 自動翻訳 · 自动翻译</p>
+    </div>
+    <button class="logout-btn" onclick="logout()">Sign out</button>
+  </div>
+  <div id="messages">
+    <div class="sys-row">🔥 Steak Teppei Staff Chat</div>
+    <div class="sys-row">Messages are automatically translated for everyone</div>
+  </div>
+  <div class="input-bar">
+    <div id="img-preview-wrap">
+      <img id="img-preview" src="" alt="">
+      <button id="img-remove" onclick="removeImage()">✕</button>
+    </div>
+    <div id="upload-progress">
+      Uploading image...
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+    <div class="input-row">
+      <button class="img-btn" onclick="document.getElementById('file-input').click()">📷</button>
+      <textarea id="msg-input" placeholder="Message..." rows="1"></textarea>
+      <button id="send-btn">
+        <svg viewBox="0 0 24 24"><path d="M2 21L23 12 2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp }  from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getDatabase, ref, push, onChildAdded, onValue }
+                           from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
+
+// ============================================================
+// OWNER CONFIG
+// ============================================================
+const GEMINI_API_KEY     = 'AIzaSyBM4mF9dERWNmvUzObBY4WXbDp6tfhMch0';
+const CLOUDINARY_CLOUD   = 'dzmy3ufwx';
+const CLOUDINARY_PRESET  = 'teppei_chat';
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyDQlD7lEEByed6wZaX9N6kd0Fr6gGrT-bs",
+  authDomain:        "steak-teppei-chat.firebaseapp.com",
+  databaseURL:       "https://steak-teppei-chat-default-rtdb.firebaseio.com",
+  projectId:         "steak-teppei-chat",
+  storageBucket:     "steak-teppei-chat.firebasestorage.app",
+  messagingSenderId: "67146857127",
+  appId:             "1:67146857127:web:78222bd497284eab8ef982"
+};
+// ============================================================
+
+const MEMBERS = {
+  '111111': { id:'david',    lang:'ja', initials:'DA', bg:'#5a2a00', fg:'#ffc87a' },
+  '222222': { id:'kacee',    lang:'en', initials:'KT', bg:'#0d3d6e', fg:'#7ab8ff' },
+  '333333': { id:'shaine',   lang:'en', initials:'ST', bg:'#1a5c35', fg:'#7adfaa' },
+  '444444': { id:'kai',      lang:'en', initials:'KS', bg:'#2d4a6e', fg:'#a0c8ff' },
+  '555555': { id:'qiongmei', lang:'zh', initials:'QH', bg:'#5e1a5e', fg:'#f0aaee' },
+  '666666': { id:'shouling', lang:'zh', initials:'SX', bg:'#5e3a00', fg:'#ffd08a' },
+  '777777': { id:'xingyu',   lang:'zh', initials:'XW', bg:'#004a5a', fg:'#88eeff' },
+  '888888': { id:'yoshimi',  lang:'zh', initials:'YK', bg:'#4a1a00', fg:'#ffb088' },
+  '123456': { id:'yu',       lang:'zh', initials:'YM', bg:'#004a2a', fg:'#88ffcc' },
+  '654321': { id:'zhu',      lang:'zh', initials:'ZH', bg:'#3a006a', fg:'#ccaaff' },
+};
+
+const LANG_NAMES   = { ja:'Japanese', en:'English', zh:'Simplified Chinese' };
+const LANG_FLAGS   = { ja:'🇯🇵', en:'🇺🇸', zh:'🇨🇳' };
+const LANG_LABELS  = { ja:'日本語', en:'English', zh:'中文' };
+const PLACEHOLDERS = { ja:'メッセージを入力...', en:'Type a message...', zh:'输入消息...' };
+const USER_KEY     = 'teppei_pin_v1';
+
+let currentUser  = null;
+let pinBuffer    = '';
+let selectedFile = null;
+let shownIds     = new Set();
+let listening    = false;
+
+const fbApp   = initializeApp(firebaseConfig);
+const db      = getDatabase(fbApp);
+const msgsRef = ref(db, 'messages');
+
+const esc  = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+const show = id => { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); };
+
+// ── PIN ──
+window.pinInput = d => {
+  if (pinBuffer.length >= 6) return;
+  pinBuffer += d;
+  updateDots();
+  if (pinBuffer.length === 6) setTimeout(checkPin, 80);
+};
+window.pinDelete = () => {
+  pinBuffer = pinBuffer.slice(0,-1);
+  updateDots();
+  document.getElementById('login-error').textContent = '';
+  document.querySelectorAll('.pin-dot').forEach(d => d.classList.remove('error'));
+};
+function updateDots() {
+  document.querySelectorAll('.pin-dot').forEach((d,i) => {
+    d.classList.toggle('filled', i < pinBuffer.length);
+    d.classList.remove('error');
+  });
+}
+function checkPin() {
+  const m = MEMBERS[pinBuffer];
+  if (m) {
+    currentUser = m;
+    localStorage.setItem(USER_KEY, pinBuffer);
+    pinBuffer = ''; updateDots();
+    document.getElementById('login-error').textContent = '';
+    enterChat();
+  } else {
+    document.querySelectorAll('.pin-dot').forEach(d => d.classList.add('error'));
+    document.getElementById('login-error').textContent = 'Incorrect PIN. Try again.';
+    setTimeout(() => {
+      pinBuffer = ''; updateDots();
+      document.querySelectorAll('.pin-dot').forEach(d => d.classList.remove('error'));
+      document.getElementById('login-error').textContent = '';
+    }, 1000);
+  }
+}
+
+function enterChat() {
+  document.getElementById('msg-input').placeholder = PLACEHOLDERS[currentUser.lang];
+  show('screen-chat');
+  listenMessages();
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone && !localStorage.getItem('ib_dismissed')) {
+    document.getElementById('install-banner').style.display = 'flex';
+  }
+}
+
+window.logout = () => {
+  currentUser = null;
+  localStorage.removeItem(USER_KEY);
+  document.getElementById('messages').querySelectorAll('.msg-wrap').forEach(e=>e.remove());
+  shownIds.clear(); listening = false;
+  removeImage();
+  show('screen-login');
+};
+window.dismissBanner    = () => { localStorage.setItem('ib_dismissed','1'); document.getElementById('install-banner').style.display='none'; };
+window.showInstallGuide = () => { dismissBanner(); alert('[ iPhone / Safari ]\nTap Share (□↑) → "Add to Home Screen"\n\n[ iPhone ]\n共有（□↑）→「ホーム画面に追加」'); };
+
+// ── Image select ──
+document.getElementById('file-input').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('img-preview').src = ev.target.result;
+    document.getElementById('img-preview-wrap').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+
+window.removeImage = () => {
+  selectedFile = null;
+  document.getElementById('img-preview-wrap').style.display = 'none';
+  document.getElementById('img-preview').src = '';
+};
+
+// ── Upload to Cloudinary ──
+async function uploadImage(file) {
+  document.getElementById('upload-progress').style.display = 'block';
+  document.getElementById('progress-fill').style.width = '30%';
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_PRESET);
+  formData.append('folder', 'teppei-chat');
+
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,
+    { method: 'POST', body: formData }
+  );
+
+  document.getElementById('progress-fill').style.width = '100%';
+  setTimeout(() => {
+    document.getElementById('upload-progress').style.display = 'none';
+    document.getElementById('progress-fill').style.width = '0%';
+  }, 400);
+
+  if (!res.ok) throw new Error('Cloudinary upload failed: ' + res.status);
+  const data = await res.json();
+  // Return optimized URL: auto quality + format, max width 800px
+  return data.secure_url.replace('/upload/', '/upload/q_auto,f_auto,w_800/');
+}
+
+// ── Firebase listen ──
+function listenMessages() {
+  if (listening) return;
+  listening = true;
+  onValue(ref(db,'.info/connected'), snap => {
+    document.getElementById('conn-status').style.display = snap.val() ? 'none' : 'block';
+  });
+  onChildAdded(msgsRef, snap => {
+    const msg = snap.val();
+    if (!msg || shownIds.has(snap.key)) return;
+    shownIds.add(snap.key);
+    renderMessage(msg);
+    scrollBottom();
+  });
+}
+
+// ── Render ──
+function renderMessage(msg) {
+  if (!currentUser) return;
+  const vLang   = currentUser.lang;
+  const isOwn   = msg.uid === currentUser.id;
+  const mainTxt = isOwn ? msg.orig : (msg.tr?.[vLang] || msg.orig);
+  const others  = msg.tr
+    ? Object.entries(msg.tr).filter(([l,t]) => l!==msg.sLang && l!==vLang && t && t!==msg.orig)
+    : [];
+  const time     = new Date(msg.ts).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+  const showOrig = !isOwn && msg.sLang !== vLang && msg.orig;
+  const transHtml = others.map(([l,t]) =>
+    `<div class="trans-item"><span class="trans-lbl">${LANG_FLAGS[l]} ${LANG_LABELS[l]||l}  </span>${esc(t)}</div>`
+  ).join('');
+  const m = Object.values(MEMBERS).find(x=>x.id===msg.uid) || { bg:'#555', fg:'#fff', initials:'?' };
+  const hasImage = !!msg.imageUrl;
+  const hasText  = !!(mainTxt && mainTxt.trim());
+
+  let bubbleContent = '';
+  if (hasImage) bubbleContent += `<img class="msg-image" src="${msg.imageUrl}" alt="photo" onclick="openLightbox('${msg.imageUrl}')">`;
+  if (hasText)  bubbleContent += esc(mainTxt);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap' + (isOwn?' own':'');
+  wrap.innerHTML = `
+    <div class="msg-av" style="background:${m.bg};color:${m.fg};">${m.initials}</div>
+    <div class="msg-body">
+      <div class="msg-meta">
+        <span>${LANG_FLAGS[msg.sLang]}</span>
+        <span>${time}</span>
+      </div>
+      <div class="bubble${hasImage&&!hasText?' image-only':''}">${bubbleContent}</div>
+      ${showOrig&&hasText?`<div class="orig-text">Original: ${esc(msg.orig)}</div>`:''}
+      ${transHtml?`<div class="trans-block">${transHtml}</div>`:''}
+    </div>`;
+  document.getElementById('messages').appendChild(wrap);
+}
+
+function scrollBottom() {
+  setTimeout(()=>{ const el=document.getElementById('messages'); el.scrollTop=el.scrollHeight; },60);
+}
+
+// ── Lightbox ──
+window.openLightbox  = url => { document.getElementById('lightbox-img').src=url; document.getElementById('lightbox').classList.add('open'); };
+window.closeLightbox = ()  => { document.getElementById('lightbox').classList.remove('open'); };
+
+// ── Translate via Gemini 2.5 Flash-Lite ──
+async function translate(text, srcLang, targetLangs) {
+  const targetList = targetLangs.map(l=>`"${l}": ${LANG_NAMES[l]}`).join(', ');
+  const prompt = `You are a translator for a Japanese steak restaurant team in Hawaii. Translate the following workplace message naturally and accurately.
+Source language: ${LANG_NAMES[srcLang]}
+Target languages: {${targetList}}
+Return ONLY valid JSON with language codes as keys. No markdown, no explanation, no extra text.
+Message: """${text}"""`;
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite-preview-06-17:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.1, maxOutputTokens: 800 }
+      })
+    }
+  );
+  if (!res.ok) throw new Error('Gemini API ' + res.status);
+  const data = await res.json();
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+  return JSON.parse(raw.replace(/```json|```/g,'').trim());
+}
+
+// ── Send ──
+async function sendMessage() {
+  if (!currentUser) return;
+  const input  = document.getElementById('msg-input');
+  const text   = input.value.trim();
+  const hasImg = !!selectedFile;
+  if (!text && !hasImg) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+
+  try {
+    // 1. Upload image to Cloudinary
+    let imageUrl = null;
+    if (hasImg) { imageUrl = await uploadImage(selectedFile); removeImage(); }
+
+    // 2. Translate text with Gemini
+    let tr = {};
+    if (text) {
+      const targets = ['ja','en','zh'].filter(l=>l!==currentUser.lang);
+      try { tr = await translate(text, currentUser.lang, targets); } catch(e) { console.error('Translation error:', e); }
+      tr[currentUser.lang] = text;
+    }
+
+    // 3. Save to Firebase Realtime Database
+    const payload = { uid: currentUser.id, sLang: currentUser.lang, orig: text||'', tr, ts: Date.now() };
+    if (imageUrl) payload.imageUrl = imageUrl;
+    await push(msgsRef, payload);
+
+  } catch(e) {
+    console.error('Send error:', e);
+    alert('Failed to send. Please try again.');
+  }
+
+  document.getElementById('send-btn').disabled = false;
+  input.focus();
+}
+
+document.getElementById('send-btn').onclick = sendMessage;
+document.getElementById('msg-input').addEventListener('keydown', e => {
+  if (e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+});
+document.getElementById('msg-input').addEventListener('input', function(){
+  this.style.height='auto';
+  this.style.height=Math.min(this.scrollHeight,120)+'px';
+});
+document.body.addEventListener('touchmove',e=>{
+  if(e.target.closest('#messages'))return;
+  e.preventDefault();
+},{passive:false});
+
+// ── Auto-login ──
+const saved = localStorage.getItem(USER_KEY);
+if (saved && MEMBERS[saved]) { currentUser = MEMBERS[saved]; enterChat(); }
+</script>
+</body>
+</html>
