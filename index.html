@@ -63,6 +63,43 @@ html, body {
 }
 .update-ok:active { background: var(--blue-dark); }
 
+/* CLARIFY MODAL */
+#clarify-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.5); z-index: 9000;
+  align-items: flex-end; justify-content: center; padding: 0;
+}
+#clarify-modal.open { display: flex; }
+.clarify-box {
+  background: var(--surface); border-radius: 20px 20px 0 0;
+  padding: 20px 20px calc(var(--safe-bottom) + 20px);
+  width: 100%; max-width: 600px;
+  box-shadow: 0 -4px 30px rgba(0,0,0,.15);
+}
+.clarify-icon { font-size: 28px; margin-bottom: 8px; }
+.clarify-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.clarify-question { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+.clarify-preview {
+  background: var(--gray-bg); border-radius: 12px;
+  padding: 10px 14px; font-size: 14px; color: var(--text);
+  line-height: 1.5; margin-bottom: 16px;
+  border-left: 3px solid var(--blue);
+}
+.clarify-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+.clarify-actions { display: flex; gap: 10px; }
+.clarify-btn-send {
+  flex: 2; padding: 13px; background: var(--blue); color: white;
+  border: none; border-radius: 12px; font-size: 15px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+.clarify-btn-send:active { background: var(--blue-dark); }
+.clarify-btn-orig {
+  flex: 1; padding: 13px; background: var(--gray-bg); color: var(--text);
+  border: none; border-radius: 12px; font-size: 14px;
+  cursor: pointer; font-family: inherit;
+}
+.clarify-btn-orig:active { opacity: .7; }
+
 /* LOGIN */
 #screen-login { background: var(--gray-bg); justify-content: center; align-items: center; padding: calc(var(--safe-top)+20px) 32px calc(var(--safe-bottom)+20px); }
 .login-logo { width: 80px; height: 80px; background: linear-gradient(145deg,#FF6B35,#CC3300); border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 42px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(204,51,0,.25); }
@@ -207,6 +244,25 @@ html, body {
   </div>
 </div>
 
+<!-- CLARIFY MODAL -->
+<div id="clarify-modal">
+  <div class="clarify-box">
+    <div class="clarify-icon">🤔</div>
+    <div class="clarify-title" id="clarify-title"></div>
+    <div class="clarify-question" id="clarify-question"></div>
+    <div class="clarify-label" id="clarify-label"></div>
+    <div class="clarify-preview" id="clarify-preview"></div>
+    <div class="clarify-actions">
+      <button class="clarify-btn-send" onclick="sendClarified()">
+        <span id="clarify-send-label">Send this ✓</span>
+      </button>
+      <button class="clarify-btn-orig" onclick="sendOriginal()">
+        <span id="clarify-orig-label">Send as-is</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- CONTEXT MENU -->
 <div id="ctx-backdrop" onclick="closeCtxMenu()"></div>
 <div id="ctx-menu">
@@ -308,7 +364,7 @@ import { getDatabase, ref, push, onChildAdded, onValue, update, get }
 // ============================================================
 // VERSION
 // ============================================================
-const CHAT_VERSION = '2.0';
+const CHAT_VERSION = '2.2';
 // v2.0 - First names only, admin panel, dark mode, update notification popup
 // v1.9 - Delete, badge, date divider, read receipt, save image, mention, search, announce
 // v1.8 - iMessage UI + emoji picker
@@ -762,41 +818,135 @@ function doSearch(q) {
   document.getElementById('search-count').textContent=count?`${count} found`:'No results';
 }
 
-// ── Translate ──
+// ── Build context from recent messages (last 5) ──
+function getRecentContext() {
+  return Object.values(allMessages)
+    .filter(m => !m.deleted && !m.announce && m.orig)
+    .sort((a,b) => a.ts - b.ts)
+    .slice(-5)
+    .map(m => ({ lang: m.sLang, text: m.orig }));
+}
+
+// ── Clarify check (ambiguity detection) ──
+async function checkClarify(text, srcLang) {
+  try {
+    const context = getRecentContext();
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, srcLang, mode: 'clarify', context })
+    });
+    if (!res.ok) return { ambiguous: false };
+    const data = await res.json();
+    return data;
+  } catch { return { ambiguous: false }; }
+}
+
+// ── Translate with context ──
 async function translate(text, srcLang, targetLangs) {
-  const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,srcLang,targetLangs})});
-  if (!res.ok) throw new Error('Worker '+res.status);
-  const data=await res.json(); if (data.error) throw new Error(data.error);
+  const context = getRecentContext();
+  const res = await fetch(WORKER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, srcLang, targetLangs, context })
+  });
+  if (!res.ok) throw new Error('Worker ' + res.status);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
   return data.translations;
+}
+
+// ── Clarify modal state ──
+let pendingText      = '';
+let pendingClarified = '';
+let pendingImageFile = null;
+let pendingAnnounce  = false;
+
+// UI labels per language
+const CLARIFY_UI = {
+  ja: { title:'確認してください', label:'✨ AIが補完した文章：', send:'この文章で送信 ✓', orig:'そのまま送信' },
+  en: { title:'Please confirm',   label:'✨ AI-clarified version:', send:'Send this ✓',    orig:'Send as-is' },
+  zh: { title:'请确认',           label:'✨ AI补充后的内容：',      send:'发送此版本 ✓',  orig:'直接发送' },
+};
+
+function showClarifyModal(question, clarified, lang) {
+  const ui = CLARIFY_UI[lang] || CLARIFY_UI.en;
+  document.getElementById('clarify-title').textContent    = ui.title;
+  document.getElementById('clarify-question').textContent = question;
+  document.getElementById('clarify-label').textContent    = ui.label;
+  document.getElementById('clarify-preview').textContent  = clarified;
+  document.getElementById('clarify-send-label').textContent = ui.send;
+  document.getElementById('clarify-orig-label').textContent = ui.orig;
+  document.getElementById('clarify-modal').classList.add('open');
+}
+
+window.sendClarified = async () => {
+  document.getElementById('clarify-modal').classList.remove('open');
+  await doSend(pendingClarified, pendingImageFile, pendingAnnounce);
+};
+window.sendOriginal = async () => {
+  document.getElementById('clarify-modal').classList.remove('open');
+  await doSend(pendingText, pendingImageFile, pendingAnnounce);
+};
+
+// ── Core send logic ──
+async function doSend(text, imageFile, isAnnounce) {
+  document.getElementById('send-btn').disabled = true;
+  try {
+    let imageUrl = null;
+    if (imageFile) { imageUrl = await uploadImage(imageFile); removeImage(); }
+    let tr = {};
+    if (text) {
+      const targets = ['ja','en','zh'].filter(l=>l!==currentUser.lang);
+      try { tr = await translate(text, currentUser.lang, targets); } catch(e) { console.error('Translation:', e); }
+      tr[currentUser.lang] = text;
+    }
+    const payload = { uid:currentUser.id, sLang:currentUser.lang, orig:text||'', tr, ts:Date.now() };
+    if (isAnnounce) payload.announce = true;
+    if (imageUrl) payload.imageUrl = imageUrl;
+    await push(msgsRef, payload);
+    if (isAnnounce && announceMode) toggleAnnounce();
+  } catch(e) { console.error('Send:', e); alert('Failed to send. Please try again.'); }
+  document.getElementById('send-btn').disabled = false;
+  document.getElementById('msg-input').focus();
+  setTimeout(() => markAllRead(), 500);
 }
 
 // ── Send ──
 async function sendMessage() {
   if (!currentUser) return;
-  const input=document.getElementById('msg-input'); const text=input.value.trim(); const hasImg=!!selectedFile;
-  if (!text&&!hasImg) return;
-  input.value=''; input.style.height='auto';
-  document.getElementById('send-btn').disabled=true;
+  const input   = document.getElementById('msg-input');
+  const text    = input.value.trim();
+  const hasImg  = !!selectedFile;
+  if (!text && !hasImg) return;
+
+  input.value = ''; input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
   if (emojiOpen) toggleEmoji();
   document.getElementById('mention-picker').classList.remove('open');
-  try {
-    let imageUrl=null;
-    if (hasImg) { imageUrl=await uploadImage(selectedFile); removeImage(); }
-    let tr={};
-    if (text) {
-      const targets=['ja','en','zh'].filter(l=>l!==currentUser.lang);
-      try { tr=await translate(text,currentUser.lang,targets); } catch(e) { console.error('Translation:',e); }
-      tr[currentUser.lang]=text;
+
+  // Save pending state
+  pendingText      = text;
+  pendingImageFile = selectedFile ? selectedFile : null;
+  pendingAnnounce  = announceMode;
+
+  // Only run clarify check if there's text (not image-only)
+  if (text) {
+    const clarifyResult = await checkClarify(text, currentUser.lang);
+    if (clarifyResult.ambiguous && clarifyResult.clarified) {
+      pendingClarified = clarifyResult.clarified;
+      document.getElementById('send-btn').disabled = false;
+      showClarifyModal(
+        clarifyResult.question || '',
+        clarifyResult.clarified,
+        currentUser.lang
+      );
+      return; // Wait for user to choose
     }
-    const payload={uid:currentUser.id,sLang:currentUser.lang,orig:text||'',tr,ts:Date.now()};
-    if (announceMode) payload.announce=true;
-    if (imageUrl) payload.imageUrl=imageUrl;
-    await push(msgsRef,payload);
-    if (announceMode) toggleAnnounce();
-  } catch(e) { console.error('Send:',e); alert('Failed to send. Please try again.'); }
-  document.getElementById('send-btn').disabled=false;
-  input.focus();
-  setTimeout(()=>markAllRead(),500);
+  }
+
+  // No ambiguity — send directly
+  await doSend(text, pendingImageFile, pendingAnnounce);
 }
 
 // ── Events ──
