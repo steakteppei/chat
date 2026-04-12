@@ -191,7 +191,7 @@ import { getDatabase, ref, push, onChildAdded, onValue }
 // ============================================================
 // VERSION
 // ============================================================
-const CHAT_VERSION = '1.6';
+const CHAT_VERSION = '1.7';
 // CHANGELOG:
 // v1.4 - Fix: Gemini 2.5 Flash-Lite thinkingBudget:0 to resolve 404/translation failure
 // v1.3 - Fix: Gemini model name -> gemini-2.5-flash-lite (stable)
@@ -201,7 +201,7 @@ const CHAT_VERSION = '1.6';
 // ============================================================
 // OWNER CONFIG
 // ============================================================
-const GEMINI_API_KEY     = 'AIzaSyBM4mF9dERWNmvUzObBY4WXbDp6tfhMch0';
+const WORKER_URL = 'https://st-chat-translate.aki16-dan.workers.dev';
 const CLOUDINARY_CLOUD   = 'dzmy3ufwx';
 const CLOUDINARY_PRESET  = 'teppei_chat';
 
@@ -417,32 +417,15 @@ window.closeLightbox = ()  => { document.getElementById('lightbox').classList.re
 
 // ── Translate via Gemini 2.5 Flash-Lite ──
 async function translate(text, srcLang, targetLangs) {
-  const targetList = targetLangs.map(l=>`"${l}": ${LANG_NAMES[l]}`).join(', ');
-  const prompt = `You are a translator for a Japanese steak restaurant team in Hawaii. Translate the following workplace message naturally and accurately.
-Source language: ${LANG_NAMES[srcLang]}
-Target languages: {${targetList}}
-Return ONLY valid JSON with language codes as keys. No markdown, no explanation, no extra text.
-Message: """${text}"""`;
-
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.1,
-          maxOutputTokens: 1024,
-          thinkingConfig: { thinkingBudget: 0 }
-        }
-      })
-    }
-  );
-  if (!res.ok) throw new Error('Gemini API ' + res.status);
+  const res = await fetch(WORKER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, srcLang, targetLangs })
+  });
+  if (!res.ok) throw new Error('Worker error ' + res.status);
   const data = await res.json();
-  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
-  return JSON.parse(raw.replace(/```json|```/g,'').trim());
+  if (data.error) throw new Error(data.error);
+  return data.translations;
 }
 
 // ── Send ──
