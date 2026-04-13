@@ -506,11 +506,11 @@ async function loadUsageStats() {
   card.innerHTML = sorted.map(([uid, n]) => {
     const member = Object.values({...DEFAULT_MEMBERS,...members}).find(m=>m.id===uid)||{name:uid,bg:'#8E8E93',initials:'?'};
     const pct = Math.round(n/max*100);
-    return \`<div class="chart-row">
-      <div class="chart-label">\${member.name}</div>
-      <div style="flex:1;"><div class="usage-bar"><div class="usage-fill" style="width:\${pct}%"></div></div></div>
-      <div class="chart-count">\${n}</div>
-    </div>\`;
+    return `<div class="chart-row">
+      <div class="chart-label">${member.name}</div>
+      <div style="flex:1;"><div class="usage-bar"><div class="usage-fill" style="width:${pct}%"></div></div></div>
+      <div class="chart-count">${n}</div>
+    </div>`;
   }).join('');
 }
 

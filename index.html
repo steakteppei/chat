@@ -607,7 +607,7 @@ import { getDatabase, ref, push, onChildAdded, onValue, update, get, set, server
 // ============================================================
 // VERSION
 // ============================================================
-const CHAT_VERSION = '3.1';
+const CHAT_VERSION = '3.2';
 // v2.0 - First names only, admin panel, dark mode, update notification popup
 // v1.9 - Delete, badge, date divider, read receipt, save image, mention, search, announce
 // v1.8 - iMessage UI + emoji picker
@@ -1515,9 +1515,9 @@ function listenTyping() {
       if (Date.now() - info.ts > 5000) return;
       const wrap = document.createElement('div');
       wrap.className = 'typing-wrap';
-      wrap.innerHTML = \`<div class="msg-av" style="background:\${info.bg};color:#fff;">\${info.initials}</div>
-        <div class="msg-body"><div class="msg-meta"><span style="font-weight:500;color:var(--text);">\${info.name}</span></div>
-        <div class="typing-dots"><span></span><span></span><span></span></div></div>\`;
+      wrap.innerHTML = `<div class="msg-av" style="background:${info.bg};color:#fff;">${info.initials}</div>
+        <div class="msg-body"><div class="msg-meta"><span style="font-weight:500;color:var(--text);">${info.name}</span></div>
+        <div class="typing-dots"><span></span><span></span><span></span></div></div>`;
       document.getElementById('messages').appendChild(wrap);
     });
     scrollBottom(false);
