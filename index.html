@@ -607,7 +607,7 @@ import { getDatabase, ref, push, onChildAdded, onValue, update, get, set, server
 // ============================================================
 // VERSION
 // ============================================================
-const CHAT_VERSION = '3.2';
+const CHAT_VERSION = '3.3';
 // v2.0 - First names only, admin panel, dark mode, update notification popup
 // v1.9 - Delete, badge, date divider, read receipt, save image, mention, search, announce
 // v1.8 - iMessage UI + emoji picker
@@ -1539,18 +1539,17 @@ document.body.addEventListener('touchmove',e=>{if(e.target.closest('#messages,.e
 // ── Font size ──
 const FS_SIZES = { s:'12px', m:'15px', l:'18px', xl:'21px' };
 const FS_KEY   = 'teppei_fs';
-function setFontSize(size) {
+window.setFontSize = function(size) {
   localStorage.setItem(FS_KEY, size);
-  // Set CSS custom property on root — all em-based elements inherit
   document.documentElement.style.setProperty('--msg-font', FS_SIZES[size]);
   document.getElementById('msg-input').style.fontSize = FS_SIZES[size];
   ['s','m','l','xl'].forEach(s => {
     document.getElementById('fs-'+s).classList.toggle('active', s===size);
   });
-}
+};
 function loadFontSize() {
   const s = localStorage.getItem(FS_KEY) || 'm';
-  setFontSize(s);
+  window.setFontSize(s);
 }
 
 // ── Quick link i18n ──
@@ -1593,7 +1592,7 @@ async function setupNotifications() {
   notifEnabled = localStorage.getItem('teppei_notif') === '1';
   updateNotifBtn();
 }
-async function toggleNotifications() {
+window.toggleNotifications = async function() {
   if (!('Notification' in window)) { alert('Notifications not supported on this browser.'); return; }
   if (notifEnabled) {
     notifEnabled = false; localStorage.setItem('teppei_notif', '0'); updateNotifBtn(); return;

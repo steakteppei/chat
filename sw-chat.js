@@ -2,7 +2,7 @@
 // sw-chat.js  — Steak Teppei Chat Service Worker
 // CACHE キーを変えるだけで全キャッシュが自動更新される
 // ============================================================
-const CACHE = 'st-chat-v3.2';
+const CACHE = 'st-chat-v3.3';
 
 // キャッシュするのは静的アセットのみ（HTMLは含めない）
 // HTMLは常にネットワークから取得することで古いページが残らない
