@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Steak Teppei — Version History</title>
+<style>
+:root{--bg:#f5f4f2;--card:#fff;--border:rgba(0,0,0,.08);--text:#1a1a1a;--text-sub:#555;--text-hint:#999;--radius:16px;--radius-sm:10px;--orange:#E8440A;--orange-light:#fff2ed;}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1a1a;--card:#252525;--border:rgba(255,255,255,.1);--text:#f0f0f0;--text-sub:#aaa;--text-hint:#666;--orange-light:#2a1206;}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text',sans-serif;color:var(--text);}
+body{padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);}
+.cl-header{background:var(--orange);color:#fff;padding:16px 16px 18px;position:sticky;top:0;z-index:100;}
+.cl-header-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.cl-back{background:rgba(255,255,255,.22);border:none;border-radius:20px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;padding:5px 13px;-webkit-tap-highlight-color:transparent;}
+.cl-back:active{opacity:.7;}
+.cl-title{font-size:18px;font-weight:800;letter-spacing:-.3px;}
+.cl-sub{font-size:11px;opacity:.75;}
+.content{max-width:480px;margin:0 auto;padding:14px 13px 48px;}
+.ver-card{background:var(--card);border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+.ver-card.latest{border:1.5px solid var(--orange);}
+.ver-hero{background:var(--orange);color:#fff;padding:16px 16px 14px;display:flex;align-items:center;justify-content:space-between;}
+.ver-hero-icon{font-size:30px;}
+.ver-hero-right{text-align:right;}
+.ver-hero-label{font-size:10px;opacity:.8;font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
+.ver-hero-num{font-size:26px;font-weight:800;letter-spacing:-.5px;}
+.ver-hero-date{font-size:11px;opacity:.75;margin-top:1px;}
+.ver-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px;}
+.ver-num{font-size:15px;font-weight:800;color:var(--text);}
+.ver-date-label{font-size:11px;color:var(--text-hint);}
+.ver-items{border-top:.5px solid var(--border);padding:2px 0 4px;}
+.ver-item{display:flex;align-items:flex-start;gap:10px;padding:8px 14px;}
+.ver-item-icon{width:28px;height:28px;background:var(--orange-light);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;margin-top:2px;}
+.ver-item-text{font-size:13px;color:var(--text-sub);line-height:1.5;flex:1;padding-top:4px;}
+.cl-footer{text-align:center;font-size:11px;color:var(--text-hint);padding:8px 0 4px;}
+</style>
+</head>
+<body>
+<div class="cl-header">
+  <div class="cl-header-top">
+    <button class="cl-back" onclick="history.length>1?history.back():location.href='index.html'">&#8249; Back</button>
+  </div>
+  <div class="cl-title">Version History</div>
+  <div class="cl-sub">Steak Teppei Order App · Makai Market Food Court</div>
+</div>
+<div class="content">
+  <div id="versionList"></div>
+  <div class="cl-footer">Built with ❤️ for Steak Teppei · Ala Moana Center</div>
+</div>
+<script>
+var VERSIONS = [
+  {
+    version: '5.14',
+    date: 'April 12, 2026',
+    items: [
+      { icon: '🔒', text: 'Security: Worker hardened — origin check, secret key auth, bot detection, prompt injection protection' }
+    ]
+  },
+  {
+    version: '5.13',
+    date: 'April 12, 2026',
+    items: [
+      { icon: '🔧', text: 'Fixed: AI Outlook prompt updated for Gemini — removed Claude-specific web search instructions' }
+    ]
+  },
+  {
+    version: '5.12',
+    date: 'April 12, 2026',
+    items: [
+      { icon: '💰', text: 'AI Outlook: switched to Gemini 2.0 Flash-Lite — significantly lower API cost' },
+      { icon: '🎨', text: 'AI Outlook badge updated from Claude AI to Gemini AI' }
+    ]
+  },
+  {
+    version: '5.11',
+    date: 'April 12, 2026',
+    items: [
+      { icon: '💰', text: 'AI Outlook: switched to Haiku model — significantly lower API costs' },
+      { icon: '🔧', text: 'Fixed: removed auto-retry to prevent runaway API charges' }
+    ]
+  },
+  {
+    version: '5.10',
+    date: 'April 12, 2026',
+    items: [
+      { icon: '📖', text: 'User Guide added — auto-detects mobile/desktop and shows the right manual version' }
+    ]
+  },
+  {
+    version: '5.9',
+    date: 'April 12, 2026',
+    items: [
+      { icon: '🔄', text: 'Clear All button added — resets supplier, date, and quantities in one tap' },
+      { icon: '🔧', text: 'Fixed: returning from Preview & Send screen now resets selection state' }
+    ]
+  },
+  {
+    version: '5.8',
+    date: 'April 12, 2026',
+    items: [
+      { icon: '🔧', text: 'Fixed: Service Worker auto-clears old cache on iOS PWA — AI 7-Day Outlook now works without reinstalling app' },
+      { icon: '🔧', text: 'Fixed: Service Worker now passes through POST requests — fixes AI 7-Day Outlook not loading' }
+    ]
+  },
+  {
+    version: '5.6',
+    date: 'April 11, 2026',
+    items: [
+      { icon: '🛒', text: 'Costco: Kirkland Stretch-Tite Plastic Food Wrap corrected to $19.99 and added to send page' },
+      { icon: '🔄', text: 'AI Outlook: auto-retry on failure — retries automatically up to 2x after 30 seconds' },
+      { icon: '🔒', text: 'version.json synced to v5.6 for reliable forced app updates' }
+    ]
+  },
+  {
+    version: '5.5',
+    date: 'April 11, 2026',
+    items: [
+      { icon: '✅', text: 'AI 7-Day Outlook now live — Cloudflare Workers proxy configured, API key secured' },
+      { icon: '🔒', text: 'API key stored securely in Cloudflare environment variables, not exposed in browser' },
+      { icon: '📰', text: 'AI searches latest Hawaii tourism & local news automatically every day via web search' },
+      { icon: '💾', text: 'Smart caching: analysis runs once per day — 3 staff sharing = only 1 API call per day' }
+    ]
+  },
+  {
+    version: '5.4',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🤖', text: 'NEW: AI 7-Day Outlook — daily analysis combining weather forecast, last year sales data, and live Hawaii news' },
+      { icon: '📰', text: 'Claude AI searches latest Hawaii tourism & local news automatically every day' },
+      { icon: '💾', text: 'Smart caching: analysis runs once per day regardless of how many staff use the app' },
+      { icon: '📦', text: 'Each day shows score (HIGH / BUSY / NORMAL / SLOW) and specific order quantity recommendation' }
+    ]
+  },
+  {
+    version: '5.3',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '📅', text: 'Upcoming Busy Periods: shows only periods starting within 14 days (+ currently active)' },
+      { icon: '🌤️', text: 'Calendar: delivery date weather shown when date is selected' },
+      { icon: '🗓️', text: 'Seasons page: NOW periods pinned to top; year filter fixed for year-spanning periods' },
+      { icon: '📊', text: 'Weather tab: Today & Tomorrow forecast added at top' },
+      { icon: '🔄', text: 'Busy Period dates now consistent across index, seasons, and sales pages' },
+      { icon: '🛒', text: 'Fixed: Kirkland Plastic Food Wrap now included in Costco order on send page' }
+    ]
+  },
+  {
+    version: '5.2',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🏝️', text: 'Seasons page: Hawaii Public Holidays & HIDOE school breaks added' },
+      { icon: '🔵', text: 'New HIDOE filter button to show school break periods separately' }
+    ]
+  },
+  {
+    version: '5.1',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🗓️', text: 'New: Busy & Slow Seasons page — all periods with region labels (US / Japan / Hawaii / Canada)' },
+      { icon: '🔍', text: 'Filter by region and year. Each period includes context and tips.' }
+    ]
+  },
+  {
+    version: '5.0',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🗓️', text: 'Fixed: Summer Break & US Summer Break no longer shown as duplicates in Upcoming Busy Periods' }
+    ]
+  },
+  {
+    version: '4.9',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '📱', text: 'Fixed: iPhone home screen app now auto-updates when new version is released' },
+      { icon: '🔄', text: 'All pages (order, send, sales, links) now force-refresh on version change' },
+      { icon: '📄', text: 'New: version.json — server-side version file for reliable update detection' }
+    ]
+  },
+  {
+    version: '4.8',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🗂️', text: 'Product Links: items sorted by category — Food & Beverage, Kitchen & Cooking, Cleaning & Sanitation, Supplies & Equipment' },
+      { icon: '🔤', text: 'Product Links: items sorted alphabetically within each category' }
+    ]
+  },
+  {
+    version: '4.7',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🔧', text: 'Fixed: version number no longer reverts after update — Service Worker conflict resolved' },
+      { icon: '🐛', text: 'Fixed: Product Links now loads correctly on iPhone' }
+    ]
+  },
+  {
+    version: '4.6',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🐛', text: 'Fixed: Product Links page now loads correctly on iPhone (added to SW cache list)' },
+      { icon: '🟢', text: 'Webstaurant badge color changed to green' },
+      { icon: '📱', text: 'Version shown at bottom of home screen (e.g. v4.6)' }
+    ]
+  },
+  {
+    version: '4.5',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🍽️', text: 'Product Links: Webstaurant added — LRS Guest Paging System & parts' }
+    ]
+  },
+  {
+    version: '4.4',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🛒', text: 'New: Product Links page — Amazon & Sam\'s Club items with direct links' },
+      { icon: '🔍', text: 'Search & filter by store (All / Amazon / Sam\'s Club)' }
+    ]
+  },
+  {
+    version: '4.3',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '👤', text: 'Sender name remembered — no need to select Aki/Kacee/Shaine every time' },
+      { icon: '✍️', text: 'Sender name now included in order message signature' },
+      { icon: '🗑️', text: 'Fixed: Fresh Island Fish BPO phone string removed' },
+      { icon: '⚡', text: 'Weather forecast cached — loads instantly on revisit' },
+      { icon: '💬', text: 'Preview & Send button shows what\'s missing if tapped early' },
+      { icon: '☁️', text: 'New: Weather tab in Sales — rainy/stormy days vs revenue (90-day actual data)' }
+    ]
+  },
+  {
+    version: '4.2',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🔄', text: 'After sending, home screen resets to blank — no supplier highlighted' }
+    ]
+  },
+  {
+    version: '4.1',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🐛', text: 'Fixed: deadlineInfo DOM error in restoreState removed' },
+      { icon: '🎌', text: 'Fixed: all deadlines skip on Hawaii holidays — previous business day rule' },
+      { icon: '🌡️', text: 'Weather shows °F + °C side by side' },
+      { icon: '↩️', text: 'Back from send screen restores your order' },
+      { icon: '👆', text: 'Calendar guidance shown when no supplier is selected' },
+      { icon: '📅', text: 'Next available delivery date shown after selecting supplier' },
+      { icon: '⚠️', text: 'Costco prices marked as estimates' },
+      { icon: '🌧️', text: 'Rain / storm days show 👥↑ badge' },
+      { icon: '🔁', text: 'Recent orders saved — tap to reuse in one tap' },
+      { icon: '📋', text: 'Version History page redesigned' }
+    ]
+  },
+  {
+    version: '4.0',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🎏', text: 'Fixed: Golden Week no longer shown as slow season' },
+      { icon: '🗓️', text: 'Fixed: Sep slow season overlap with September Holidays corrected' },
+      { icon: '✅', text: 'All busy/slow periods verified — zero overlaps' },
+      { icon: '🌤️', text: 'Honolulu 7-day weather forecast added below calendar' }
+    ]
+  },
+  {
+    version: '3.8',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🌤️', text: 'Weather forecast added — 7 days, rainy days highlighted' },
+      { icon: '🗓️', text: 'Calendar date badges refined — transparent for plain dates' }
+    ]
+  },
+  {
+    version: '3.2',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🔢', text: 'Tap quantity number to type directly' },
+      { icon: '📈', text: 'Costco progress bar toward $1,000 minimum' },
+      { icon: '🏃', text: 'Honolulu Marathon highlighted in yellow on calendar' },
+      { icon: '📉', text: 'Slow seasons shown in gray on calendar' },
+      { icon: '🍁', text: 'Canada Snowbird season added' },
+      { icon: '📊', text: 'Seasonal tab in Sales — visitor index & market mix' },
+      { icon: '🔮', text: 'Upcoming period forecast based on past years avg' }
+    ]
+  },
+  {
+    version: '3.1',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '📊', text: 'Busy periods expanded — Winter Peak, US Summer, Spring Break added' },
+      { icon: '🎄', text: 'Christmas Week, Silver Week (2026 = 5-day) added' }
+    ]
+  },
+  {
+    version: '3.0',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🔄', text: 'Auto-update when new version is available' },
+      { icon: '💤', text: 'Auto-reload after 5 minutes idle' },
+      { icon: '🔔', text: 'Changelog popup redesigned — slides up from bottom' }
+    ]
+  },
+  {
+    version: '2.9',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '📄', text: 'Version History page (changelog.html) added' },
+      { icon: '🔗', text: 'Version History link added to bottom of home screen' }
+    ]
+  },
+  {
+    version: '2.8',
+    date: 'April 10, 2026',
+    items: [
+      { icon: '🐛', text: 'Fixed: changelog popup stopped showing — now works correctly' },
+      { icon: '✨', text: 'Changelog popup redesigned — slides up from bottom with rich UI' },
+      { icon: '👆', text: 'Tap background to close changelog popup' }
+    ]
+  },
+  {
+    version: '2.7',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '📅', text: 'Last year same-week sales added to calendar section' },
+      { icon: '📊', text: 'Select a delivery date to see last year revenue by day' }
+    ]
+  },
+  {
+    version: '2.6',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '📊', text: 'Sales Data button added — link to Google Spreadsheet' }
+    ]
+  },
+  {
+    version: '2.5',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '🌏', text: 'Tourist event periods added (green) — Japan school breaks, US holidays, Honolulu Marathon' }
+    ]
+  },
+  {
+    version: '2.4',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '🛒', text: 'Costco: Kirkland Plastic Food Wrap added to item list' }
+    ]
+  },
+  {
+    version: '2.3',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '🔴', text: 'NOW badge added — shows on currently active busy periods' },
+      { icon: '🔢', text: 'Version auto-increment system added' }
+    ]
+  },
+  {
+    version: '2.2',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '📋', text: 'Upcoming Busy Periods list added to calendar' },
+      { icon: '📅', text: 'Today button added to calendar navigation' }
+    ]
+  },
+  {
+    version: '2.1',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '🇯🇵', text: 'Japan holiday busy periods added to calendar (pink) — Golden Week, Obon, Silver Week, New Year' }
+    ]
+  },
+  {
+    version: '2.0',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '📝', text: 'Note field auto-resize added' },
+      { icon: '✅', text: 'Quantity required check before send' },
+      { icon: '💰', text: 'Ala Moana Produce minimum order amount display' }
+    ]
+  },
+  {
+    version: '1.9',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '↩️', text: 'Back to Order restores input state' },
+      { icon: '⏰', text: 'Deadline banner time-based urgency coloring' },
+      { icon: '🔴', text: 'Holidays in orange, Sundays in red on calendar' },
+      { icon: '💬', text: 'SMS group names added for suppliers' },
+      { icon: '📧', text: 'Fukuoka Package changed to Gmail' }
+    ]
+  },
+  {
+    version: '1.8',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '🏝️', text: 'Hawaii state & US federal holidays added to calendar (orange)' },
+      { icon: '💬', text: 'Holiday name tooltips on calendar dates' }
+    ]
+  },
+  {
+    version: '1.7',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '🕖', text: 'ATM International schedule added — Mon–Fri, same day by 7:00 AM' },
+      { icon: '🕧', text: 'Fukuoka Package schedule added — Mon/Wed/Fri, previous day by noon' }
+    ]
+  },
+  {
+    version: '1.6',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '📦', text: 'Apax Hawaii: 5 new items added' },
+      { icon: '🌿', text: 'Wismettac: Wakame Seaweed added' },
+      { icon: '🥩', text: 'ATM International USA, Inc. added as supplier' },
+      { icon: '📦', text: 'Fukuoka Package USA, Inc. added as supplier' }
+    ]
+  },
+  {
+    version: '1.5',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '📅', text: 'Apax Hawaii, Ala Moana Produce, Wismettac schedules added' },
+      { icon: '👤', text: 'Sender selection made mandatory before sending' },
+      { icon: '✅', text: 'Order completion screen added' }
+    ]
+  },
+  {
+    version: '1.0',
+    date: 'April 8, 2026',
+    items: [
+      { icon: '🚀', text: 'Initial launch — basic order form for Steak Teppei suppliers' }
+    ]
+  }
+];
+
+function render(){
+  var el=document.getElementById('versionList');
+  var html='';
+  VERSIONS.forEach(function(v,idx){
+    var isLatest=idx===0;
+    if(isLatest){
+      html+='<div class="ver-card latest"><div class="ver-hero"><div class="ver-hero-icon">🚀</div><div class="ver-hero-right"><div class="ver-hero-label">Current Version</div><div class="ver-hero-num">v'+v.version+'</div><div class="ver-hero-date">'+v.date+'</div></div></div>';
+    } else {
+      html+='<div class="ver-card"><div class="ver-head"><div class="ver-num">v'+v.version+'</div><div class="ver-date-label">'+v.date+'</div></div>';
+    }
+    html+='<div class="ver-items">';
+    v.items.forEach(function(item){
+      html+='<div class="ver-item"><div class="ver-item-icon">'+item.icon+'</div><div class="ver-item-text">'+item.text+'</div></div>';
+    });
+    html+='</div></div>';
+  });
+  el.innerHTML=html;
+}
+render();
+</script>
+
+<script>
+// バージョンチェック（iOS PWA強制更新対応）
+function checkVersion(){
+  fetch('./version.json?_='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache,no-store'}})
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var sv=String(data.version);
+    var lv=localStorage.getItem('st_app_version');
+    if(lv&&lv!==sv){
+      localStorage.setItem('st_app_version',sv);
+      if('caches' in window){
+        caches.keys().then(function(keys){
+          Promise.all(keys.map(function(k){return caches.delete(k);}))
+            .then(function(){window.location.reload(true);});
+        });
+      } else { window.location.reload(true); }
+    } else { localStorage.setItem('st_app_version',sv); }
+  }).catch(function(){});
+}
+checkVersion();
+document.addEventListener('visibilitychange',function(){if(!document.hidden)checkVersion();});
+</script>
+</body>
+</html>
