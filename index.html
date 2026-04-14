@@ -2,1825 +2,1731 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="ST Order">
-<title>Steak Teppei — Order App</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Teppei Chat">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" type="image/png" href="./apple-touch-icon.png">
+<title>Steak Teppei Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-
-:root{--bg:#f5f4f2;--card:#fff;--border:rgba(0,0,0,.08);--border-md:rgba(0,0,0,.14);--text:#1a1a1a;--text-sub:#555;--text-hint:#999;--radius:16px;--radius-sm:10px;--orange:#E8440A;--orange-light:#fff2ed;--blue:#1a56db;--blue-light:#ebf1ff;--green-line:#06c755;--green-sms:#1a7a3c;--amber:#d97706;--amber-light:#fffbeb;--amber-border:#fbbf24;}
-@media(prefers-color-scheme:dark){:root{--bg:#1a1a1a;--card:#252525;--border:rgba(255,255,255,.1);--border-md:rgba(255,255,255,.18);--text:#f0f0f0;--text-sub:#aaa;--text-hint:#666;--orange-light:#2a1206;--blue-light:#0d1f4a;--amber-light:#1f1500;}}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{background:var(--bg);font-family:-apple-system,'SF Pro Text',sans-serif;color:var(--text);}
-body{padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);}
-.app{max-width:480px;margin:0 auto;padding:14px 13px 36px;}
-.header{text-align:center;margin-bottom:16px;padding-top:6px;}
-.header h1{font-size:19px;font-weight:700;color:var(--text);letter-spacing:-.3px;}
-.header-sub{font-size:11px;color:var(--text-hint);margin-top:2px;}
-.deadline-alert{display:none;background:var(--orange);color:#fff;border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:12px;font-size:12px;font-weight:600;line-height:1.5;}
-.deadline-alert.show{display:block;}
-.card{background:var(--card);border:.5px solid var(--border);border-radius:var(--radius);padding:13px 14px;margin-bottom:10px;}
-.slabel{font-size:11px;color:var(--text-sub);margin-bottom:9px;font-weight:600;}
-.vendor-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.vbtn{background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:8px;cursor:pointer;text-align:left;}
-.vbtn:active{opacity:.72;}
-.vbtn.selected{border:1.5px solid var(--orange);background:var(--orange-light);}
-.vbtn .vn{font-size:10px;font-weight:600;color:var(--text);line-height:1.3;}
-.vbtn .vm{font-size:9px;margin-top:4px;font-weight:600;}
-.vm-line{color:var(--green-line);}
-.vm-sms{color:var(--green-sms);}
-.vm-email{color:var(--blue);}
-.toggle-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:10px;}
-.toggle{position:relative;width:38px;height:22px;flex-shrink:0;}
-.toggle input{opacity:0;width:0;height:0;}
-.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#d1d5db;border-radius:22px;transition:.2s;}
-.slider:before{position:absolute;content:"";height:16px;width:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
-input:checked+.slider{background:var(--amber);}
-input:checked+.slider:before{transform:translateX(16px);}
-.toggle-txt{font-size:10px;font-weight:700;color:var(--text-hint);min-width:20px;}
-.toggle-txt.on{color:var(--amber);}
-.flex-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding:8px 10px;background:var(--amber-light);border:.5px solid var(--amber-border);border-radius:var(--radius-sm);cursor:pointer;}
-.flex-row-label{font-size:11px;color:#92400e;font-weight:600;}
-.flex-expand{display:none;margin-top:8px;padding:8px 10px;background:var(--amber-light);border:.5px solid var(--amber-border);border-radius:var(--radius-sm);}
-.flex-expand.open{display:block;}
-.flex-expand-inner{display:flex;align-items:center;justify-content:space-between;}
-.flex-expand-txt{font-size:11px;color:#92400e;line-height:1.5;}
-.flex-expand-txt small{display:block;font-weight:400;font-size:10px;}
-.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;margin-top:10px;}
-.cal-nav-btn{background:var(--bg);border:.5px solid var(--border);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:18px;color:var(--text);display:flex;align-items:center;justify-content:center;}
-.cal-nav-btn:active{opacity:.6;}
-.cal-month-label{font-size:13px;font-weight:600;color:var(--text);}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
-.cal-dh{text-align:center;font-size:9px;color:var(--text-hint);padding:3px 0;font-weight:600;}
-.cal-cell{text-align:center;padding:3px 0;font-size:12px;cursor:pointer;color:var(--text);-webkit-user-select:none;}
-.cal-cell:active{opacity:.6;}
-.cal-cell.empty{cursor:default;}
-.cal-cell.unavail{color:var(--border-md);cursor:not-allowed;opacity:.4;}
-.cal-cell.unavail:active{opacity:.4;}
-/* 各セルの背景はセル全体ではなく数字を囲む小さい正方形で表現 */
-.cal-cell.selected{background:none;color:var(--text);}
-.cal-cell.selected .cal-num{background:var(--orange);color:#fff;font-weight:600;}
-.cal-cell.today .cal-num{color:var(--orange);font-weight:700;}
-.cal-cell.today.selected .cal-num{background:var(--orange);color:#fff;}
-.cal-cell.flex-ok .cal-num{background:#fef3c7;color:#92400e;}
-.cal-cell.slow .cal-num{background:#f1f5f9;color:#64748b;}
-.cal-cell.marathon .cal-num{background:#fef9c3;color:#854d0e;}
-.cal-cell.holiday .cal-num{background:#fff2ed;color:var(--orange);}
-.cal-cell.sunday{color:#dc2626;}
-.cal-cell.sunday.selected .cal-num{background:var(--orange);color:#fff;}
-/* デフォルトのcal-num：完全透明・サイズなし */
-.cal-num{display:inline;border-radius:6px;padding:0;}
-/* 色付きの日付のみ inline-flex でサイズ付きボックスに */
-.cal-cell.selected .cal-num,
-.cal-cell.today.selected .cal-num,
-.cal-cell.flex-ok .cal-num,
-.cal-cell.slow .cal-num,
-.cal-cell.marathon .cal-num,
-.cal-cell.holiday .cal-num,
-.cal-cell.sunday.selected .cal-num,
-.cal-cell.slow:hover .cal-num,
-.cal-cell.marathon:hover .cal-num{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:26px;height:26px;border-radius:6px;
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --msg-font: 15px;
+  --blue: #007AFF; --blue-dark: #0062CC;
+  --gray-bg: #F2F2F7; --gray-bubble: #E5E5EA;
+  --gray-mid: #8E8E93; --gray-light: #C7C7CC;
+  --text: #000; --text-sub: #3C3C43; --text-muted: #8E8E93;
+  --border: #C6C6C8; --white: #FFF; --surface: #FFF;
+  --red: #FF3B30; --green: #34C759; --orange: #FF9500;
+  --header-bg: #FF6B35;
+  --announce-bg: #FFF9E6; --announce-border: #FFD60A;
 }
-.hol-dot{display:block;width:4px;height:4px;background:var(--orange);border-radius:50%;margin:1px auto 0;}
-.cal-selected{font-size:11.5px;margin-top:7px;color:var(--text-hint);}
-.cal-selected span{color:var(--orange);font-weight:600;}
-.cal-deadline{font-size:11px;margin-top:4px;font-weight:600;}
-.cal-today-btn{background:none;border:.5px solid var(--border-md);border-radius:6px;font-size:11px;color:var(--text-hint);cursor:pointer;padding:3px 10px;margin-left:8px;}
-.cal-today-btn:active{opacity:.6;}
-.upcoming-wrap{margin-top:12px;padding-top:10px;border-top:.5px solid var(--border);}
-.upcoming-title{font-size:10px;color:var(--text-hint);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px;}
-.upcoming-item{display:flex;align-items:flex-start;gap:7px;padding:4px 0;font-size:11px;color:var(--text-sub);line-height:1.4;}
-.ly-wrap{margin-top:10px;padding-top:10px;border-top:.5px solid var(--border);}
-.ly-title{font-size:10px;color:var(--text-hint);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px;}
-.ly-row{display:flex;align-items:center;gap:6px;padding:3px 0;}
-.ly-day{font-size:11px;color:var(--text-hint);width:28px;flex-shrink:0;}
-.ly-date{font-size:11px;color:var(--text-sub);width:52px;flex-shrink:0;}
-.ly-bar-wrap{flex:1;background:var(--bg);border-radius:3px;height:16px;position:relative;overflow:hidden;}
-.ly-bar{height:100%;background:var(--orange);opacity:.7;border-radius:3px;}
-.ly-rev{font-size:11px;color:var(--text);font-weight:600;width:52px;text-align:right;flex-shrink:0;}
-.ly-orders{font-size:10px;color:var(--text-hint);width:30px;text-align:right;flex-shrink:0;}
-.ly-loading{font-size:11px;color:var(--text-hint);padding:6px 0;}
-.upcoming-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:2px;}
-.dot-hi{background:var(--orange);}
-.dot-school{background:#0369a1;}
-.dot-jp{background:#be185d;}
-.dot-event{background:#166534;}
-.upcoming-dates{color:var(--text-hint);font-size:10px;}
-.dl-urgent{color:#dc2626;}
-.dl-soon{color:var(--amber);}
-.dl-ok{color:var(--text-hint);}
-.item-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:.5px solid var(--border);}
-.item-row:last-child{border-bottom:none;}
-.iname{flex:1;font-size:13px;color:var(--text);line-height:1.35;}.iprice{font-size:10px;color:var(--text-hint);margin-left:3px;}.itotal{font-size:11px;font-weight:700;color:var(--orange);padding:8px 0 4px;border-top:.5px solid var(--border);margin-top:4px;text-align:right;}
-.iunit{font-size:10px;color:var(--text-hint);min-width:28px;}
-.iline-total{font-size:10px;color:var(--orange);font-weight:600;min-width:44px;text-align:right;flex-shrink:0;}
-.qc{display:flex;align-items:center;gap:5px;}
-.qbtn{width:28px;height:28px;border:.5px solid var(--border-md);border-radius:8px;background:var(--bg);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--text);}
-.qbtn:active{opacity:.6;}
-.qnum{width:28px;text-align:center;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;border-radius:6px;transition:background .15s;}
-.qnum:active{background:var(--bg);}
-.qnum-input{width:44px;text-align:center;font-size:14px;font-weight:700;color:var(--text);border:.5px solid var(--orange);border-radius:6px;background:var(--bg);padding:2px 0;outline:none;}
-.costco-progress-wrap{margin-top:10px;padding-top:10px;border-top:.5px solid var(--border);}
-.costco-progress-label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;}
-.costco-progress-left{color:var(--text-sub);font-weight:600;}
-.costco-progress-right{color:var(--text-hint);}
-.costco-progress-bar{height:8px;background:var(--bg);border-radius:20px;overflow:hidden;border:.5px solid var(--border);}
-.costco-progress-fill{height:100%;border-radius:20px;background:var(--orange);transition:width .3s ease;}
-.costco-progress-fill.done{background:#16a34a;}
-.costco-progress-status{font-size:11px;margin-top:5px;text-align:right;font-weight:600;}
-.cal-cell.slow:hover .cal-num{background:#e2e8f0;}
-.cal-cell.marathon:hover .cal-num{background:#fef08a;}
-.dot-slow{background:#64748b;}
-.dot-marathon{background:#854d0e;}
-.dot-canada{background:#c0392b;}
-/* ── Weather Widget ── */
-.weather-wrap{margin-top:10px;padding-top:10px;border-top:.5px solid var(--border);}
-.weather-title{font-size:10px;color:var(--text-hint);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
-.weather-title span{font-size:9px;font-weight:400;opacity:.7;}
-.weather-row{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
-.weather-row::-webkit-scrollbar{display:none;}
-.weather-day{flex:1;min-width:38px;text-align:center;background:var(--bg);border-radius:8px;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;}
-.weather-day.rain{background:#e0f2fe;color:#0369a1;}
-.weather-day.rain .weather-dow,.weather-day.rain .weather-temp{color:#0369a1;}
-@media(prefers-color-scheme:dark){
-  .weather-day.rain{background:#0c2340;color:#7dd3fc;}
-  .weather-day.rain .weather-dow,.weather-day.rain .weather-temp{color:#7dd3fc;}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --gray-bg: #1C1C1E; --gray-bubble: #2C2C2E;
+    --gray-mid: #636366; --gray-light: #3A3A3C;
+    --text: #FFF; --text-sub: #EBEBF5; --text-muted: #8E8E93;
+    --border: #38383A; --white: #1C1C1E; --surface: #2C2C2E;
+    --announce-bg: #2C2500; --announce-border: #9A7A00;
+  }
 }
-.weather-day.drizzle{background:#f0f9ff;color:#0284c7;}
-@media(prefers-color-scheme:dark){.weather-day.drizzle{background:#082030;color:#38bdf8;}}
-.weather-day.storm{background:#fce7f3;color:#be185d;}
-@media(prefers-color-scheme:dark){.weather-day.storm{background:#2d0a1f;color:#f9a8d4;}}
-.weather-dow{font-size:9px;font-weight:700;color:var(--text-hint);}
-.weather-icon{font-size:18px;line-height:1;}
-.weather-temp{font-size:10px;font-weight:700;color:var(--text);}
-.weather-loading{font-size:11px;color:var(--text-hint);padding:8px 0;text-align:center;}
-/* ── AI 7-Day Analysis ── */
-.ai-wrap{margin-top:12px;padding-top:10px;border-top:.5px solid var(--border);}
-.ai-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.ai-title{font-size:10px;color:var(--text-hint);font-weight:600;letter-spacing:.06em;text-transform:uppercase;}
-.ai-badge{font-size:9px;font-weight:700;background:linear-gradient(135deg,#1a73e8,#34a853);color:#fff;padding:2px 8px;border-radius:10px;}
-.ai-loading{font-size:11px;color:var(--text-hint);padding:10px 0;text-align:center;animation:ai-pulse 1.5s ease-in-out infinite;}
-@keyframes ai-pulse{0%,100%{opacity:.5;}50%{opacity:1;}}
-.ai-error{font-size:11px;color:var(--text-hint);padding:8px 0;text-align:center;}
-.ai-days{display:flex;flex-direction:column;gap:6px;}
-.ai-day{background:var(--card);border:.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
-.ai-day-header{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;user-select:none;-webkit-user-select:none;}
-.ai-day-header:active{opacity:.7;}
-.ai-day-date{font-size:11px;font-weight:700;color:var(--text);flex:1;}
-.ai-day-weather{font-size:16px;}
-.ai-day-temp{font-size:10px;color:var(--text-hint);}
-.ai-day-score{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0;}
-.score-high{background:#fce7f3;color:#be185d;}
-.score-mid{background:#e0f2fe;color:#0369a1;}
-.score-low{background:#f1f5f9;color:#64748b;}
-.score-normal{background:#f0fdf4;color:#16a34a;}
-.ai-day-arrow{font-size:12px;color:var(--text-hint);transition:transform .2s;}
-.ai-day-arrow.open{transform:rotate(90deg);}
-.ai-day-body{display:none;padding:0 10px 10px;font-size:11px;color:var(--text-sub);line-height:1.65;border-top:.5px solid var(--border);}
-.ai-day-body.open{display:block;}
-.ai-day-rec{font-size:11px;font-weight:700;margin-top:6px;padding:5px 8px;background:var(--orange-light);border-radius:6px;color:var(--orange);}
-.ai-updated{font-size:9px;color:var(--text-hint);text-align:right;margin-top:4px;opacity:.7;}
-.ai-refresh-btn{background:none;border:none;font-size:9px;color:var(--text-hint);cursor:pointer;padding:0;text-decoration:underline;}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body {
+  height: 100%; height: 100dvh;
+  background: var(--gray-bg); color: var(--text);
+  font-family: 'Noto Sans JP','Noto Sans SC',-apple-system,'Helvetica Neue',sans-serif;
+  overflow: hidden; position: fixed; width: 100%; -webkit-font-smoothing: antialiased;
+}
+.screen { display: none; flex-direction: column; height: 100%; height: 100dvh; }
+.screen.active { display: flex; }
 
-/* ⑤ 業者未選択時の誘導 */
-.cal-hint{font-size:11px;color:var(--text-hint);text-align:center;padding:6px 0;font-style:italic;}
-/* ⑥ Costco価格注記 */
-.price-note{font-size:10px;color:var(--text-hint);margin-top:6px;padding-top:6px;border-top:.5px solid var(--border);line-height:1.5;}
-/* ⑨ 最近の注文 */
-.recent-wrap{margin-top:8px;padding-top:8px;border-top:.5px solid var(--border);}
-.recent-title{font-size:10px;color:var(--text-hint);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
-.recent-item{display:flex;align-items:center;gap:8px;padding:7px 8px;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:4px;cursor:pointer;border:.5px solid var(--border);}
-.recent-item:active{opacity:.7;}
-.recent-item-info{flex:1;}
-.recent-item-vendor{font-size:12px;font-weight:600;color:var(--text);}
-.recent-item-detail{font-size:10px;color:var(--text-hint);margin-top:1px;}
-.recent-item-arrow{font-size:16px;color:var(--text-hint);}
-/* ⑩ 次回配達可能日 */
-.next-delivery{display:none;margin-top:8px;padding:8px 10px;background:var(--blue-light);border:.5px solid var(--blue);border-radius:var(--radius-sm);}
-.next-delivery-label{font-size:10px;color:var(--blue);font-weight:700;}
-.next-delivery-date{font-size:13px;font-weight:700;color:var(--blue);margin-top:2px;}
-.custom-toggle{font-size:11px;color:var(--blue);background:none;border:none;cursor:pointer;padding:8px 0 2px;display:block;text-decoration:underline;}
-.custom-row{display:none;gap:7px;margin-top:6px;}
-.custom-row.open{display:flex;}
-.custom-row input{flex:1;font-size:13px;padding:8px 10px;border:.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);outline:none;}
-.custom-row input:focus{border-color:var(--orange);}
-.custom-row button{font-size:12px;font-weight:600;padding:8px 12px;border:.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;color:var(--text);white-space:nowrap;}
-.items-placeholder{font-size:13px;color:var(--text-hint);padding:12px 0;text-align:center;}
-.note-wrap{margin-top:10px;padding-top:10px;border-top:.5px solid var(--border);}
-.note-label{font-size:10px;color:var(--text-hint);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
-.note-wrap textarea{width:100%;font-size:12px;padding:8px 10px;border:.5px solid var(--border-md);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);outline:none;resize:none;min-height:60px;height:60px;font-family:inherit;line-height:1.5;overflow:hidden;}
-.note-wrap textarea:focus{border-color:var(--orange);}
-.go-btn{width:100%;padding:14px;border-radius:var(--radius-sm);cursor:pointer;font-size:15px;font-weight:700;border:none;background:var(--orange);color:#fff;margin-top:4px;letter-spacing:-.2px;}
-.go-btn:active{opacity:.85;}
-.go-btn.go-btn-dim{background:#aaa;}
-.go-btn.go-btn-ready{background:var(--orange);}
-.clear-btn{width:100%;padding:11px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:600;border:1.5px solid var(--border);background:transparent;color:var(--text-hint);margin-top:8px;letter-spacing:-.2px;}
-.clear-btn:active{opacity:.7;}
-.app-version{text-align:center;font-size:10px;color:var(--text-hint);padding:8px 0 4px;opacity:.6;}
-.sales-btn{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border:none;border-radius:var(--radius);cursor:pointer;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.15);margin-bottom:12px;}
-.sales-btn:active{opacity:.85;transform:scale(.99);}
-.sales-btn-icon{font-size:26px;flex-shrink:0;}
-.sales-btn-text{flex:1;}
-.sales-btn-title{font-size:14px;font-weight:700;color:#fff;line-height:1.3;}
-.sales-btn-sub{font-size:10px;color:rgba(255,255,255,.55);margin-top:1px;}
-.sales-btn-arrow{font-size:18px;color:rgba(255,255,255,.4);}
+/* UPDATE MODAL */
+#update-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.6); z-index: 9999;
+  align-items: center; justify-content: center; padding: 24px;
+}
+#update-modal.open { display: flex; }
+.update-box {
+  background: var(--surface); border-radius: 20px;
+  padding: 28px 24px; max-width: 320px; width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 40px rgba(0,0,0,.3);
+}
+.update-icon { font-size: 40px; margin-bottom: 12px; }
+.update-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.update-msg { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; white-space: pre-line; text-align: left; }
+.update-ok {
+  width: 100%; padding: 14px; background: var(--blue);
+  color: white; border: none; border-radius: 14px;
+  font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.update-ok:active { background: var(--blue-dark); }
 
-.update-banner{display:none;background:linear-gradient(135deg,#185FA5,#1a7abf);color:#fff;text-align:center;padding:13px 16px;font-size:14px;font-weight:700;cursor:pointer;position:sticky;top:0;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.2);}
-.update-banner.show{display:block;animation:banner-pulse 2s ease-in-out infinite;}
-@keyframes banner-pulse{0%,100%{opacity:1;}50%{opacity:.85;}}
-.app-version{text-align:center;font-size:10px;color:var(--text-hint);padding:8px 0 4px;opacity:.6;}
+/* CLARIFY MODAL */
+#clarify-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.5); z-index: 9000;
+  align-items: flex-end; justify-content: center; padding: 0;
+}
+#clarify-modal.open { display: flex; }
+.clarify-box {
+  background: var(--surface); border-radius: 20px 20px 0 0;
+  padding: 20px 20px calc(var(--safe-bottom) + 20px);
+  width: 100%; max-width: 600px;
+  box-shadow: 0 -4px 30px rgba(0,0,0,.15);
+}
+.clarify-icon { font-size: 28px; margin-bottom: 8px; }
+.clarify-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.clarify-question { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+.clarify-preview {
+  background: var(--gray-bg); border-radius: 12px;
+  padding: 10px 14px; font-size: 14px; color: var(--text);
+  line-height: 1.5; margin-bottom: 16px;
+  border-left: 3px solid var(--blue);
+}
+.clarify-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+.clarify-actions { display: flex; gap: 10px; }
+.clarify-btn-send {
+  flex: 2; padding: 13px; background: var(--blue); color: white;
+  border: none; border-radius: 12px; font-size: 15px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+.clarify-btn-send:active { background: var(--blue-dark); }
+.clarify-btn-orig {
+  flex: 1; padding: 13px; background: var(--gray-bg); color: var(--text);
+  border: none; border-radius: 12px; font-size: 14px;
+  cursor: pointer; font-family: inherit;
+}
+.clarify-btn-orig:active { opacity: .7; }
 
-.dl-urgent{color:#dc2626;}
-.dl-soon{color:var(--amber);}
-.dl-ok{color:var(--text-hint);}
-.changelog-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);z-index:400;align-items:flex-end;justify-content:center;padding:0;}
-.changelog-overlay.open{display:flex;animation:cl-fade-in .2s ease;}
-@keyframes cl-fade-in{from{opacity:0;}to{opacity:1;}}
-.changelog-box{background:var(--card);border-radius:24px 24px 0 0;padding:0;width:100%;max-width:480px;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;animation:cl-slide-up .3s cubic-bezier(.32,.72,0,1);}
-@keyframes cl-slide-up{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.changelog-hero{background:linear-gradient(135deg,#E8440A 0%,#ff6b35 100%);padding:28px 24px 22px;position:relative;overflow:hidden;flex-shrink:0;}
-.changelog-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,.1);border-radius:50%;}
-.changelog-hero::after{content:'';position:absolute;bottom:-20px;left:20px;width:80px;height:80px;background:rgba(255,255,255,.08);border-radius:50%;}
-.changelog-hero-icon{font-size:36px;margin-bottom:8px;display:block;position:relative;z-index:1;}
-.changelog-hero-version{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;position:relative;z-index:1;}
-.changelog-hero-date{font-size:12px;color:rgba(255,255,255,.75);margin-top:3px;position:relative;z-index:1;}
-.changelog-body{padding:20px 24px;overflow-y:auto;flex:1;}
-.changelog-body-title{font-size:13px;font-weight:700;color:var(--text-hint);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;}
-.changelog-items{list-style:none;padding:0;margin:0 0 16px;}
-.changelog-items li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text);padding:10px 0;border-bottom:.5px solid var(--border);line-height:1.5;}
-.changelog-items li:last-child{border-bottom:none;}
-.changelog-item-dot{width:26px;height:26px;background:var(--orange-light);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:13px;}
-.changelog-history-link{display:block;text-align:center;font-size:12px;color:var(--text-hint);margin-bottom:14px;text-decoration:underline;cursor:pointer;}
-.changelog-ok{width:100%;padding:15px;background:var(--orange);color:#fff;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:700;cursor:pointer;letter-spacing:-.2px;}
-.changelog-ok:active{opacity:.85;}
+/* LOGIN */
+#screen-login { background: var(--gray-bg); justify-content: center; align-items: center; padding: calc(var(--safe-top)+20px) 32px calc(var(--safe-bottom)+20px); }
+.login-logo { width: 80px; height: 80px; background: linear-gradient(145deg,#FF6B35,#CC3300); border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 42px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(204,51,0,.25); }
+.login-logo-img { width: 140px; height: auto; margin-bottom: 8px; }
+.login-logo-img svg { display: block; width: 100%; }
+.login-title { font-size: 24px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; margin-bottom: 4px; }
+.login-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 40px; }
+.pin-box { width: 100%; max-width: 320px; background: var(--surface); border-radius: 18px; padding: 28px 24px; box-shadow: 0 2px 12px rgba(0,0,0,.1); }
+.pin-label { font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 20px; }
+.pin-dots { display: flex; justify-content: center; gap: 14px; margin-bottom: 28px; }
+.pin-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--gray-light); transition: all .15s; }
+.pin-dot.filled { background: var(--blue); transform: scale(1.1); }
+.pin-dot.error { background: var(--red); }
+.numpad { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.num-btn { height: 60px; background: var(--gray-bg); border: none; border-radius: 14px; color: var(--text); font-size: 22px; font-weight: 400; cursor: pointer; font-family: inherit; transition: all .1s; display: flex; align-items: center; justify-content: center; }
+.num-btn:active { background: var(--gray-light); transform: scale(.96); }
+.num-btn.del { font-size: 18px; color: var(--text-sub); }
+.num-btn.empty { background: transparent; cursor: default; pointer-events: none; }
+.login-error { font-size: 12px; color: var(--red); text-align: center; margin-top: 12px; min-height: 16px; }
 
+/* FONT SIZE SELECTOR */
+.font-size-bar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; background: var(--surface);
+  border-top: 0.5px solid var(--border); flex-shrink: 0;
+}
+.font-size-label { font-size: 11px; color: var(--text-muted); flex: 1; }
+.fs-btn {
+  width: 30px; height: 30px; border-radius: 8px;
+  border: 0.5px solid var(--border); background: var(--gray-bg);
+  cursor: pointer; font-family: inherit; color: var(--text);
+  display: flex; align-items: center; justify-content: center; font-weight: 600;
+}
+.fs-btn:active { background: var(--blue); color: white; }
+.fs-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+/* quick link row */
+.quick-links {
+  display: flex; gap: 6px; padding: 5px 12px;
+  background: var(--surface); border-bottom: 0.5px solid var(--border);
+  flex-shrink: 0; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.quick-link {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 20px;
+  background: var(--gray-bg); border: 0.5px solid var(--border);
+  font-size: 11px; font-weight: 500; color: var(--blue);
+  white-space: nowrap; cursor: pointer; text-decoration: none;
+  font-family: inherit;
+}
+.quick-link:active { opacity: .7; }
+.quick-link.admin { color: var(--orange); border-color: var(--orange); }
+.notif-btn { color: var(--gray-mid) !important; }
+.notif-btn.enabled { color: var(--green) !important; border-color: var(--green) !important; }
+
+/* LOGIN admin link */
+.login-admin-link {
+  margin-top: 16px; font-size: 12px; color: var(--text-muted);
+  text-align: center;
+}
+.login-admin-link a { color: var(--orange); text-decoration: none; }
+
+/* CHAT */
+#screen-chat { background: var(--white); }
+.chat-header { background: var(--surface); border-bottom: 0.5px solid var(--border); padding: calc(var(--safe-top)+10px) 16px 10px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.ch-av { width: 36px; height: 36px; background: linear-gradient(145deg,#FF6B35,#CC3300); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; position: relative; }
+.ch-badge { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; background: var(--red); color: white; font-size: 10px; font-weight: 700; border-radius: 9px; display: none; align-items: center; justify-content: center; padding: 0 4px; border: 2px solid var(--surface); }
+.ch-info { flex: 1; }
+.ch-info h2 { font-size: 15px; font-weight: 600; color: var(--text); }
+.ch-info p { font-size: 11px; color: var(--text-muted); }
+.signout-btn {
+  background: var(--gray-bg); border: none; border-radius: 16px;
+  color: var(--text-muted); font-size: 12px; font-weight: 500;
+  cursor: pointer; font-family: inherit; padding: 5px 11px;
+  display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+}
+.signout-btn:active { opacity: .7; }
+@media (prefers-color-scheme: dark) {
+  .chat-header { background: #1C1C1E; }
+}
+
+#messages { flex: 1; overflow-y: auto; padding: 12px 12px 6px; display: flex; flex-direction: column; gap: 4px; -webkit-overflow-scrolling: touch; background: var(--white); }
+.date-divider { text-align: center; font-size: 11px; color: var(--text-muted); padding: 10px 0 4px; font-weight: 500; }
+.sys-row { text-align: center; font-size: 11px; color: var(--text-muted); padding: 6px 0; }
+
+.announce-wrap { background: var(--announce-bg); border: 1px solid var(--announce-border); border-radius: 12px; padding: 10px 14px; margin: 4px 0; position: relative; }
+.announce-label { font-size: 10px; font-weight: 600; color: #856404; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+@media (prefers-color-scheme: dark) { .announce-label { color: #FFD60A; } }
+.announce-text { font-size: var(--msg-font); color: var(--text); line-height: 1.5; word-break: break-word; }
+.announce-time { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+.announce-del { position: absolute; top: 8px; right: 10px; background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; padding: 2px 6px; }
+
+.msg-wrap { display: flex; gap: 6px; align-items: flex-end; margin: 2px 0; }
+.msg-wrap.own { flex-direction: row-reverse; }
+.msg-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; flex-shrink: 0; margin-bottom: 2px; position: relative; }
+.online-dot { position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; background: var(--green); border-radius: 50%; border: 1.5px solid var(--surface); }
+.msg-body { max-width: 72%; }
+.msg-meta { font-size: 10px; color: var(--text-muted); margin-bottom: 2px; display: flex; align-items: center; gap: 4px; padding: 0 4px; }
+.msg-wrap.own .msg-meta { flex-direction: row-reverse; }
+.read-receipt { display: flex; justify-content: flex-end; gap: 2px; margin-top: 3px; padding: 0 4px; flex-wrap: wrap; }
+.read-av { width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7px; font-weight: 700; color: white; flex-shrink: 0; }
+.bubble { padding: 9px 13px; font-size: var(--msg-font); line-height: 1.5; word-break: break-word; border-radius: 18px; position: relative; cursor: default; user-select: text; }
+.msg-wrap:not(.own) .bubble { background: var(--gray-bubble); color: var(--text); border-bottom-left-radius: 4px; }
+.msg-wrap.own .bubble { background: var(--blue); color: #FFF; border-bottom-right-radius: 4px; }
+.msg-image { max-width: 220px; width: 100%; border-radius: 14px; display: block; margin-bottom: 2px; cursor: pointer; }
+.bubble.image-only { padding: 4px; background: transparent !important; }
+.bubble.deleted { font-style: italic; opacity: .5; font-size: 13px; }
+.bubble.sending { opacity: .55; }
+.sending-dots { display: inline-flex; gap: 3px; align-items: center; margin-left: 6px; }
+.sending-dots span { width: 4px; height: 4px; background: rgba(255,255,255,.8); border-radius: 50%; animation: sdot 1.2s infinite; }
+.sending-dots span:nth-child(2){animation-delay:.2s}.sending-dots span:nth-child(3){animation-delay:.4s}
+@keyframes sdot{0%,80%,100%{opacity:.3;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
+.mention { font-weight: 700; color: var(--blue); background: rgba(0,122,255,.12); border-radius: 6px; padding: 1px 5px; }
+.msg-wrap.own .mention { color: #a8d4ff; background: rgba(168,212,255,.2); }
+/* メンションされた本人のメッセージ全体を強調 */
+.msg-wrap.mentioned-me { animation: mentionPulse .6s ease-out; }
+@keyframes mentionPulse {
+  0%   { background: rgba(0,122,255,.18); }
+  100% { background: transparent; }
+}
+.msg-wrap.mentioned-me .bubble:not(.own .bubble) { border: 1.5px solid var(--blue) !important; }
+.msg-wrap.own.mentioned-me .bubble { border: 1.5px solid #a8d4ff !important; }
+/* 自分宛てメンションバッジ */
+.mention-me { font-weight: 700; color: #fff; background: var(--blue); border-radius: 6px; padding: 1px 6px; font-size: .9em; box-shadow: 0 1px 4px rgba(0,122,255,.4); }
+.orig-text { font-size: 10px; color: var(--text-muted); margin-top: 3px; padding: 0 4px; line-height: 1.4; }
+.trans-block { margin-top: 3px; display: flex; flex-direction: column; gap: 1px; }
+.trans-item { font-size: 10px; color: var(--text-muted); padding: 2px 4px; line-height: 1.5; }
+
+#ctx-backdrop { display: none; position: fixed; inset: 0; z-index: 499; }
+#ctx-backdrop.open { display: block; }
+#ctx-menu { display: none; position: fixed; background: var(--surface); border-radius: 14px; box-shadow: 0 8px 32px rgba(0,0,0,.2); z-index: 500; min-width: 180px; overflow: hidden; border: 0.5px solid var(--border); }
+#ctx-menu.open { display: block; }
+.ctx-item { padding: 13px 18px; font-size: 15px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 0.5px solid var(--border); color: var(--text); }
+.ctx-item:last-child { border-bottom: none; }
+.ctx-item:active { background: var(--gray-bg); }
+.ctx-item.danger { color: var(--red); }
+#edit-bar { display: none; background: var(--surface); border-top: 0.5px solid var(--border); padding: 8px 12px; flex-shrink: 0; gap: 8px; align-items: center; }
+#edit-bar.open { display: flex; }
+#edit-orig { font-size: 11px; color: var(--text-muted); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#edit-cancel { background: none; border: none; color: var(--text-muted); font-size: 13px; cursor: pointer; font-family: inherit; padding: 4px 8px; }
+
+.typing-dots { display: inline-flex; gap: 4px; align-items: center; padding: 10px 14px; background: var(--gray-bubble); border-radius: 18px; border-bottom-left-radius: 4px; }
+.typing-dots span { width: 6px; height: 6px; background: var(--gray-mid); border-radius: 50%; animation: tdot 1.4s infinite; }
+.typing-dots span:nth-child(2){animation-delay:.2s} .typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+.input-bar { background: var(--surface); border-top: 0.5px solid var(--border); padding: 8px 12px max(calc(var(--safe-bottom) + 8px), 20px); flex-shrink: 0; }
+#img-preview-wrap { display: none; margin-bottom: 8px; position: relative; width: fit-content; }
+#img-preview { width: 72px; height: 72px; object-fit: cover; border-radius: 12px; border: 0.5px solid var(--border); }
+#img-remove { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; background: var(--gray-mid); border: none; border-radius: 50%; color: white; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.input-row { display: flex; gap: 8px; align-items: flex-end; }
+.icon-btn { width: 34px; height: 34px; background: none; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; color: var(--blue); transition: opacity .1s; }
+.icon-btn:active { opacity: .6; }
+#msg-input { flex: 1; background: var(--gray-bg); border: 0.5px solid var(--border); border-radius: 20px; padding: 8px 14px; color: var(--text); font-family: inherit; font-size: 15px; outline: none; resize: none; max-height: 120px; min-height: 36px; line-height: 1.4; -webkit-appearance: none; }
+#msg-input:focus { border-color: var(--blue); }
+#msg-input::placeholder { color: var(--gray-mid); }
+#send-btn { width: 34px; height: 34px; background: var(--blue); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .1s; }
+#send-btn:active { transform: scale(.92); background: var(--blue-dark); }
+#send-btn:disabled { background: var(--gray-light); }
+#send-btn svg { width: 16px; height: 16px; fill: white; }
+#upload-progress { display: none; font-size: 11px; color: var(--text-muted); text-align: center; padding: 4px 0; }
+.progress-bar { height: 2px; background: var(--gray-light); border-radius: 2px; margin-top: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--blue); border-radius: 2px; transition: width .3s; width: 0%; }
+.input-bar.announce-mode { background: var(--announce-bg); border-top-color: var(--announce-border); }
+.input-bar.announce-mode #msg-input { border-color: var(--announce-border); }
+#announce-indicator { display: none; font-size: 11px; color: #856404; font-weight: 600; padding: 0 0 6px; }
+@media (prefers-color-scheme: dark) { #announce-indicator { color: #FFD60A; } }
+
+#emoji-panel { display: none; background: var(--surface); border-top: 0.5px solid var(--border); padding: 10px 8px 6px; flex-shrink: 0; }
+#emoji-panel.open { display: block; }
+.emoji-tabs { display: flex; gap: 2px; margin-bottom: 8px; border-bottom: 0.5px solid var(--border); padding-bottom: 6px; }
+.emoji-tab { flex: 1; background: none; border: none; font-size: 18px; padding: 4px 0; cursor: pointer; border-radius: 6px; }
+.emoji-tab.active { background: var(--gray-bg); }
+.emoji-grid { display: grid; grid-template-columns: repeat(8,1fr); gap: 2px; max-height: 160px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.emoji-btn { background: none; border: none; font-size: 24px; padding: 6px 2px; cursor: pointer; border-radius: 8px; line-height: 1; }
+.emoji-btn:active { background: var(--gray-bg); }
+
+#mention-picker { display: none; position: absolute; bottom: 100%; left: 0; right: 0; background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.15); z-index: 200; overflow: hidden; }
+#mention-picker.open { display: block; }
+.mention-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; border-bottom: 0.5px solid var(--border); }
+.mention-item:last-child { border-bottom: none; }
+.mention-item:active { background: var(--gray-bg); }
+.mention-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: white; flex-shrink: 0; }
+.mention-name { font-size: 14px; color: var(--text); font-weight: 500; }
+
+#search-bar { display: none; background: var(--surface); border-bottom: 0.5px solid var(--border); padding: 8px 12px; flex-shrink: 0; gap: 8px; align-items: center; }
+#search-bar.open { display: flex; }
+#search-input { flex: 1; background: var(--gray-bg); border: none; border-radius: 10px; padding: 7px 12px; font-size: 14px; font-family: inherit; outline: none; color: var(--text); }
+#search-close { background: none; border: none; color: var(--blue); font-size: 14px; cursor: pointer; font-family: inherit; white-space: nowrap; }
+#search-count { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+.msg-highlight .bubble { outline: 2px solid var(--orange); }
+
+#lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.9); z-index: 1000; align-items: center; justify-content: center; }
+#lightbox.open { display: flex; }
+#lightbox img { max-width: 95vw; max-height: 90vh; border-radius: 10px; object-fit: contain; }
+#lightbox-close { position: absolute; top: calc(var(--safe-top)+14px); right: 16px; background: rgba(255,255,255,.2); border: none; color: white; font-size: 20px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+#lightbox-save { position: absolute; bottom: calc(var(--safe-bottom)+20px); right: 16px; background: rgba(255,255,255,.2); border: none; color: white; font-size: 13px; padding: 8px 16px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+
+#conn-status { font-size: 11px; padding: 4px 10px; text-align: center; background: #FFF3CD; color: #856404; display: none; flex-shrink: 0; }
+#install-banner { display: none; background: #EBF5FF; border-bottom: 0.5px solid #B3D7FF; padding: 8px 14px; align-items: center; gap: 8px; font-size: 12px; color: var(--blue); flex-shrink: 0; }
+.ib-btn { background: var(--blue); color: white; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-family: inherit; cursor: pointer; margin-left: auto; }
+.ib-close { background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; }
+
+/* ── NEW FEATURES CSS ── */
+
+/* conn status improvement */
+#conn-status { font-size: 12px; padding: 8px 16px; text-align: center; background: #FF9500; color: white; display: none; flex-shrink: 0; font-weight: 600; letter-spacing: .2px; }
+
+/* scroll-to-bottom button */
+#scroll-btn { display: none; position: absolute; bottom: 12px; right: 14px; width: 36px; height: 36px; background: var(--blue); border: none; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,122,255,.4); z-index: 100; align-items: center; justify-content: center; }
+#scroll-btn.show { display: flex; }
+#scroll-badge { position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; background: var(--red); color: white; font-size: 9px; font-weight: 700; border-radius: 8px; display: none; align-items: center; justify-content: center; padding: 0 3px; }
+
+/* logout confirm */
+#logout-toast { display: none; position: fixed; bottom: calc(var(--safe-bottom)+80px); left: 50%; transform: translateX(-50%); background: var(--surface); border: 0.5px solid var(--border); color: var(--text); padding: 10px 16px; border-radius: 14px; font-size: 13px; z-index: 400; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,.15); gap: 10px; align-items: center; }
+#logout-toast.show { display: flex; }
+#logout-undo { background: var(--blue); color: white; border: none; border-radius: 8px; padding: 4px 12px; font-size: 12px; cursor: pointer; font-family: inherit; }
+
+/* image preview tap to enlarge */
+#img-preview { width: 72px; height: 72px; object-fit: cover; border-radius: 12px; border: 0.5px solid var(--border); cursor: pointer; }
+
+/* search nav arrows */
+.search-nav { display: flex; gap: 4px; align-items: center; }
+.search-nav-btn { background: var(--gray-bg); border: none; border-radius: 6px; color: var(--text); font-size: 14px; padding: 3px 8px; cursor: pointer; font-family: inherit; }
+.search-nav-btn:active { opacity: .7; }
+
+/* reaction bar in ctx menu */
+.ctx-reactions { display: flex; gap: 2px; padding: 8px 10px; border-bottom: 0.5px solid var(--border); }
+.ctx-react-btn { flex: 1; background: var(--gray-bg); border: none; border-radius: 8px; font-size: 20px; padding: 6px 0; cursor: pointer; }
+.ctx-react-btn:active { transform: scale(1.2); }
+
+/* reactions on bubble */
+.msg-reactions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; padding: 0 4px; }
+.reaction-pill { display: flex; align-items: center; gap: 3px; background: var(--gray-bg); border: 0.5px solid var(--border); border-radius: 12px; padding: 3px 8px; font-size: 13px; cursor: pointer; }
+.reaction-pill.mine { background: rgba(0,122,255,.12); border-color: var(--blue); }
+.reaction-pill span { font-size: 11px; color: var(--text-muted); }
+
+/* typing indicator row */
+.typing-wrap { display: flex; gap: 6px; align-items: flex-end; margin: 2px 0; min-height: 32px; }
+.typing-name { font-size: 10px; color: var(--text-muted); padding: 0 4px; margin-bottom: 2px; }
+
+/* reply bar */
+#reply-bar { display: none; background: var(--gray-bg); border-top: 0.5px solid var(--border); border-left: 3px solid var(--blue); padding: 6px 12px; flex-shrink: 0; gap: 8px; align-items: center; }
+#reply-bar.open { display: flex; }
+#reply-preview { font-size: 11px; color: var(--text-muted); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#reply-cancel { background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; }
+
+/* reply quote in bubble */
+.reply-quote { background: rgba(0,0,0,.06); border-left: 2px solid rgba(0,0,0,.2); border-radius: 6px; padding: 4px 8px; margin-bottom: 6px; font-size: 11px; color: var(--text-sub); cursor: pointer; }
+.msg-wrap.own .reply-quote { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.4); color: rgba(255,255,255,.8); }
+.reply-quote-author { font-weight: 700; margin-bottom: 1px; }
+.reply-quote-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* bookmark star */
+.msg-star { font-size: 12px; padding: 0 4px; cursor: pointer; opacity: 0; transition: opacity .15s; }
+.msg-body:hover .msg-star { opacity: .6; }
+.msg-star.starred { opacity: 1; color: #FFD60A; }
+
+/* pin bar */
+#pin-bar { display: none; background: var(--announce-bg); border-bottom: 1px solid var(--announce-border); padding: 8px 14px; flex-shrink: 0; align-items: center; gap: 8px; }
+#pin-bar.show { display: flex; }
+#pin-bar-text { font-size: 12px; color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#pin-bar-label { font-size: 10px; font-weight: 700; color: #856404; white-space: nowrap; }
+@media (prefers-color-scheme: dark) { #pin-bar-label { color: #FFD60A; } }
+#pin-bar-close { background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; }
+
+/* dark bubble fix */
+@media (prefers-color-scheme: dark) {
+  .msg-wrap:not(.own) .bubble { background: #3A3A3C; }
+  .reply-quote { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.2); }
+}
 </style>
 </head>
 <body>
-<div class="update-banner" id="updateBanner" onclick="doUpdate()">&#x1f504; New version available — tap here to update</div>
 
-<div class="app">
-  <div class="header">
-    <h1>Steak Teppei Orders</h1>
-    <div class="header-sub">Makai Market Food Court &middot; Ala Moana Center</div>
-  </div>
-  <div class="deadline-alert" id="deadlineAlertBanner"></div>
-  <div class="changelog-overlay" id="changelogOverlay" onclick="handleOverlayClick(event)">
-    <div class="changelog-box">
-      <div class="changelog-hero">
-        <span class="changelog-hero-icon">🚀</span>
-        <div class="changelog-hero-version" id="cl-version"></div>
-        <div class="changelog-hero-date" id="cl-date"></div>
-      </div>
-      <div class="changelog-body">
-        <div class="changelog-body-title">What's new</div>
-        <ul class="changelog-items" id="cl-items"></ul>
-        <a class="changelog-history-link" href="changelog.html">View full version history →</a>
-        <button class="changelog-ok" onclick="closeChangelog()">Got it! 👍</button>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="slabel">Supplier</div>
-    <div class="vendor-grid" id="vendorGrid"></div>
-  </div>
-  <div class="card">
-    <div class="slabel">Delivery Date</div>
-    <div class="cal-nav">
-      <button class="cal-nav-btn" onclick="calPrev()">&#8249;</button>
-      <span class="cal-month-label" id="calLabel"></span>
-      <button class="cal-nav-btn" onclick="calNext()">&#8250;</button>
-    </div>
-    <div style="text-align:right;margin-bottom:4px;">
-      <button class="cal-today-btn" onclick="goToday()">Today</button>
-    </div>
-    <div class="cal-grid" id="calHeaders"></div>
-    <!-- ⑤ 業者未選択時の誘導メッセージ -->
-    <div class="cal-hint" id="calHint">👆 Select a supplier above to see available delivery dates</div>
-    <div class="cal-grid" id="calCells"></div>
-    <!-- ⑩ 次回配達可能日 -->
-    <div class="next-delivery" id="nextDelivery">
-      <div class="next-delivery-label">📅 Next available delivery</div>
-      <div class="next-delivery-date" id="nextDeliveryDate">—</div>
-    </div>
-    <!-- カレンダー凡例 -->
-    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding:7px 4px 4px;border-top:.5px solid var(--border);">
-      <span style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text-hint);"><span style="width:12px;height:12px;border-radius:3px;background:#fef9c3;display:inline-block;border:.5px solid #ca8a04;"></span>Marathon week</span>
-      <span style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text-hint);"><span style="width:12px;height:12px;border-radius:3px;background:#f1f5f9;display:inline-block;border:.5px solid #94a3b8;"></span>Slow season</span>
-      <span style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text-hint);"><span style="width:12px;height:12px;border-radius:3px;background:#fef3c7;display:inline-block;border:.5px solid #d97706;"></span>Holiday unlock</span>
-      <span style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text-hint);"><span style="width:12px;height:12px;border-radius:3px;background:var(--orange);display:inline-block;"></span>Selected</span>
-    </div>
-    <div class="cal-selected" id="calDisplay">No date selected</div>
-    <div class="cal-deadline" id="calDeadline"></div>
-    <!-- ④ 選択日の天気 -->
-    <div id="selectedDateWeather" style="display:none;margin-top:6px;"></div>
-    <!-- 天気ウィジェット -->
-    <div class="weather-wrap">
-      <div class="weather-title">Honolulu 7-Day Forecast <span id="weatherUpdated"></span></div>
-      <div class="weather-row" id="weatherRow"><div class="weather-loading">Loading weather...</div></div>
-    </div>
-    <div class="upcoming-wrap">
-      <div class="upcoming-title">Upcoming busy periods</div>
-      <div id="upcomingList"></div>
-    </div>
+<input type="file" id="file-input" accept="image/*" style="display:none;">
 
-    <div class="ai-wrap" id="aiWrap">
-      <div class="ai-header">
-        <span class="ai-title">AI 7-Day Outlook</span>
-        <span class="ai-badge">✦ Gemini AI</span>
-      </div>
-      <div id="aiContent"><div class="ai-loading">🤖 Analyzing weather, sales trends &amp; Hawaii news...</div></div>
-    </div>
-    <div class="ly-wrap" id="lyWrap" style="display:none">
-      <div class="ly-title">Last Year — Same Week</div>
-      <div id="lyList"><div class="ly-loading">Select a delivery date to see last year's sales</div></div>
-    </div>
-    <div class="flex-row" onclick="toggleFlexRow()">
-      <span class="flex-row-label">&#9881; Holiday / Special Schedule</span>
-      <span style="font-size:10px;color:#92400e;">tap to expand</span>
-    </div>
-    <div class="flex-expand" id="flexExpand">
-      <div class="flex-expand-inner">
-        <div class="flex-expand-txt">Unlock all dates<small>for irregular delivery requests</small></div>
-        <div class="toggle-wrap">
-          <label class="toggle"><input type="checkbox" id="flexToggle" onchange="toggleFlex()"><span class="slider"></span></label>
-          <span class="toggle-txt" id="flexTxt">OFF</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="slabel">Items &amp; Quantities</div>
-    <!-- ⑨ 最近の注文 -->
-    <div id="recentOrdersWrap"></div>
-    <div id="itemsList"><div class="items-placeholder">Select a supplier above to see items</div></div>
-    <button class="custom-toggle" onclick="toggleCustom()">+ Add custom item</button>
-    <div class="custom-row" id="customRow">
-      <input type="text" id="newItemName" placeholder="Custom item name...">
-      <button onclick="addCustomItem()">Add</button>
-    </div>
-    <div class="note-wrap">
-      <div class="note-label">Note (optional)</div>
-      <textarea id="orderNote" placeholder="e.g. Please call before delivery..." oninput="autoResize(this)"></textarea>
-    </div>
-  </div>
-  <div class="card">
-    <button class="go-btn" id="goBtn" onclick="goToSendOrHint()">Preview &amp; Send &rarr;</button>
-    <button class="clear-btn" id="clearBtn" onclick="clearAll()" style="display:none;">&#x2715; Clear All</button>
+<!-- UPDATE MODAL -->
+<div id="update-modal">
+  <div class="update-box">
+    <div class="update-icon">🎉</div>
+    <div class="update-title" id="update-title">App Updated</div>
+    <div class="update-msg" id="update-msg"></div>
+    <button class="update-ok" id="update-ok-btn" onclick="dismissUpdate()">OK</button>
   </div>
 </div>
-<a class="sales-btn" href="sales.html">
-  <span class="sales-btn-icon">📊</span>
-  <span class="sales-btn-text">
-    <span class="sales-btn-title">Sales Data</span>
-    <span class="sales-btn-sub">Revenue · Orders · Busy Periods</span>
-  </span>
-  <span class="sales-btn-arrow">›</span>
-</a>
-<a class="sales-btn" href="seasons.html" style="background:linear-gradient(135deg,#1e3a5f 0%,#1a3050 100%);">
-  <span class="sales-btn-icon">🗓️</span>
-  <span class="sales-btn-text">
-    <span class="sales-btn-title">Busy &amp; Slow Seasons</span>
-    <span class="sales-btn-sub">US · Japan · Hawaii · Canada</span>
-  </span>
-  <span class="sales-btn-arrow">›</span>
-</a>
-<a class="sales-btn" href="links.html" style="background:linear-gradient(135deg,#1a2e1a 0%,#162e13 100%);">
-  <span class="sales-btn-icon">🛒</span>
-  <span class="sales-btn-text">
-    <span class="sales-btn-title">Product Links</span>
-    <span class="sales-btn-sub">Amazon · Sam's Club — tap to order</span>
-  </span>
-  <span class="sales-btn-arrow">›</span>
-</a>
-<a class="sales-btn" href="manual.html" style="background:linear-gradient(135deg,#2e1a2e 0%,#1e0e2e 100%);">
-  <span class="sales-btn-icon">📖</span>
-  <span class="sales-btn-text">
-    <span class="sales-btn-title">User Guide</span>
-    <span class="sales-btn-sub">How to use this app</span>
-  </span>
-  <span class="sales-btn-arrow">›</span>
-</a>
-  <div class="app-version">Last updated: April 12, 2026 &nbsp;·&nbsp; <a href="changelog.html" style="color:var(--text-hint);text-decoration:underline;">Version History</a> &nbsp;·&nbsp; <span id="appVerDisplay"></span></div>
-<script>
 
-// Hawaii State + US Federal Holidays (observed dates)
-var HI_NAMES={
-  '2026-01-01':"New Year's Day",
-  '2026-01-19':'MLK Day',
-  '2026-02-16':"Presidents Day",
-  '2026-03-26':'Prince Kuhio Day',
-  '2026-04-03':'Good Friday',
-  '2026-05-25':'Memorial Day',
-  '2026-06-11':'King Kamehameha Day',
-  '2026-07-03':'Independence Day (observed)',
-  '2026-08-21':'Statehood Day',
-  '2026-09-07':'Labor Day',
-  '2026-11-03':'General Election Day',
-  '2026-11-11':'Veterans Day',
-  '2026-11-26':'Thanksgiving',
-  '2026-12-25':'Christmas',
-  '2027-01-01':"New Year's Day",
-  '2027-01-18':'MLK Day',
-  '2027-02-15':"Presidents Day",
-  '2027-03-26':'Prince Kuhio Day / Good Friday',
-  '2027-05-31':'Memorial Day',
-  '2027-06-11':'King Kamehameha Day',
-  '2027-07-05':'Independence Day (observed)',
-  '2027-08-20':'Statehood Day',
-  '2027-09-06':'Labor Day',
-  '2027-11-11':'Veterans Day',
-  '2027-11-25':'Thanksgiving',
-  '2027-12-27':'Christmas (observed)'
+<!-- CLARIFY MODAL -->
+<div id="clarify-modal">
+  <div class="clarify-box">
+    <div class="clarify-icon">🤔</div>
+    <div class="clarify-title" id="clarify-title"></div>
+    <div class="clarify-question" id="clarify-question"></div>
+    <div class="clarify-label" id="clarify-label"></div>
+    <div class="clarify-preview" id="clarify-preview"></div>
+    <div class="clarify-actions">
+      <button class="clarify-btn-send" onclick="sendClarified()">
+        <span id="clarify-send-label">Send this ✓</span>
+      </button>
+      <button class="clarify-btn-orig" onclick="sendOriginal()">
+        <span id="clarify-orig-label">Send as-is</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div id="ctx-backdrop" onclick="closeCtxMenu()"></div>
+<div id="ctx-menu">
+  <div class="ctx-reactions">
+    <button class="ctx-react-btn" onclick="ctxReact('👍')">👍</button>
+    <button class="ctx-react-btn" onclick="ctxReact('❤️')">❤️</button>
+    <button class="ctx-react-btn" onclick="ctxReact('😂')">😂</button>
+    <button class="ctx-react-btn" onclick="ctxReact('✅')">✅</button>
+    <button class="ctx-react-btn" onclick="ctxReact('🙏')">🙏</button>
+  </div>
+  <div class="ctx-item" id="ctx-reply" onclick="ctxReply()">↩️ Reply</div>
+  <div class="ctx-item" id="ctx-bookmark" onclick="ctxBookmark()">⭐ Bookmark</div>
+  <div class="ctx-item" id="ctx-pin" onclick="ctxPin()">📌 Pin</div>
+  <div class="ctx-item" id="ctx-edit" onclick="ctxEdit()">✏️ Edit</div>
+  <div class="ctx-item" id="ctx-copy" onclick="ctxCopy()">📋 Copy</div>
+  <div class="ctx-item" id="ctx-search-from" onclick="ctxSearchFrom()">🔍 Search similar</div>
+  <div class="ctx-item danger" id="ctx-delete" onclick="ctxDelete()">🗑 Delete</div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button id="lightbox-save" onclick="saveImage(event)">💾 Save</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- LOGIN -->
+<div id="screen-login" class="screen active">
+  <div class="login-logo-img">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="100%" height="100%" viewBox="120 100 375 600" preserveAspectRatio="xMidYMid meet" style="display:block;">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,858.898)" d="M0 858.898H612.288V0H0Z"/>
+</clipPath>
+</defs>
+<g inkscape:groupmode="layer" inkscape:label="&#x30EC;&#x30A4;&#x30E4;&#x30FC; 1">
+<path transform="matrix(1,0,0,-1,340.1883,419.5567)" d="M0 0V2.632Z" fill="#ffffff"/>
+<g>
+<path transform="matrix(1,0,0,-1,305.4585,667.2542)" d="M0 0C-48.988 .285-94.85 19.468-129.139 54.013-163.603 88.736-182.422 135.095-182.128 184.554-181.838 233.395-162.726 279.129-128.312 313.328-93.931 347.495-47.956 366.495 1.143 366.828H1.319C50.596 366.507 96.706 347.351 131.157 312.89 165.786 278.252 184.75 231.955 184.556 182.528 184.364 133.628 165.341 87.79 130.99 53.454 96.501 18.982 50.376-.003 1.114-.003Z" fill="#4e332e"/>
+<path transform="matrix(1,0,0,-1,306.6907,313.69264)" d="M0 0C94.332-.614 170.429-75.859 170.057-170.983 169.69-264.882 94.131-340.85-1.155-340.296-94.805-339.751-170.659-264.331-170.094-169.088-169.539-75.38-94.277-.639 0 0" fill="#f15d2b"/>
+<path transform="matrix(1,0,0,-1,421.4653,535.2079)" d="M0 0C-8.513 1.63-12.05 7.453-7.971 13.184-6.514 15.231-3.042 16.996-.535 16.938 9.082 16.713 18.074 13.801 26.068 8.304 29.912 5.661 30.8 1.045 28.561-3.09 26.565-6.776 22.642-7.958 18.136-6.23 17.54-6.002 16.942-5.779 16.576-5.64-9.146-70.045-55.714-103.459-125.668-100.765-153.426-99.697-178.296-88.82-200.156-71.582-222.078-54.295-236.791-31.948-245.392-5.911-248.149-6.29-250.606-7.121-252.922-6.83-256.257-6.41-258.479-4.033-259.205-.712-259.958 2.731-258.908 5.932-256.098 7.96-247.999 13.806-238.748 16.613-228.844 17.075-224.297 17.287-220.678 14.01-220.068 9.853-219.506 6.015-222.148 2.108-226.318 .714-227.27 .396-228.293 .292-229.271 .093-223.926-38.79-169.071-82.614-125.381-84.401-93.16-85.719-64.258-78.09-39.146-57.642-20.474-42.439-7.274-23.405 0 0" fill="#4e332e"/>
+<path transform="matrix(1,0,0,-1,195.7552,425.1293)" d="M0 0C0-3.938-3.164-7.041-7.181-7.041H-12.294V-70.889C-12.294-74.947-15.58-78.17-19.718-78.17-23.857-78.17-27.143-74.947-27.143-70.889V-7.041H-32.255C-36.272-7.041-39.437-3.938-39.437 0-39.437 3.938-36.272 7.041-32.255 7.041H-7.181C-3.164 7.041 0 3.938 0 0" fill="#030000"/>
+<path transform="matrix(1,0,0,-1,216.1395,463.91593)" d="M0 0V14.68C0 20.408-1.217 22.317-4.382 22.317-7.181 22.317-8.52 20.408-8.52 14.68V0ZM-22.883-19.929V14.202C-22.883 27.211-15.458 34.133-4.382 34.133 6.938 34.133 14.12 27.211 14.12 14.202V-2.506C14.12-8.473 10.833-11.337 4.748-11.337H-8.52V-19.929C-8.52-25.181-6.816-27.448-3.773-27.448-.243-27.448 .487-25.181 .487-22.078V-21.362C.487-17.663 3.408-14.798 7.181-14.798 10.955-14.798 13.876-17.663 13.876-21.362V-23.151C13.876-34.251 6.938-40.098-3.895-40.098-15.458-40.098-22.883-33.176-22.883-19.929" fill="#030000"/>
+<path transform="matrix(1,0,0,-1,410.5644,463.91593)" d="M0 0V14.68C0 20.408-1.217 22.317-4.382 22.317-7.181 22.317-8.521 20.408-8.521 14.68V0ZM-22.883-19.929V14.202C-22.883 27.211-15.459 34.133-4.382 34.133 6.938 34.133 14.119 27.211 14.119 14.202V-2.506C14.119-8.473 10.833-11.337 4.747-11.337H-8.521V-19.929C-8.521-25.181-6.817-27.448-3.774-27.448-.244-27.448 .487-25.181 .487-22.078V-21.362C.487-17.663 3.408-14.798 7.181-14.798 10.954-14.798 13.876-17.663 13.876-21.362V-23.151C13.876-34.251 6.938-40.098-3.896-40.098-15.459-40.098-22.883-33.176-22.883-19.929" fill="#030000"/>
+<path transform="matrix(1,0,0,-1,434.2777,496.1379)" d="M0 0V58.239C0 62.177 3.165 65.4 7.181 65.4 11.199 65.4 14.363 62.177 14.363 58.239V0C14.363-3.939 11.199-7.041 7.181-7.041 3.165-7.041 0-3.939 0 0M-.122 76.379C-.122 80.437 3.043 83.54 7.181 83.54 11.32 83.54 14.485 80.437 14.485 76.379 14.485 72.321 11.32 69.218 7.181 69.218 3.043 69.218-.122 72.321-.122 76.379" fill="#030000"/>
+<path transform="matrix(1,0,0,-1,303.469,408.5564)" d="M0 0V-52.733C0-67.213-12.286-74.847-31.016-74.847-33.232-74.847-35.648-74.716-37.865-74.19V-88.275C-37.865-92.617-43.1-96.04-49.746-96.04-56.393-96.04-61.629-92.617-61.629-88.275V0C-61.629 14.48-49.344 22.114-31.016 22.114-12.286 22.114 0 14.48 0 0" fill="#030000"/>
+<path transform="matrix(1,0,0,-1,290.0568,408.7887)" d="M0 0C-1.3 6.318-4.925 8.555-14.351 8.555-22.689 8.555-26.678 6.318-27.978 0V-51.55C-26.678-57.737-21.965-60.634-14.351-60.634-4.925-60.634-1.3-58.658 0-52.341Z" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,377.4421,408.5564)" d="M0 0V-52.733C0-67.213-12.286-74.847-31.016-74.847-33.232-74.847-35.648-74.716-37.865-74.19V-88.275C-37.865-92.617-43.1-96.04-49.746-96.04-56.393-96.04-61.629-92.617-61.629-88.275V0C-61.629 14.48-49.344 22.114-31.016 22.114-12.286 22.114 0 14.48 0 0" fill="#030000"/>
+<path transform="matrix(1,0,0,-1,364.0299,408.7887)" d="M0 0C-1.3 6.318-4.925 8.555-14.351 8.555-22.689 8.555-26.678 6.318-27.978 0V-51.55C-26.678-57.737-21.965-60.634-14.351-60.634-4.925-60.634-1.3-58.658 0-52.341Z" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,285.3673,449.3739)" d="M0 0C0 9.553-5.018 15.218-11.209 15.218-17.399 15.218-22.418 9.553-22.418 0V-1.172C-22.293-2.891-22.215-4.298-22.245-4.298-22.275-4.298-22.22-6.848-22.124-9.964L-21.857-18.585C-21.76-21.702-19.13-24.264-16.012-24.279L-6.453-24.324C-3.335-24.339-.693-21.802-.583-18.686L-.273-9.964C-.162-6.847-.107-4.298-.149-4.298-.192-4.298-.125-2.891 0-1.172Z" fill="#2c292a"/>
+<path transform="matrix(1,0,0,-1,281.0426,450.76493)" d="M0 0C0-4.426-3.229-8.015-7.213-8.015-11.197-8.015-14.427-4.426-14.427 0-14.427 4.426-11.197 8.015-7.213 8.015-3.229 8.015 0 4.426 0 0" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,283.253,465.0134)" d="M0 0C0-2.336-1.894-4.23-4.23-4.23-6.566-4.23-8.46-2.336-8.46 0-8.46 2.336-6.566 4.23-4.23 4.23-1.894 4.23 0 2.336 0 0" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,284.7881,447.28013)" d="M0 0C0 10.508-5.52 16.739-12.33 16.739-19.139 16.739-24.659 10.508-24.659 0V-1.289C-24.522-3.18-24.437-4.728-24.47-4.728-24.502-4.728-24.45-7.278-24.354-10.394L-24.025-21.011C-23.929-24.127-21.298-26.689-18.18-26.704L-6.531-26.76C-3.413-26.774-.772-24.237-.661-21.121L-.28-10.393C-.169-7.277-.117-4.728-.164-4.728-.211-4.728-.137-3.18 0-1.289Z" fill="#2c292a"/>
+<path transform="matrix(1,0,0,-1,277.3212,453.02793)" d="M0 0C0-3.984-2.907-7.213-6.492-7.213-10.077-7.213-12.984-3.984-12.984 0-12.984 3.984-10.077 7.213-6.492 7.213-2.907 7.213 0 3.984 0 0" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,280.7493,465.97633)" d="M0 0C0-1.892-1.534-3.426-3.426-3.426-5.319-3.426-6.853-1.892-6.853 0-6.853 1.892-5.319 3.426-3.426 3.426-1.534 3.426 0 1.892 0 0" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,360.7661,445.98023)" d="M0 0C0 10.508-5.52 16.739-12.33 16.739-19.139 16.739-24.659 10.508-24.659 0V-1.289C-24.522-3.18-24.437-4.728-24.47-4.728-24.502-4.728-24.45-7.278-24.354-10.394L-24.025-21.011C-23.929-24.127-21.298-26.689-18.18-26.704L-6.531-26.76C-3.413-26.774-.772-24.237-.661-21.121L-.28-10.393C-.169-7.277-.117-4.728-.164-4.728-.211-4.728-.137-3.18 0-1.289Z" fill="#2c292a"/>
+<path transform="matrix(1,0,0,-1,353.2991,451.7279)" d="M0 0C0-3.984-2.907-7.213-6.492-7.213-10.077-7.213-12.984-3.984-12.984 0-12.984 3.984-10.077 7.213-6.492 7.213-2.907 7.213 0 3.984 0 0" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,356.7272,464.6763)" d="M0 0C0-1.892-1.534-3.426-3.426-3.426-5.319-3.426-6.853-1.892-6.853 0-6.853 1.892-5.319 3.426-3.426 3.426-1.534 3.426 0 1.892 0 0" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,357.9452,450.67393)" d="M0 0C0 9.553-5.018 15.218-11.209 15.218-17.399 15.218-22.418 9.553-22.418 0V-1.172C-22.293-2.891-22.215-4.298-22.245-4.298-22.275-4.298-22.22-6.848-22.124-9.964L-21.857-18.585C-21.76-21.702-19.13-24.264-16.012-24.279L-6.453-24.324C-3.335-24.339-.693-21.802-.583-18.686L-.273-9.964C-.162-6.847-.107-4.298-.149-4.298-.192-4.298-.125-2.891 0-1.172Z" fill="#2c292a"/>
+<path transform="matrix(1,0,0,-1,353.6205,452.065)" d="M0 0C0-4.426-3.229-8.015-7.213-8.015-11.197-8.015-14.427-4.426-14.427 0-14.427 4.426-11.197 8.015-7.213 8.015-3.229 8.015 0 4.426 0 0" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,355.8309,466.31343)" d="M0 0C0-2.336-1.894-4.23-4.23-4.23-6.566-4.23-8.46-2.336-8.46 0-8.46 2.336-6.566 4.23-4.23 4.23-1.894 4.23 0 2.336 0 0" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,380.2134,287.0608)" d="M0 0C-8.147 .011-17.294 .551-22.717 6.846-27.639 12.562-27.634 20.564-26.11 30.822-25.717 33.471-25.342 36.126-24.968 38.784-23.379 50.018-21.739 61.635-18.704 72.931-16.631 80.645-7.246 88.602 .61 89.302 .921 89.331 1.243 89.345 1.568 89.345 9.296 89.345 18.405 80.022 20.164 72.67 24.154 55.982 26.604 39.289 28.656 23.734 29.545 17.006 28.201 11.547 24.661 7.507 18.827 .852 8.498 0 .151 0Z" fill="#4e332e"/>
+<path transform="matrix(1,0,0,-1,380.2258,279.10084)" d="M0 0C-17.647 .025-20.911 3.762-18.251 21.693-16.201 35.503-14.633 49.488-11.03 62.906-9.81 67.449-3.24 73.009 1.304 73.415 4.81 73.728 11.351 67.284 12.411 62.856 16.193 47.049 18.624 30.875 20.754 14.733 22.185 3.89 16.143-.023 0 0" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,231.0868,287.0608)" d="M0 0C8.147 .011 17.294 .551 22.717 6.846 27.639 12.562 27.634 20.564 26.11 30.822 25.717 33.471 25.342 36.126 24.968 38.784 23.379 50.018 21.739 61.635 18.704 72.931 16.631 80.645 7.246 88.602-.61 89.302-.921 89.331-1.243 89.345-1.568 89.345-9.296 89.345-18.405 80.022-20.164 72.67-24.154 55.982-26.604 39.289-28.656 23.734-29.545 17.006-28.201 11.547-24.661 7.507-18.827 .852-8.499 0-.151 0Z" fill="#4e332e"/>
+<path transform="matrix(1,0,0,-1,231.0744,279.10084)" d="M0 0C17.647 .025 20.911 3.762 18.251 21.693 16.201 35.503 14.633 49.488 11.03 62.906 9.81 67.449 3.24 73.009-1.304 73.415-4.81 73.728-11.351 67.284-12.411 62.856-16.193 47.049-18.624 30.875-20.754 14.733-22.185 3.89-16.143-.023 0 0" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,151.183,318.40144)" d="M0 0C13.471-8.499 26.822-12.537 42.965-12.942 38.924-21.357 35.867-31.013 33.537-40.951H275.559C273.229-31.013 270.172-21.357 266.132-12.941 282.279-12.536 295.631-8.497 309.112 .014 322.593 8.556 329.433 30.302 329.443 46.72 329.432 64.408 322.025 79.244 309.094 87.441 294.874 96.41 280.787 100.412 263.405 100.416 252.887 100.411 242.764 98.911 233.315 95.957L232.803 95.797 231.006 95.071 230.367 95.923 229.868 96.456C215.805 111.452 188.637 127.476 154.534 127.476 120.461 127.476 93.293 111.452 79.229 96.456L78.732 95.925 78.091 95.071 76.295 95.797 75.782 95.957C66.334 98.911 56.211 100.411 45.683 100.416 28.312 100.412 14.223 96.41-.025 87.424-12.929 79.243-20.336 64.407-20.346 46.705-20.336 30.306-13.5 8.56 0 0" fill="#4e332e"/>
+<path transform="matrix(1,0,0,-1,158.2617,307.1819)" d="M0 0C10.722-6.765 22.228-10.916 38.549-10.928L55.719-10.529 50.366-25.115C48.401-28.508 46.623-32.339 45.006-36.506H249.934C248.316-32.339 246.538-28.508 244.573-25.115L239.22-10.533 255.973-10.925 256.384-10.928C272.711-10.916 284.217-6.765 294.933 0 305.642 6.786 309.092 25.149 309.098 35.493 309.092 45.832 305.642 58.216 294.94 65.001 284.205 71.771 272.678 75.926 256.331 75.93 246.894 75.926 238.081 74.541 230.195 72.076L219.432 67.731 213.112 76.161C199.789 90.368 175.445 102.995 147.47 102.99 119.495 102.995 95.15 90.368 81.828 76.161L75.501 67.731 64.745 72.076C56.858 74.541 48.039 75.926 38.608 75.93 22.261 75.926 10.735 71.771 0 65.001-10.702 58.216-14.153 45.832-14.159 35.493-14.153 25.149-10.702 6.786 0 0" fill="#ffffff"/>
+<path transform="matrix(1,0,0,-1,212.0962,301.3376)" d="M0 0C0 4.016 .525 7.516 1.575 10.09 3.256 14.104 6.406 15.752 9.766 15.134 13.232 14.516 15.332 11.737 14.177 7.928 13.442 5.456 12.602 3.706 12.602-.206 12.602-4.839 14.807-6.692 17.537-6.692 19.323-6.692 20.793-5.971 21.738-3.809 22.473-1.956 22.893 1.03 22.893 4.016 22.893 6.795 22.473 9.678 21.843 11.428 20.688 14.516 18.588 16.987 14.807 19.767L11.867 21.929C5.356 26.767 1.68 32.43 1.68 40.46 1.68 51.167 8.191 57.241 18.378 57.241 27.619 57.241 34.129 52.814 34.129 41.592V40.357C34.129 36.754 31.714 34.283 28.354 34.283 24.783 34.283 22.368 36.548 22.368 40.357V41.078C22.368 44.681 21.003 46.225 18.588 46.225 16.067 46.225 14.492 44.269 14.492 40.975 14.492 37.166 15.857 35.209 19.638 32.43L24.153 29.032C31.189 23.782 35.705 16.575 35.705 5.766 35.705-10.295 29.404-17.913 17.537-17.913 6.196-17.913 0-10.707 0 0" fill="#f15d2b"/>
+<path transform="matrix(1,0,0,-1,285.397,302.0581)" d="M0 0V-1.956C0-12.354-6.301-16.987-13.967-16.987-22.998-16.987-28.984-12.457-28.984-1.647V34.282H-30.454C-33.71 34.282-36.125 36.754-36.125 39.842-36.125 42.93-33.71 45.402-30.454 45.402H-28.984V54.461C-28.984 57.858-26.254 60.638-22.788 60.638-19.323 60.638-16.593 57.858-16.593 54.461V45.402H-13.337C-10.187 45.402-7.666 42.93-7.666 39.842-7.666 36.754-10.187 34.282-13.337 34.282H-16.593V-1.853C-16.593-5.044-15.648-6.28-13.862-6.28-12.182-6.28-11.237-4.942-11.237-2.059V0C-11.237 3.5-9.136 5.765-5.566 5.765-2.206 5.765 0 3.294 0 0" fill="#f15d2b"/>
+<path transform="matrix(1,0,0,-1,308.0804,284.4535)" d="M0 0V12.663C0 17.605-1.051 19.252-3.781 19.252-6.196 19.252-7.351 17.605-7.351 12.663V0ZM-19.743-17.193V12.251C-19.743 23.473-13.337 29.444-3.781 29.444 5.986 29.444 12.181 23.473 12.181 12.251V-2.162C12.181-7.309 9.346-9.78 4.096-9.78H-7.351V-17.193C-7.351-21.723-5.881-23.679-3.256-23.679-.21-23.679 .42-21.723 .42-19.046V-18.429C.42-15.237 2.94-12.766 6.195-12.766 9.45-12.766 11.972-15.237 11.972-18.429V-19.972C11.972-29.547 5.986-34.592-3.36-34.592-13.337-34.592-19.743-28.62-19.743-17.193" fill="#f15d2b"/>
+<path transform="matrix(1,0,0,-1,345.5722,294.4397)" d="M0 0C0 4.839-1.575 7.104-3.886 7.104-6.406 7.104-7.561 5.559-7.561 .515V-8.648C-7.561-13.487-6.406-15.237-3.886-15.237-1.575-15.237 0-12.766 0-8.03ZM12.287 22.341V-17.811C12.287-21.208 9.556-23.885 6.091-23.885 4.725-23.885 3.36-23.473 2.415-22.649 .315-24.091-2.835-24.811-5.041-24.811-13.967-24.811-19.742-19.664-19.742-9.986V1.647C-19.742 11.531-13.967 16.678-5.041 16.678-3.57 16.678-1.681 16.266 0 15.648V22.341C0 27.076-1.155 28.415-3.36 28.415-5.776 28.415-6.932 26.767-6.932 23.987V23.781C-6.932 20.59-9.241 18.119-12.707 18.119-16.277 18.119-18.587 20.487-18.587 24.296V25.12C-18.587 33.356-13.022 39.327-3.466 39.327 7.141 39.327 12.287 33.356 12.287 22.341" fill="#f15d2b"/>
+<path transform="matrix(1,0,0,-1,397.8718,295.3664)" d="M0 0V-16.884C0-20.281-2.731-22.958-6.197-22.958-9.661-22.958-12.392-20.281-12.392-16.884V-.308C-12.392 3.294-13.862 5.044-16.908 5.044H-19.953V-16.884C-19.953-20.281-22.684-22.958-26.149-22.958-29.614-22.958-32.345-20.281-32.345-16.884V49.005C-32.345 52.402-29.614 55.182-26.149 55.182-22.684 55.182-19.953 52.402-19.953 49.005V15.855H-17.433C-14.597 15.855-13.232 17.502-13.232 21.414V33.768C-13.232 37.166-10.712 39.945-7.246 39.945-3.781 39.945-1.051 37.166-1.051 33.768V19.664C-1.051 15.443-2.205 12.045-4.516 9.883-1.366 8.236 0 4.53 0 0" fill="#f15d2b"/>
+</g>
+</g>
+</svg>
+
+  </div>
+  <div class="login-sub">Staff Chat · Enter your PIN</div>
+  <div class="pin-box">
+    <div class="pin-label">Enter your PIN code</div>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+    </div>
+    <div class="numpad">
+      <button class="num-btn" onclick="pinInput('1')">1</button>
+      <button class="num-btn" onclick="pinInput('2')">2</button>
+      <button class="num-btn" onclick="pinInput('3')">3</button>
+      <button class="num-btn" onclick="pinInput('4')">4</button>
+      <button class="num-btn" onclick="pinInput('5')">5</button>
+      <button class="num-btn" onclick="pinInput('6')">6</button>
+      <button class="num-btn" onclick="pinInput('7')">7</button>
+      <button class="num-btn" onclick="pinInput('8')">8</button>
+      <button class="num-btn" onclick="pinInput('9')">9</button>
+      <button class="num-btn empty"></button>
+      <button class="num-btn" onclick="pinInput('0')">0</button>
+      <button class="num-btn del" onclick="pinDelete()">⌫</button>
+    </div>
+    <div class="login-error" id="login-error"></div>
+  </div>
+  <div class="login-admin-link" id="login-admin-link" style="display:none;">
+    <a href="./admin.html">⚙️ Admin Panel</a>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="screen-chat" class="screen">
+  <div id="install-banner">
+    <span>📲 Add to Home Screen</span>
+    <button class="ib-btn" onclick="showInstallGuide()">How to</button>
+    <button class="ib-close" onclick="dismissBanner()">✕</button>
+  </div>
+  <div id="conn-status">⚠️ Reconnecting...</div>
+  <div id="pin-bar"><span id="pin-bar-label">📌 Pinned</span><span id="pin-bar-text"></span><button id="pin-bar-close" onclick="dismissPinBar()">✕</button></div>
+  <div class="chat-header">
+    <div class="ch-av" style="overflow:hidden;padding:2px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="120 100 375 600" preserveAspectRatio="xMidYMid meet" style="display:block;">
+      <g inkscape:groupmode="layer" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"><g><path transform="matrix(1,0,0,-1,305.4585,667.2542)" d="M0 0C-48.988 .285-94.85 19.468-129.139 54.013-163.603 88.736-182.422 135.095-182.128 184.554-181.838 233.395-162.726 279.129-128.312 313.328-93.931 347.495-47.956 366.495 1.143 366.828H1.319C50.596 366.507 96.706 347.351 131.157 312.89 165.786 278.252 184.75 231.955 184.556 182.528 184.364 133.628 165.341 87.79 130.99 53.454 96.501 18.982 50.376-.003 1.114-.003Z" fill="#4e332e"/><path transform="matrix(1,0,0,-1,306.6907,313.69264)" d="M0 0C94.332-.614 170.429-75.859 170.057-170.983 169.69-264.882 94.131-340.85-1.155-340.296-94.805-339.751-170.659-264.331-170.094-169.088-169.539-75.38-94.277-.639 0 0" fill="#f15d2b"/></g></g>
+      </svg>
+      <div class="ch-badge" id="ch-badge"></div>
+    </div>
+    <div class="ch-info">
+      <h2>Steak Teppei</h2>
+      <p>Auto-translated · 自動翻訳 · 自动翻译 · <span id="ver-display"></span></p>
+    </div>
+    <button class="icon-btn" style="color:var(--gray-mid);font-size:18px;" onclick="toggleSearch()">🔍</button>
+    <button class="signout-btn" onclick="logout()">🚪 Sign out</button>
+  </div>
+  <div id="search-bar">
+    <input id="search-input" type="search" placeholder="Search messages..." autocomplete="off">
+    <div class="search-nav"><button class="search-nav-btn" onclick="searchNav(-1)">↑</button><span id="search-count"></span><button class="search-nav-btn" onclick="searchNav(1)">↓</button></div>
+    <button id="search-close" onclick="toggleSearch()">Cancel</button>
+  </div>
+  <!-- Quick links bar -->
+  <div class="quick-links" id="quick-links">
+    <a class="quick-link" href="#" id="ql-seasons-link" onclick="openSeasons()">📅 <span id="ql-seasons">Seasons</span></a>
+    <button class="quick-link notif-btn" id="ql-notif-btn" onclick="toggleNotifications()">🔔 <span id="ql-notif">Notify</span></button>
+    <button class="quick-link admin" id="ql-admin-btn" style="display:none;" onclick="location.href='./admin.html'">⚙️ <span id="ql-admin">Admin</span></button>
+  </div>
+  <!-- Reply bar -->
+  <div id="reply-bar"><span id="reply-preview"></span><button id="reply-cancel" onclick="cancelReply()">✕</button></div>
+  <!-- Edit bar -->
+  <div id="edit-bar">
+    <span id="edit-orig"></span>
+    <button id="edit-cancel" onclick="cancelEdit()">✕</button>
+  </div>
+  <!-- Font size bar -->
+  <div class="font-size-bar">
+    <span class="font-size-label" id="fs-label">Text size:</span>
+    <button class="fs-btn" id="fs-s" onclick="setFontSize('s')" style="font-size:11px;">A</button>
+    <button class="fs-btn active" id="fs-m" onclick="setFontSize('m')" style="font-size:14px;">A</button>
+    <button class="fs-btn" id="fs-l" onclick="setFontSize('l')" style="font-size:17px;">A</button>
+    <button class="fs-btn" id="fs-xl" onclick="setFontSize('xl')" style="font-size:20px;">A</button>
+  </div>
+  <div style="position:relative;flex:1;display:flex;flex-direction:column;overflow:hidden;">
+  <button id="scroll-btn" onclick="scrollBottom()">↓<div id="scroll-badge"></div></button>
+  <div id="messages">
+    <div class="sys-row">🔥 Steak Teppei Staff Chat</div>
+    <div class="sys-row">Messages are automatically translated for everyone</div>
+  </div>
+  </div>
+  <div id="emoji-panel">
+    <div class="emoji-tabs" id="emoji-tabs"></div>
+    <div class="emoji-grid" id="emoji-grid"></div>
+  </div>
+  <div class="input-bar" id="input-bar" style="position:relative;">
+    <div id="announce-indicator">📢 Announcement mode</div>
+    <div id="mention-picker"></div>
+    <div id="img-preview-wrap">
+      <img id="img-preview" src="" alt="">
+      <button id="img-remove" onclick="removeImage()">✕</button>
+    </div>
+    <div id="upload-progress">Uploading...<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div></div>
+    <div class="input-row">
+      <button class="icon-btn" onclick="toggleEmoji()" id="emoji-toggle-btn">😊</button>
+      <button class="icon-btn" onclick="document.getElementById('file-input').click()">📷</button>
+      <button class="icon-btn" id="announce-btn" style="display:none;font-size:16px;" onclick="toggleAnnounce()">📢</button>
+      <textarea id="msg-input" placeholder="Message..." rows="1"></textarea>
+      <button id="send-btn"><svg viewBox="0 0 24 24"><path d="M2 21L23 12 2 3v7l15 2-15 2z"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- Logout toast -->
+<div id="logout-toast">🚪 <span id="logout-toast-text">Signed out</span><button id="logout-undo" onclick="undoLogout()">Undo</button></div>
+
+<script type="module">
+import { initializeApp }  from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getDatabase, ref, push, onChildAdded, onValue, update, get, set, serverTimestamp, onDisconnect as fbOnDisconnect }
+                           from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
+
+// ============================================================
+// VERSION
+// ============================================================
+const CHAT_VERSION = '3.3';
+// v2.0 - First names only, admin panel, dark mode, update notification popup
+// v1.9 - Delete, badge, date divider, read receipt, save image, mention, search, announce
+// v1.8 - iMessage UI + emoji picker
+// v1.7 - Cloudflare Worker proxy
+// ============================================================
+// OWNER CONFIG
+// ============================================================
+const WORKER_URL        = 'https://st-chat-translate.aki16-dan.workers.dev';
+const CLOUDINARY_CLOUD  = 'dzmy3ufwx';
+const CLOUDINARY_PRESET = 'teppei_chat';
+const firebaseConfig = {
+  apiKey:            "AIzaSyDQlD7lEEByed6wZaX9N6kd0Fr6gGrT-bs",
+  authDomain:        "steak-teppei-chat.firebaseapp.com",
+  databaseURL:       "https://steak-teppei-chat-default-rtdb.firebaseio.com",
+  projectId:         "steak-teppei-chat",
+  storageBucket:     "steak-teppei-chat.firebasestorage.app",
+  messagingSenderId: "67146857127",
+  appId:             "1:67146857127:web:78222bd497284eab8ef982"
 };
-var HI=Object.keys(HI_NAMES);
+// ============================================================
 
-// Hawaii DOE School Break periods (HIDOE official calendar)
-// Source: hawaiipublicschools.org
-var SCHOOL_BREAKS=[
-  // 2025-2026
-  {name:'Spring Break',start:'2026-03-23',end:'2026-03-27'},
-  {name:'Summer Break',start:'2026-05-29',end:'2026-08-02'},
-  // 2026-2027
-  {name:'Fall Break',  start:'2026-10-05',end:'2026-10-09'},
-  {name:'Winter Break',start:'2026-12-21',end:'2027-01-01'},
-  {name:'Spring Break',start:'2027-03-15',end:'2027-03-19'},
-  {name:'Summer Break',start:'2027-05-28',end:'2027-08-01'}
-];
-// ── Japan holidays (tourist influx to Hawaii) ──
-var JP_BUSY=[
-  // 年末年始
-  {name:'Japan New Year Holiday',start:'2025-12-26',end:'2026-01-04'},
-  // GW
-  {name:'Japan Golden Week',     start:'2026-04-29',end:'2026-05-06'},
-  // お盆
-  {name:'Japan Obon',            start:'2026-08-10',end:'2026-08-17'},
-  // シルバーウィーク 2026のみ5連休（2024・2025は3連休のみ）
-  {name:'Japan Silver Week',     start:'2026-09-19',end:'2026-09-23'},
-  // 年末年始
-  {name:'Japan New Year Holiday',start:'2026-12-26',end:'2027-01-03'},
-  // GW
-  {name:'Japan Golden Week',     start:'2027-04-29',end:'2027-05-05'},
-  // お盆
-  {name:'Japan Obon',            start:'2027-08-10',end:'2027-08-17'}
-];
-
-// ── US & Japan tourist busy periods ──
-var EVENTS=[
-  // ── Winter Peak Season（12月中旬〜3月末：ハワイ最繁忙期）──
-  {name:'Winter Peak Season',           start:'2025-12-15',end:'2026-01-04'},
-  {name:'Canada Snowbird Season',        start:'2026-01-05',end:'2026-03-31'},
-  {name:'Valentine\'s & Presidents Day', start:'2026-02-12',end:'2026-02-16'},
-  {name:'US Spring Break',              start:'2026-03-14',end:'2026-04-12'},
-  {name:'Japan Spring Break',           start:'2026-03-20',end:'2026-04-05'},
-
-  // ── Summer Season（6〜8月：年間最多訪問者）──
-  {name:'US Summer Break',              start:'2026-06-06',end:'2026-08-20'},
-  {name:'Japan Summer Break',           start:'2026-07-18',end:'2026-08-31'},
-
-  // ── Fall / Holiday Season ──
-  {name:'Labor Day Weekend',            start:'2026-09-05',end:'2026-09-07'},
-  {name:'September Holidays',           start:'2026-09-13',end:'2026-09-23'},
-  {name:'Thanksgiving Week',            start:'2026-11-25',end:'2026-11-29'},
-  {name:'Honolulu Marathon 🏃',         start:'2026-12-11',end:'2026-12-13'},
-  {name:'Christmas Week',               start:'2026-12-22',end:'2026-12-26'},
-
-  // ── Memorial Day ──
-  {name:'Memorial Day Weekend',         start:'2026-05-23',end:'2026-05-25'},
-  // ── Independence Day ──
-  {name:'Independence Day',             start:'2026-07-03',end:'2026-07-06'},
-
-  // ── 2027 ──
-  {name:'Winter Peak Season',           start:'2026-12-15',end:'2027-01-03'},
-  {name:'Canada Snowbird Season',        start:'2027-01-04',end:'2027-03-31'},
-  {name:'Valentine\'s & Presidents Day', start:'2027-02-11',end:'2027-02-15'},
-  {name:'US Spring Break',              start:'2027-03-13',end:'2027-04-11'},
-  {name:'Japan Spring Break',           start:'2027-03-20',end:'2027-04-05'},
-  {name:'Memorial Day Weekend',         start:'2027-05-29',end:'2027-05-31'},
-  {name:'US Summer Break',              start:'2027-06-05',end:'2027-08-20'},
-  {name:'Japan Summer Break',           start:'2027-07-18',end:'2027-08-31'},
-  {name:'Independence Day',             start:'2027-07-04',end:'2027-07-06'},
-  {name:'Labor Day Weekend',            start:'2027-09-04',end:'2027-09-06'},
-  {name:'September Holidays',           start:'2027-09-13',end:'2027-09-23'},
-  {name:'Thanksgiving Week',            start:'2027-11-24',end:'2027-11-28'},
-  {name:'Honolulu Marathon 🏃',         start:'2027-12-11',end:'2027-12-13'},
-  {name:'Christmas Week',               start:'2027-12-22',end:'2027-12-27'}
-];
-
-// ── Slow seasons（閑散期：発注を控えめに）──
-var SLOW_SEASONS=[
-  // Spring lull: スプリングブレーク後〜GW前（GW期間4/29-5/6は除外）
-  {name:'Slow Season',start:'2026-04-15',end:'2026-04-28'},
-  // GW後〜Memorial Day前（5/7〜5/22）
-  {name:'Slow Season',start:'2026-05-07',end:'2026-05-22'},
-  // Sep: Labor Day直後〜September Holidays前（9/8〜9/12）
-  {name:'Slow Season',start:'2026-09-08',end:'2026-09-12'},
-  {name:'Slow Season',start:'2026-10-08',end:'2026-11-19'},
-  // 2027
-  {name:'Slow Season',start:'2027-04-15',end:'2027-04-28'},
-  {name:'Slow Season',start:'2027-05-07',end:'2027-05-22'},
-  {name:'Slow Season',start:'2027-09-07',end:'2027-09-12'},
-  {name:'Slow Season',start:'2027-10-07',end:'2027-11-18'}
-];
-// ── Honolulu Marathon dates（強調表示用）──
-var MARATHON_DATES=[
-  {start:'2026-12-04',end:'2026-12-13'},
-  {start:'2027-12-03',end:'2027-12-13'}
-];
-function getSlowSeason(dateStr){
-  for(var i=0;i<SLOW_SEASONS.length;i++){
-    var b=SLOW_SEASONS[i];if(dateStr>=b.start&&dateStr<=b.end)return b.name;
-  }return null;
-}
-function getMarathon(dateStr){
-  for(var i=0;i<MARATHON_DATES.length;i++){
-    var b=MARATHON_DATES[i];if(dateStr>=b.start&&dateStr<=b.end)return true;
-  }return false;
-}
-function getEvent(dateStr){
-  for(var i=0;i<EVENTS.length;i++){
-    var b=EVENTS[i];
-    if(dateStr>=b.start&&dateStr<=b.end)return b.name;
-  }
-  return null;
-}
-
-function getJpBusy(dateStr){
-  for(var i=0;i<JP_BUSY.length;i++){
-    var b=JP_BUSY[i];
-    if(dateStr>=b.start&&dateStr<=b.end)return b.name;
-  }
-  return null;
-}
-
-function getSchoolBreak(dateStr){
-  for(var i=0;i<SCHOOL_BREAKS.length;i++){
-    var b=SCHOOL_BREAKS[i];
-    if(dateStr>=b.start&&dateStr<=b.end)return b.name;
-  }
-  return null;
-}
-function isHoliday(dt){var s=dt.getFullYear()+'-'+pad(dt.getMonth()+1)+'-'+pad(dt.getDate());return HI.indexOf(s)>=0;}
-function pad(n){return n<10?'0'+n:String(n);}
-function dow(dt){return dt.getDay();}
-var EC={
-  eskimo:{to:'oahuorders@eskimocandy.com',cc:'aki@teppei-usa.com,kacee@teppei-usa.com,shaine@teppei-usa.com'},
-  alamoana:{to:'order@alamoanaproduce.com',cc:'todd@alamoanaproduce.com,aki@teppei-usa.com,kacee@teppei-usa.com,shaine@teppei-usa.com'},
-  costco:{to:'w687mbd9@costco.com',cc:'aki@teppei-usa.com,kacee@teppei-usa.com,shaine@teppei-usa.com'},
-  fukuoka:{to:'hi-sales@fukupa.com',cc:'aki@teppei-usa.com,kacee@teppei-usa.com,shaine@teppei-usa.com'}
+// Default members — will be overridden by Firebase /members if available
+const DEFAULT_MEMBERS = {
+  '111111': { id:'david',    lang:'ja', initials:'AK', bg:'#FF9500', name:'Aki' },
+  '222222': { id:'kacee',    lang:'en', initials:'KT', bg:'#007AFF', name:'Kacee' },
+  '333333': { id:'shaine',   lang:'en', initials:'ST', bg:'#34C759', name:'Shaine' },
+  '444444': { id:'kai',      lang:'en', initials:'KS', bg:'#5856D6', name:'Kai' },
+  '555555': { id:'qiongmei', lang:'zh', initials:'QH', bg:'#FF2D55', name:'Qiongmei' },
+  '666666': { id:'shouling', lang:'zh', initials:'SX', bg:'#FF6B35', name:'Shouling' },
+  '777777': { id:'xingyu',   lang:'zh', initials:'XW', bg:'#00C7BE', name:'Xingyu' },
+  '888888': { id:'yoshimi',  lang:'zh', initials:'YK', bg:'#AF52DE', name:'Yoshimi' },
+  '123456': { id:'yu',       lang:'zh', initials:'YM', bg:'#30B0C7', name:'Yu' },
+  '654321': { id:'zhu',      lang:'zh', initials:'ZH', bg:'#32ADE6', name:'Zhu' },
 };
-var V=[
-  {id:'alamoana',name:'Ala Moana Produce',short:'Ala Moana Produce',method:'email',
-   di:'Delivery: Mon, Wed & Fri only | Order deadline: Same day by 6:00 AM | Min. order: $100',tbd:false,
-   ok:function(dt){return dow(dt)===1||dow(dt)===3||dow(dt)===5;},
-   dl:function(dt){return 'Order by: '+dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' by 6:00 AM';},
-   items:[{n:'Lemon 140s Choice',u:'CS'},{n:'Onion Jumbo 50# Sack',u:'BAG'},{n:'Spring Mix 3#',u:'CS'}]},
-  {id:'atm',name:'ATM International USA, Inc.',short:'ATM International',method:'line',
-   di:'Delivery: Mon-Fri (no holidays) | Order deadline: Same day by 7:00 AM',tbd:false,
-   ok:function(dt){return dow(dt)>=1&&dow(dt)<=5&&!isHoliday(dt);},
-   dl:function(dt){return 'Order by: '+dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' by 7:00 AM';},
-   items:[{n:'Wagyu Ribeye Lipon 30LB',u:'CS'}]},
-  {id:'apax',name:'Apax Hawaii (CPH Holdings)',short:'Apax Hawaii',method:'line',
-   di:'Delivery: Mon & Thu only | Order deadline: Previous day by 12:00 PM',tbd:false,
-   ok:function(dt){return dow(dt)===1||dow(dt)===4;},
-   dl:function(dt){var p=new Date(dt);p.setDate(p.getDate()-1);while(dow(p)===0||dow(p)===6||isHoliday(p))p.setDate(p.getDate()-1);return 'Order by: '+p.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' by 12:00 PM';},
-   items:[{n:'1 oz Cup (P100N)',u:'CS'},{n:'1 oz Lid (PL100N)',u:'CS'},{n:'2 oz Cup (P200N)',u:'CS'},{n:'2 oz Lid (PL200N)',u:'CS'},{n:'8in 3-Comp Container (ML-83 Black)',u:'CS'},{n:'12 oz Paper Container',u:'CS'},{n:'12 oz Lid YS-390',u:'CS'},{n:'16 oz PP Round (848)',u:'CS'},{n:'32 oz PP Bento Rectangle (828)',u:'CS'},{n:'Chopstick Wooden',u:'CS'},{n:'Dinner Napkin 2PLY',u:'CS'},{n:'Fork Compostable 6in CPLA',u:'CS'},{n:'Multifold Towel Trifold',u:'CS'},{n:'Spoon Compostable 6in CPLA',u:'CS'},{n:'Tbag Lrg (Produce Roll)',u:'CS'}]},
-  {id:'cocacola',name:'Coca-Cola Bottling Co. of Hawaii',short:'Coca-Cola Hawaii',method:'sms',
-   di:'Delivery: Tuesday only | Order deadline: Previous Friday by 2:00 PM',tbd:false,
-   ok:function(dt){return dow(dt)===2;},phone:'Coca Cola - Steak Teppei',
-   dl:function(dt){var f=new Date(dt);f.setDate(f.getDate()-4);return 'Order by: '+f.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' by 2:00 PM';},
-   items:[{n:'Coca-Cola Original 20 fl oz',u:'CS'},{n:'Coca-Cola Zero 20 fl oz',u:'CS'},{n:'Dasani 16.9 fl oz',u:'CS'},{n:'Sprite 20 fl oz',u:'CS'}]},
-  {id:'costco',name:'Costco Wholesale',short:'Costco',method:'email',
-   di:'Delivery: Mon & Thu only | Mon: Prev Fri by 12pm | Thu: Prev Wed by 12pm',tbd:false,
-   ok:function(dt){return dow(dt)===1||dow(dt)===4;},
-   dl:function(dt){var d=dow(dt)===1?-3:-1;var f=new Date(dt);f.setDate(f.getDate()+d);return 'Order by: '+f.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' by 12:00 PM';},
-   minOrder:1000,items:[{n:'Cage Free Large Eggs 5 Dozen #1025795',u:'CS',p:16.49},{n:'Christopher Ranch Peeled Garlic 3 lb #5855',u:'BAG',p:14.49},{n:'Horizon Heavy Whipping Cream 64 oz #506970',u:'CRTN',p:18.19},{n:'Kirkland Drinking Water 40pk 16.9 oz #782796',u:'CS',p:13.79},{n:'Kirkland Signature Stretch-Tite Plastic Food Wrap 12in x 3000ft #208733',u:'BOX',p:19.99},{n:'Kirkland Soybean Salad Oil 35 lb #71011',u:'CTN',p:39.59},{n:'Kirkland Unsalted Butter 4/1 lb #44110',u:'BOX',p:13.72}]},
-  {id:'eskimo',name:'Eskimo Candy Oahu Inc.',short:'Eskimo Candy',method:'email',
-   di:'Delivery: Mon-Fri (no holidays) | Order deadline: Previous day by 3:00 PM',tbd:false,
-   ok:function(dt){return dow(dt)>=1&&dow(dt)<=5&&!isHoliday(dt);},
-   dl:function(dt){var p=new Date(dt);p.setDate(p.getDate()-1);while(dow(p)===0||dow(p)===6||isHoliday(p))p.setDate(p.getDate()-1);return 'Order by: '+p.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' by 3:00 PM';},
-   items:[{n:'Shrimp 21-25 White P&D T-On',u:'CS'}]},
-  {id:'fukuoka',name:'Fukuoka Package USA, Inc.',short:'Fukuoka Package',method:'email',
-   di:'Delivery: Mon, Wed & Fri only | Order deadline: Previous day by 12:00 PM',tbd:false,
-   ok:function(dt){return dow(dt)===1||dow(dt)===3||dow(dt)===5;},
-   dl:function(dt){var p=new Date(dt);p.setDate(p.getDate()-1);while(dow(p)===0||dow(p)===6||isHoliday(p))p.setDate(p.getDate()-1);return 'Order by: '+p.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' by 12:00 PM';},
-   items:[{n:'KM-57-T 8X8 3-COMP',u:'CS'}]},
-  {id:'freshisland',name:'Fresh Island Fish Co., Inc.',short:'Fresh Island Fish',method:'sms',
-   di:'Delivery: Mon-Sat (no holidays) | Order deadline: Same day by 7:00 AM',tbd:false,
-   ok:function(dt){return dow(dt)!==0&&!isHoliday(dt);},
-   dl:function(dt){return 'Order by: '+dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' by 7:00 AM';},
-   items:[{n:'Beef Vein Steak Choice 20/8oz',u:'CS'}]},
-  {id:'wismettac',name:'Wismettac Asian Foods, Inc.',short:'Wismettac',method:'line',
-   di:'Delivery: Friday only | Order deadline: Previous day by 12:00 PM',tbd:false,
-   ok:function(dt){return dow(dt)===5;},
-   dl:function(dt){var p=new Date(dt);p.setDate(p.getDate()-1);while(dow(p)===0||dow(p)===6||isHoliday(p))p.setDate(p.getDate()-1);return 'Order by: '+p.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' by 12:00 PM';},
-   items:[{n:'Hondashi',u:'BOX'},{n:'Miso Dispenser',u:'BAG'},{n:'Mizkan Rice Vinegar',u:'BTL'},{n:'MSG Aji No Moto 1LB',u:'BAG'},{n:'Rice Sekka 40LB',u:'BAG'},{n:'Soy Sauce Yamasa 5GAL',u:'CTN'},{n:'Starch Potato Katakuriko 5LB',u:'CS'},{n:'Sukiyaki Sauce 5.4LB',u:'BOX'},{n:'Wakame Seaweed 0.8 sm bag',u:'BAG'},{n:'Wasabi Nama Fresh FRZ 800G',u:'BAG'}]},
-  {id:'wongs',name:"Wong's Meat Market, Ltd.",short:"Wong's Meat Market",method:'sms',
-   di:'Delivery: Mon-Fri (no holidays) | Order deadline: Previous day by 2:00 PM',tbd:false,
-   ok:function(dt){return dow(dt)>=1&&dow(dt)<=5&&!isHoliday(dt);},phone:"Wong's - Steak Teppei",
-   dl:function(dt){var p=new Date(dt);p.setDate(p.getDate()-1);while(dow(p)===0||dow(p)===6||isHoliday(p))p.setDate(p.getDate()-1);return 'Order by: '+p.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' by 2:00 PM';},
-   items:[{n:'Beef Strip Steak 8oz',u:'CS'},{n:'Chicken Thighs Boneless Skinless 4x10LB',u:'CS'},{n:'Pork Back Fat Skinned 50LB',u:'CS'}]}
+
+let MEMBERS = { ...DEFAULT_MEMBERS };
+
+const ADMINS      = ['david', 'kacee'];
+const SUPER_ADMIN = 'david';
+
+const LANG_NAMES   = { ja:'Japanese', en:'English', zh:'Simplified Chinese' };
+const LANG_FLAGS   = { ja:'🇯🇵', en:'🇺🇸', zh:'🇨🇳' };
+const PLACEHOLDERS = { ja:'メッセージを入力...', en:'Message...', zh:'输入消息...' };
+
+// Update notifications per language
+const UPDATE_MSGS = {
+  ja: {
+    title: 'アプリが更新されました 🎉',
+    msg: `v${CHAT_VERSION} の主な改善点：
+
+✅ 翻訳精度が向上
+直前の会話の流れを踏まえて翻訳するようになりました。「それ」「あれ」「やっといた」などの短い文章でも、文脈から正しく翻訳されます。
+
+✅ あいまいな文章を自動検出
+主語や目的語が抜けていると判断した場合、送信前に確認画面が出ます。そのまま送るか、AIが補完した文章で送るかを選べます。
+
+✅ 表示名が「Aki」に変更されました。`
+  },
+  en: {
+    title: 'App Updated 🎉',
+    msg: `What's new in v${CHAT_VERSION}:
+
+✅ Smarter translations
+The app now reads the last few messages for context before translating. Short or vague messages like "done" or "it broke" are now translated more accurately.
+
+✅ Clarity check before sending
+If your message is missing a subject or object, a quick confirmation screen appears. You can send it as-is or use the AI-suggested clearer version.`
+  },
+  zh: {
+    title: '应用更新了 🎉',
+    msg: `v${CHAT_VERSION} 更新内容：
+
+✅ 翻译更准确了
+以前有时候翻译出来的话让人看不懂。现在好了——手机会看一看你们刚才说了什么，再来翻译，这样意思就对了。
+
+✅ 说话说不清楚？手机帮你补
+比如你发"坏了"，手机会问你："你是说烤炉坏了吗？"你点确认就发出去，日本老板和美国同事就能看懂你说的是什么。不用担心说错，手机帮你补充清楚。`
+  },
+};
+
+const USER_KEY = 'teppei_pin_v1';
+
+const EMOJI_CATS = [
+  { icon:'😊', emojis:['😊','😂','🥹','😍','🥰','😘','😎','🤩','😅','😆','😁','😄','😃','😀','🙂','😉','😋','😛','😝','😜','🤪','😏','😒','🙄','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙃','🤑','😴','🤐','🤢','🤮','🤧','😷','🤒','🤕'] },
+  { icon:'👋', emojis:['👋','🤚','🖐','✋','🖖','👌','🤌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','👇','☝️','👍','👎','✊','👊','🤛','🤜','👏','🙌','🫶','👐','🤲','🤝','🙏','💪','🦵','🦶','👀','💅','🫵'] },
+  { icon:'❤️', emojis:['❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❤️‍🔥','💕','💞','💓','💗','💖','💘','💝','💋','💌','💍','💎','🎁','🎀','🌹','🌷','🌸','💐'] },
+  { icon:'🍔', emojis:['🥩','🍖','🍗','🌮','🌯','🥗','🍱','🍣','🍜','🍝','🍛','🍲','🥘','🫕','🍤','🦐','🦑','🦀','🦞','🥚','🍳','🧀','🥞','🧇','🥓','🌭','🍔','🍟','🍕','🥙','🍿','🧂','🥫','🍱','🍘','🍙','🍚','🍞','🥐','🥖','🫓'] },
+  { icon:'✅', emojis:['✅','❌','⭕','🔴','🟠','🟡','🟢','🔵','🟣','⚫','⚪','🔺','🔻','🔷','🔶','🔹','🔸','▶️','⏸','⏹','🔔','🔕','📢','📣','💯','‼️','⁉️','❓','❗','💥','⚡','🔥','✨','🎯','🏆','🥇','⚠️','🚫','📌','📍','🔑','🔒','🔓','📱','💻'] },
+  { icon:'😸', emojis:['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐔','🐧','🐦','🐤','🦆','🦅','🦉','🦇','🐝','🦋','🐌','🐞','🐜','🐢','🐍','🦎','🐊','🐳','🐬','🦭','🐟','🐠','🐡','🦈','🐙','🦑','🦐','🦀'] },
 ];
-function gv(id){for(var i=0;i<V.length;i++)if(V[i].id===id)return V[i];return null;}
 
-var ML={email:'Gmail',sms:'Text Message',line:'LINE'};
-var selId=null,qty={},custom=[],selDate=null,dateStr='',flex=false;
-var today=new Date();today.setHours(0,0,0,0);
-var cy=today.getFullYear(),cm=today.getMonth();
-var MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
-var DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+let currentUser   = null;
+let pinBuffer     = '';
+let selectedFile  = null;
+let shownIds      = new Set();
+let listening     = false;
+let emojiOpen     = false;
+let announceMode  = false;
+let ctxMsgKey     = null;
+let ctxMsgData    = null;
+let unreadCount   = 0;
+let lastSeenTs    = 0;
+let allMessages   = {};
+let lightboxUrl   = '';
+let editingKey    = null;
+let onlineUsers   = {};
+let notifEnabled  = false;
+let replyingTo    = null;   // { key, name, text }
+let pinnedMsg     = null;   // { key, text }
+let typingTimer   = null;
+let searchHits    = [];
+let searchIdx     = 0;
+let lastDateStr   = '';
+let logoutTimer   = null;
+let savedUser     = null;   // for undo logout
+let savedPin      = null;
 
-function checkBanner(){
-  var now=new Date(),msgs=[];
-  var todayIsHol=isHoliday(now);
-  // 祝日当日は全業者の締め切りバナーを表示しない
-  if(todayIsHol){
-    var b=document.getElementById('deadlineAlertBanner');
-    b.classList.remove('show');
+const fbApp   = initializeApp(firebaseConfig);
+const db      = getDatabase(fbApp);
+const msgsRef = ref(db, 'messages');
+
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+const show = id => { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); };
+const getMember = uid => Object.values(MEMBERS).find(x=>x.id===uid) || { bg:'#8E8E93', initials:'?', name:'Unknown', lang:'en' };
+const isAdmin = () => currentUser && ADMINS.includes(currentUser.id);
+const isSuperAdmin = () => currentUser?.id === SUPER_ADMIN;
+
+// ── Load members from Firebase (admin-managed) ──
+async function loadMembers() {
+  const snap = await get(ref(db, 'members'));
+  if (snap.exists()) {
+    const data = snap.val();
+    // Merge with defaults: firebase data takes priority
+    MEMBERS = { ...DEFAULT_MEMBERS };
+    Object.entries(data).forEach(([pin, m]) => { MEMBERS[pin] = m; });
+  }
+}
+
+// ── Update notification ──
+function checkUpdateNotification() {
+  const seen = localStorage.getItem('seen_version');
+  if (seen !== CHAT_VERSION && currentUser) {
+    const lang = currentUser.lang;
+    const info = UPDATE_MSGS[lang] || UPDATE_MSGS.en;
+    document.getElementById('update-title').textContent = info.title;
+    document.getElementById('update-msg').textContent   = info.msg;
+    document.getElementById('update-modal').classList.add('open');
+  }
+}
+window.dismissUpdate = () => {
+  localStorage.setItem('seen_version', CHAT_VERSION);
+  document.getElementById('update-modal').classList.remove('open');
+};
+
+// ── Emoji ──
+function buildEmojiPicker() {
+  const tabs = document.getElementById('emoji-tabs');
+  EMOJI_CATS.forEach((cat, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'emoji-tab' + (i===0?' active':'');
+    btn.textContent = cat.icon;
+    btn.onclick = () => {
+      document.querySelectorAll('.emoji-tab').forEach(t=>t.classList.remove('active'));
+      btn.classList.add('active');
+      renderEmojiGrid(i);
+    };
+    tabs.appendChild(btn);
+  });
+  renderEmojiGrid(0);
+}
+function renderEmojiGrid(i) {
+  const grid = document.getElementById('emoji-grid');
+  grid.innerHTML = '';
+  EMOJI_CATS[i].emojis.forEach(em => {
+    const btn = document.createElement('button');
+    btn.className = 'emoji-btn'; btn.textContent = em;
+    btn.onclick = () => insertEmoji(em);
+    grid.appendChild(btn);
+  });
+}
+function insertEmoji(emoji) {
+  const input = document.getElementById('msg-input');
+  const s = input.selectionStart, e = input.selectionEnd;
+  input.value = input.value.slice(0,s) + emoji + input.value.slice(e);
+  input.setSelectionRange(s+emoji.length, s+emoji.length);
+  input.focus(); input.dispatchEvent(new Event('input'));
+}
+window.toggleEmoji = () => {
+  emojiOpen = !emojiOpen;
+  // B6: blur input first to dismiss keyboard before showing emoji panel
+  if (emojiOpen) document.getElementById('msg-input').blur();
+  document.getElementById('emoji-panel').classList.toggle('open', emojiOpen);
+  document.getElementById('emoji-toggle-btn').style.color = emojiOpen ? '#FF9500' : '#007AFF';
+  if (!emojiOpen) document.getElementById('msg-input').focus();
+  setTimeout(()=>scrollBottom(true), 100);
+};
+
+// ── Announce ──
+window.toggleAnnounce = () => {
+  announceMode = !announceMode;
+  document.getElementById('input-bar').classList.toggle('announce-mode', announceMode);
+  document.getElementById('announce-indicator').style.display = announceMode ? 'block' : 'none';
+  document.getElementById('announce-btn').style.opacity = announceMode ? '1' : '0.5';
+  document.getElementById('msg-input').placeholder = announceMode ? '📢 Type announcement...' : PLACEHOLDERS[currentUser.lang];
+};
+
+// ── @mention ──
+function updateMentionPicker(query) {
+  const picker = document.getElementById('mention-picker');
+  const filtered = query
+    ? Object.values(MEMBERS).filter(m => m.name.toLowerCase().startsWith(query.toLowerCase()))
+    : Object.values(MEMBERS);
+  if (!filtered.length) { picker.classList.remove('open'); return; }
+  picker.innerHTML = filtered.map(m =>
+    `<div class="mention-item" onclick="selectMention('${m.name}')">
+      <div class="mention-av" style="background:${m.bg};">${m.initials}</div>
+      <div class="mention-name">${m.name}</div>
+    </div>`).join('');
+  picker.classList.add('open');
+}
+window.selectMention = name => {
+  const input = document.getElementById('msg-input');
+  const atIdx = input.value.lastIndexOf('@');
+  input.value = input.value.slice(0, atIdx) + '@' + name + ' ';
+  input.focus();
+  document.getElementById('mention-picker').classList.remove('open');
+  input.dispatchEvent(new Event('input'));
+};
+function highlightMentions(text, isSelfMentioned) {
+  return text.replace(/@(\w+)/g, (match, name) => {
+    // 自分の名前にマッチした場合は強調バッジ
+    if (currentUser && name.toLowerCase() === currentUser.name.toLowerCase()) {
+      return `<span class="mention-me">@${name}</span>`;
+    }
+    return `<span class="mention">@${name}</span>`;
+  });
+}
+function checkSelfMention(text) {
+  if (!currentUser || !text) return false;
+  const re = new RegExp('@' + currentUser.name + '\\b', 'i');
+  return re.test(text);
+}
+
+// ── PIN ──
+window.pinInput = d => {
+  if (pinBuffer.length >= 6) return;
+  pinBuffer += d; updateDots();
+  if (pinBuffer.length === 6) setTimeout(checkPin, 80);
+};
+window.pinDelete = () => {
+  pinBuffer = pinBuffer.slice(0,-1); updateDots();
+  document.getElementById('login-error').textContent = '';
+  document.querySelectorAll('.pin-dot').forEach(d=>d.classList.remove('error'));
+};
+function updateDots() {
+  document.querySelectorAll('.pin-dot').forEach((d,i) => {
+    d.classList.toggle('filled', i < pinBuffer.length);
+    d.classList.remove('error');
+  });
+}
+async function checkPin() {
+  // Reload members in case admin added new ones
+  await loadMembers();
+  const m = MEMBERS[pinBuffer];
+  if (m) {
+    currentUser = m;
+    localStorage.setItem(USER_KEY, pinBuffer);
+    pinBuffer = ''; updateDots();
+    document.getElementById('login-error').textContent = '';
+    enterChat();
+  } else {
+    document.querySelectorAll('.pin-dot').forEach(d=>d.classList.add('error'));
+    document.getElementById('login-error').textContent = 'Incorrect PIN. Try again.';
+    setTimeout(() => {
+      pinBuffer = ''; updateDots();
+      document.querySelectorAll('.pin-dot').forEach(d=>d.classList.remove('error'));
+      document.getElementById('login-error').textContent = '';
+    }, 1000);
+  }
+}
+
+function enterChat() {
+  document.getElementById('msg-input').placeholder = PLACEHOLDERS[currentUser.lang];
+  if (isAdmin()) document.getElementById('announce-btn').style.display = 'flex';
+  lastSeenTs = parseInt(localStorage.getItem('lastSeen_' + currentUser.id) || '0');
+  show('screen-chat');
+  updateQuickLinks();
+  setupPresence();
+  listenMessages();
+  checkUpdateNotification();
+  setupNotifications();
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone && !localStorage.getItem('ib_dismissed')) {
+    document.getElementById('install-banner').style.display = 'flex';
+  }
+}
+
+window.logout = () => {
+  // Confirm via toast with undo (U5)
+  savedUser = currentUser;
+  savedPin  = localStorage.getItem(USER_KEY);
+  const lang = currentUser?.lang || 'en';
+  const msgs = { ja:'サインアウトしました', en:'Signed out', zh:'已退出登录' };
+  document.getElementById('logout-toast-text').textContent = msgs[lang] || msgs.en;
+  document.getElementById('logout-toast').classList.add('show');
+  logoutTimer = setTimeout(() => doLogout(), 4000);
+};
+function doLogout() {
+  clearTimeout(logoutTimer);
+  document.getElementById('logout-toast').classList.remove('show');
+  if (!savedUser) return;
+  localStorage.setItem('lastSeen_' + savedUser.id, Date.now().toString());
+  // clear typing
+  if (savedUser) set(ref(db,'typing/'+savedUser.id), null).catch(()=>{});
+  currentUser = null; savedUser = null; savedPin = null;
+  localStorage.removeItem(USER_KEY);
+  document.getElementById('messages').querySelectorAll('.msg-wrap,.date-divider,.announce-wrap').forEach(e=>e.remove());
+  shownIds.clear(); allMessages = {}; listening = false; unreadCount = 0; replyingTo = null; lastDateStr = '';
+  removeImage(); if (emojiOpen) toggleEmoji(); if (announceMode) toggleAnnounce();
+  updateBadge(0); lastDateStr = '';
+  show('screen-login');
+}
+window.undoLogout = () => {
+  clearTimeout(logoutTimer);
+  document.getElementById('logout-toast').classList.remove('show');
+  savedUser = null; savedPin = null;
+};
+window.dismissBanner    = () => { localStorage.setItem('ib_dismissed','1'); document.getElementById('install-banner').style.display='none'; };
+window.showInstallGuide = () => { dismissBanner(); alert('[ iPhone / Safari ]\nTap Share (□↑) → "Add to Home Screen"\n\n[ iPhone ]\n共有（□↑）→「ホーム画面に追加」'); };
+
+function updateBadge(n) {
+  const badge = document.getElementById('ch-badge');
+  badge.textContent = n > 99 ? '99+' : n;
+  badge.style.display = n > 0 ? 'flex' : 'none';
+}
+
+// ── Image ──
+document.getElementById('file-input').addEventListener('change', e => {
+  const file = e.target.files[0]; if (!file) return;
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = ev => { document.getElementById('img-preview').src=ev.target.result; document.getElementById('img-preview-wrap').style.display='block'; };
+  reader.readAsDataURL(file); e.target.value='';
+});
+document.getElementById('img-preview').addEventListener('click', () => {
+  if (document.getElementById('img-preview').src) openLightbox(document.getElementById('img-preview').src);
+});
+window.removeImage = () => { selectedFile=null; document.getElementById('img-preview-wrap').style.display='none'; document.getElementById('img-preview').src=''; };
+async function uploadImage(file) {
+  document.getElementById('upload-progress').style.display='block';
+  document.getElementById('progress-fill').style.width='30%';
+  const fd = new FormData();
+  fd.append('file',file); fd.append('upload_preset',CLOUDINARY_PRESET); fd.append('folder','teppei-chat');
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd});
+  document.getElementById('progress-fill').style.width='100%';
+  setTimeout(()=>{document.getElementById('upload-progress').style.display='none';document.getElementById('progress-fill').style.width='0%';},400);
+  if (!res.ok) throw new Error('Upload failed');
+  const data = await res.json();
+  return data.secure_url.replace('/upload/','/upload/q_auto,f_auto,w_800/');
+}
+
+// ── Lightbox ──
+window.openLightbox = url => { lightboxUrl=url; document.getElementById('lightbox-img').src=url; document.getElementById('lightbox').classList.add('open'); };
+window.closeLightbox = () => document.getElementById('lightbox').classList.remove('open');
+window.saveImage = async e => {
+  e.stopPropagation();
+  try {
+    const res=await fetch(lightboxUrl); const blob=await res.blob();
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='teppei-'+Date.now()+'.jpg'; a.click(); URL.revokeObjectURL(a.href);
+  } catch { alert('Long-press the image to save manually.'); }
+};
+
+// ── Context menu ──
+function openCtxMenu(e, key, msg) {
+  e.preventDefault(); e.stopPropagation();
+  ctxMsgKey=key; ctxMsgData=msg;
+  const canDel = msg.uid===currentUser.id
+    ? (isSuperAdmin() || Date.now()-msg.ts < 86400000)
+    : isSuperAdmin();
+  const canEdit = msg.uid===currentUser.id && !msg.deleted && (isSuperAdmin() || Date.now()-msg.ts < 86400000);
+  document.getElementById('ctx-delete').style.display = canDel ? 'flex' : 'none';
+  document.getElementById('ctx-copy').style.display   = msg.orig ? 'flex' : 'none';
+  document.getElementById('ctx-edit').style.display   = canEdit ? 'flex' : 'none';
+  const x=Math.min((e.clientX||e.touches?.[0]?.clientX||window.innerWidth/2),window.innerWidth-200);
+  const y=Math.min((e.clientY||e.touches?.[0]?.clientY||window.innerHeight/2),window.innerHeight-150);
+  const menu=document.getElementById('ctx-menu');
+  menu.style.left=x+'px'; menu.style.top=y+'px';
+  menu.classList.add('open'); document.getElementById('ctx-backdrop').classList.add('open');
+}
+window.closeCtxMenu = () => { document.getElementById('ctx-menu').classList.remove('open'); document.getElementById('ctx-backdrop').classList.remove('open'); };
+window.ctxCopy = () => { if (ctxMsgData?.orig) navigator.clipboard?.writeText(ctxMsgData.orig).catch(()=>{}); closeCtxMenu(); };
+window.ctxSearchFrom = () => { if (ctxMsgData?.orig) { closeCtxMenu(); toggleSearch(ctxMsgData.orig.slice(0,20)); } else closeCtxMenu(); };
+window.ctxDelete = async () => {
+  closeCtxMenu(); if (!ctxMsgKey) return;
+  if (!confirm('Delete this message?')) return;
+  await update(ref(db,'messages/'+ctxMsgKey),{deleted:true,orig:'',tr:{}});
+};
+
+// ── Reactions (F1 / F4) ──
+window.ctxReact = async emoji => {
+  closeCtxMenu();
+  if (!ctxMsgKey || !currentUser) return;
+  const path = 'messages/' + ctxMsgKey + '/reactions/' + emoji.replace(/️/g,'_fe0f') + '/' + currentUser.id;
+  const snap = await get(ref(db, path));
+  if (snap.exists()) await set(ref(db, path), null); // toggle off
+  else await set(ref(db, path), true);
+};
+
+// ── Bookmark (F9) ──
+window.ctxBookmark = () => {
+  closeCtxMenu();
+  if (!ctxMsgKey) return;
+  const stars = JSON.parse(localStorage.getItem('teppei_stars') || '[]');
+  const idx = stars.indexOf(ctxMsgKey);
+  if (idx >= 0) stars.splice(idx, 1); else stars.push(ctxMsgKey);
+  localStorage.setItem('teppei_stars', JSON.stringify(stars));
+  // update star icon on message
+  const star = document.querySelector('[data-key="'+ctxMsgKey+'"] .msg-star');
+  if (star) { star.classList.toggle('starred', idx < 0); star.textContent = idx < 0 ? '⭐' : '☆'; }
+};
+
+// ── Pin message (F3) ──
+window.ctxPin = async () => {
+  closeCtxMenu();
+  if (!ctxMsgKey || !isAdmin()) return;
+  const txt = ctxMsgData?.orig?.slice(0,60) || '';
+  await set(ref(db, 'pinned'), { key: ctxMsgKey, text: txt, uid: currentUser.id, ts: Date.now() });
+};
+window.dismissPinBar = () => { document.getElementById('pin-bar').classList.remove('show'); };
+
+// ── Reply (F5) ──
+window.ctxReply = () => {
+  closeCtxMenu();
+  if (!ctxMsgKey || !ctxMsgData) return;
+  replyingTo = { key: ctxMsgKey, name: getMember(ctxMsgData.uid).name, text: (ctxMsgData.orig||'').slice(0,50) };
+  const bar = document.getElementById('reply-bar');
+  document.getElementById('reply-preview').textContent = replyingTo.name + ': ' + replyingTo.text;
+  bar.classList.add('open');
+  document.getElementById('msg-input').focus();
+};
+window.toggleReaction = async (key, emoji) => {
+  if (!currentUser) return;
+  const path = 'messages/' + key + '/reactions/' + emoji.replace(/️/g,'_fe0f') + '/' + currentUser.id;
+  const snap = await get(ref(db, path));
+  if (snap.exists()) await set(ref(db, path), null);
+  else await set(ref(db, path), true);
+};
+window.scrollToMsg = key => {
+  const el = document.querySelector('[data-key="'+key+'"]');
+  if (el) { el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.background='rgba(0,122,255,.1)'; setTimeout(()=>el.style.background='',800); }
+};
+window.cancelReply = () => {
+  replyingTo = null;
+  document.getElementById('reply-bar').classList.remove('open');
+};
+
+// ── Firebase ──
+let unsubscribers = [];
+function cleanupListeners() {
+  unsubscribers.forEach(u => { try { u(); } catch(e){} });
+  unsubscribers = [];
+}
+function listenMessages() {
+  if (listening) return; listening=true;
+  onValue(ref(db,'.info/connected'), snap => { document.getElementById('conn-status').style.display=snap.val()?'none':'block'; });
+  onChildAdded(msgsRef, snap => {
+    const msg=snap.val(); if (!msg) return;
+    allMessages[snap.key]={...msg,_key:snap.key};
+    if (shownIds.has(snap.key)) return;
+    shownIds.add(snap.key);
+    renderMessage(snap.key,msg);
+    if (msg.ts>lastSeenTs && msg.uid!==currentUser?.id && !msg.announce) {
+      unreadCount++; updateBadge(unreadCount);
+      sendNotification(msg);
+      // Show scroll-to-bottom button if not at bottom
+      const el=document.getElementById('messages');
+      const atBottom = el ? el.scrollHeight-el.scrollTop-el.clientHeight<80 : true;
+      if (!atBottom) { updateScrollBtn(true, unreadCount); return; }
+    }
+    scrollBottom(true);
+  });
+  onValue(msgsRef, snap => {
+    const data=snap.val()||{};
+    Object.entries(data).forEach(([key,msg]) => {
+      if (!msg) return;
+      allMessages[key]={...msg,_key:key};
+      const el=document.querySelector(`[data-key="${key}"]`);
+      if (el && msg.deleted) {
+        const bubble=el.querySelector('.bubble');
+        if (bubble && !bubble.classList.contains('deleted')) {
+          bubble.innerHTML='🚫 This message was deleted'; bubble.classList.add('deleted');
+          el.querySelectorAll('.orig-text,.trans-block,.read-receipt').forEach(e=>e.remove());
+        }
+      }
+      if (msg.readBy && msg.uid===currentUser?.id) {
+        const rr=document.querySelector(`[data-key="${key}"] .read-receipt`);
+        if (rr) {
+          const readers=Object.keys(msg.readBy).filter(id=>id!==currentUser.id);
+          rr.innerHTML=readers.map(id=>{const rm=getMember(id);return `<div class="read-av" style="background:${rm.bg};" title="${rm.name}">${rm.initials}</div>`;}).join('');
+        }
+      }
+    });
+  });
+  setTimeout(()=>markAllRead(),2000);
+  listenTyping();
+  // Listen for pinned message
+  onValue(ref(db,'pinned'), snap => {
+    if (!snap.exists()) { document.getElementById('pin-bar').classList.remove('show'); return; }
+    const p = snap.val();
+    pinnedMsg = p;
+    document.getElementById('pin-bar-text').textContent = p.text || '';
+    document.getElementById('pin-bar').classList.add('show');
+  });
+  // Listen for reactions
+  onValue(ref(db,'messages'), snap => {
+    const data = snap.val() || {};
+    Object.entries(data).forEach(([key, msg]) => {
+      if (!msg || !msg.reactions) return;
+      const container = document.getElementById('reactions-' + key);
+      if (!container) return;
+      const counts = {};
+      Object.entries(msg.reactions).forEach(([emoji, users]) => {
+        const realEmoji = emoji.replace(/_fe0f/g,'️');
+        counts[realEmoji] = Object.keys(users).length;
+      });
+      container.innerHTML = Object.entries(counts).map(([em, n]) => {
+        const mine = msg.reactions[em.replace(/️/g,'_fe0f')]?.[currentUser?.id];
+        return `<div class="reaction-pill${mine?' mine':''}" onclick="toggleReaction('${key}','${em}')">${em}<span>${n}</span></div>`;
+      }).join('');
+    });
+  });
+}
+
+async function markAllRead() {
+  if (!currentUser) return;
+  const snap=await get(msgsRef); const data=snap.val()||{};
+  Object.entries(data).forEach(([key,msg]) => {
+    if (msg&&!msg.deleted&&msg.uid!==currentUser.id&&!(msg.readBy?.[currentUser.id]))
+      update(ref(db,'messages/'+key+'/readBy'),{[currentUser.id]:true});
+  });
+  unreadCount=0; updateBadge(0);
+  localStorage.setItem('lastSeen_'+currentUser.id, Date.now().toString());
+}
+
+// ── Date divider ──
+function getDateStr(ts) {
+  const d=new Date(ts); const now=new Date();
+  const diff=Math.floor((now-d)/86400000);
+  if (diff===0) return 'Today';
+  if (diff===1) return 'Yesterday';
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+// ── Render ──
+function renderMessage(key, msg) {
+  if (!currentUser) return;
+  const container=document.getElementById('messages');
+  const dateStr=getDateStr(msg.ts);
+  if (dateStr!==lastDateStr) {
+    lastDateStr=dateStr;
+    const div=document.createElement('div'); div.className='date-divider'; div.textContent=dateStr;
+    container.appendChild(div);
+  }
+  if (msg.announce) {
+    const vLang=currentUser.lang; const mainTxt=msg.tr?.[vLang]||msg.orig;
+    const time=new Date(msg.ts).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+    const wrap=document.createElement('div'); wrap.className='announce-wrap'; wrap.dataset.key=key;
+    const canDel=isSuperAdmin()||(isAdmin()&&msg.uid===currentUser.id);
+    wrap.innerHTML=`
+      <div class="announce-label">📢 Announcement${canDel?`<button class="announce-del" onclick="deleteAnnounce('${key}')">✕</button>`:''}</div>
+      <div class="announce-text">${highlightMentions(esc(mainTxt))}</div>
+      <div class="announce-time">${LANG_FLAGS[msg.sLang]||''} ${time}</div>`;
+    container.appendChild(wrap); return;
+  }
+  const vLang=currentUser.lang; const isOwn=msg.uid===currentUser.id;
+  const mainTxt=msg.deleted?'🚫 This message was deleted':isOwn?msg.orig:(msg.tr?.[vLang]||msg.orig);
+  const others=(!msg.deleted&&msg.tr)?Object.entries(msg.tr).filter(([l,t])=>l!==msg.sLang&&l!==vLang&&t&&t!==msg.orig):[];
+  const time=new Date(msg.ts).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+  const showOrig=!msg.deleted&&!isOwn&&msg.sLang!==vLang&&msg.orig;
+  const transHtml=others.map(([l,t])=>`<div class="trans-item"><span class="trans-lbl">${LANG_FLAGS[l]||''}</span>${esc(t)}</div>`).join('');
+  const m=getMember(msg.uid); const hasImage=!msg.deleted&&!!msg.imageUrl; const hasText=!!(mainTxt&&mainTxt.trim());
+  let bubbleContent='';
+  // Reply quote (F5)
+  if (msg.replyTo && !msg.deleted) {
+    const rq = allMessages[msg.replyTo];
+    if (rq) {
+      const rqAuthor = getMember(rq.uid).name;
+      const rqText = (rq.orig||'').slice(0,50);
+      bubbleContent += `<div class="reply-quote" onclick="scrollToMsg('${msg.replyTo}')"><div class="reply-quote-author">${esc(rqAuthor)}</div><div class="reply-quote-text">${esc(rqText)}</div></div>`;
+    }
+  }
+  if (hasImage) bubbleContent+=`<img class="msg-image" src="${msg.imageUrl}" alt="photo" onclick="openLightbox('${msg.imageUrl}')">`;
+  const selfMentioned = !isOwn && !msg.deleted && checkSelfMention(mainTxt);
+  if (hasText) bubbleContent+=msg.deleted?mainTxt:highlightMentions(esc(mainTxt));
+  const readers=msg.readBy?Object.keys(msg.readBy).filter(id=>id!==currentUser.id):[];
+  const isSending = !!msg._sending;
+  const wrap=document.createElement('div');
+  wrap.className='msg-wrap'+(isOwn?' own':'')+(selfMentioned?' mentioned-me':'');
+  wrap.dataset.key=key;
+  wrap.innerHTML=`
+    ${!isOwn?`<div class="msg-av" style="background:${m.bg};color:#fff;" data-uid="${msg.uid}">${m.initials}${onlineUsers[msg.uid]?'<div class="online-dot"></div>':''}</div>`:''}
+    <div class="msg-body">
+      <div class="msg-meta">
+        ${!isOwn?`<span style="font-weight:500;color:var(--text);">${m.name}</span>`:''}
+        ${!isSending?`<span>${LANG_FLAGS[msg.sLang]||''}</span><span>${time}</span>`:'<span style="color:var(--text-muted);font-size:10px;">sending…</span>'}
+      </div>
+      <div class="bubble${msg.deleted?' deleted':''}${hasImage&&!hasText?' image-only':''}">${bubbleContent}</div>
+      ${showOrig&&hasText?`<div class="orig-text">${esc(msg.orig)}</div>`:''}
+      ${transHtml?`<div class="trans-block">${transHtml}</div>`:''}
+      ${msg.edited?`<div style="font-size:9px;color:var(--text-muted);padding:0 4px;">edited</div>`:''}
+      <div id="reactions-${key}" class="msg-reactions"></div>
+      <button class="msg-star ${localStorage.getItem('teppei_stars')&&JSON.parse(localStorage.getItem('teppei_stars')||'[]').includes(key)?'starred':''}" onclick="event.stopPropagation();ctxMsgKey='${key}';ctxMsgData=allMessages['${key}'];ctxBookmark()">${localStorage.getItem('teppei_stars')&&JSON.parse(localStorage.getItem('teppei_stars')||'[]').includes(key)?'⭐':'☆'}</button>
+      ${isOwn&&!msg.deleted?`<div class="read-receipt">${readers.map(id=>{const rm=getMember(id);return `<div class="read-av" style="background:${rm.bg};" title="${rm.name}">${rm.initials}</div>`;}).join('')}</div>`:''} 
+    </div>`;
+  if (!msg.deleted) {
+    let holdTimer;
+    wrap.addEventListener('touchstart',e=>{holdTimer=setTimeout(()=>openCtxMenu(e.touches[0],key,msg),500);},{passive:true});
+    wrap.addEventListener('touchend',()=>clearTimeout(holdTimer));
+    wrap.addEventListener('touchmove',()=>clearTimeout(holdTimer));
+    wrap.addEventListener('contextmenu',e=>openCtxMenu(e,key,msg));
+  }
+  container.appendChild(wrap);
+}
+window.deleteAnnounce = async key => {
+  if (confirm('Delete this announcement?')) {
+    await update(ref(db,'messages/'+key),{deleted:true,orig:'',tr:{}});
+    document.querySelector(`[data-key="${key}"]`)?.remove();
+  }
+};
+
+function scrollBottom(force=true) {
+  const el = document.getElementById('messages');
+  if (!el) return;
+  const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+  if (force || atBottom) {
+    setTimeout(()=>{ el.scrollTop = el.scrollHeight; updateScrollBtn(false); },60);
+  }
+}
+function updateScrollBtn(show, newMsgCount=0) {
+  const btn = document.getElementById('scroll-btn');
+  const badge = document.getElementById('scroll-badge');
+  if (!btn) return;
+  btn.classList.toggle('show', show);
+  if (newMsgCount > 0) {
+    badge.textContent = newMsgCount > 9 ? '9+' : newMsgCount;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// ── Search ──
+window.toggleSearch = (prefill='') => {
+  const bar=document.getElementById('search-bar'); const input=document.getElementById('search-input');
+  const isOpen=bar.classList.toggle('open');
+  if (isOpen) { input.value=prefill; input.focus(); if (prefill) doSearch(prefill); }
+  else { input.value=''; document.querySelectorAll('.msg-highlight').forEach(e=>e.classList.remove('msg-highlight')); document.getElementById('search-count').textContent=''; }
+};
+document.getElementById('search-input').addEventListener('input',e=>doSearch(e.target.value));
+function doSearch(q) {
+  document.querySelectorAll('.msg-highlight').forEach(e=>e.classList.remove('msg-highlight'));
+  searchHits = []; searchIdx = 0;
+  if (!q.trim()) { document.getElementById('search-count').textContent=''; return; }
+  const lq=q.toLowerCase();
+  document.querySelectorAll('.msg-wrap').forEach(wrap=>{
+    const msg=allMessages[wrap.dataset.key]; if (!msg) return;
+    const text=(msg.orig||'')+Object.values(msg.tr||{}).join(' ');
+    if (text.toLowerCase().includes(lq)) { wrap.classList.add('msg-highlight'); searchHits.push(wrap); }
+  });
+  if (searchHits.length) { searchHits[0].scrollIntoView({behavior:'smooth',block:'center'}); }
+  document.getElementById('search-count').textContent = searchHits.length ? `1/${searchHits.length}` : 'No results';
+}
+function searchNav(dir) {
+  if (!searchHits.length) return;
+  searchIdx = (searchIdx + dir + searchHits.length) % searchHits.length;
+  searchHits[searchIdx].scrollIntoView({behavior:'smooth',block:'center'});
+  document.getElementById('search-count').textContent = `${searchIdx+1}/${searchHits.length}`;
+}
+
+// ── Build context from recent messages (last 5) ──
+function getRecentContext() {
+  return Object.values(allMessages)
+    .filter(m => !m.deleted && !m.announce && m.orig)
+    .sort((a,b) => a.ts - b.ts)
+    .slice(-5)
+    .map(m => ({ lang: m.sLang, text: m.orig }));
+}
+
+// ── Clarify check (ambiguity detection) ──
+async function checkClarify(text, srcLang) {
+  try {
+    const context = getRecentContext();
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout (B5)
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, srcLang, mode: 'clarify', context }),
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    if (!res.ok) return { ambiguous: false };
+    const data = await res.json();
+    return data;
+  } catch { return { ambiguous: false }; }
+}
+
+// ── Translate with context ──
+async function translate(text, srcLang, targetLangs) {
+  const context = getRecentContext();
+  const res = await fetch(WORKER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, srcLang, targetLangs, context })
+  });
+  if (!res.ok) throw new Error('Worker ' + res.status);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data.translations;
+}
+
+// ── Clarify modal state ──
+let pendingText      = '';
+let pendingClarified = '';
+let pendingImageFile = null;
+let pendingAnnounce  = false;
+
+// UI labels per language
+const CLARIFY_UI = {
+  ja: { title:'確認してください', label:'✨ AIが補完した文章：', send:'この文章で送信 ✓', orig:'そのまま送信' },
+  en: { title:'Please confirm',   label:'✨ AI-clarified version:', send:'Send this ✓',    orig:'Send as-is' },
+  zh: { title:'请确认',           label:'✨ AI补充后的内容：',      send:'发送此版本 ✓',  orig:'直接发送' },
+};
+
+function showClarifyModal(question, clarified, lang) {
+  const ui = CLARIFY_UI[lang] || CLARIFY_UI.en;
+  document.getElementById('clarify-title').textContent    = ui.title;
+  document.getElementById('clarify-question').textContent = question;
+  document.getElementById('clarify-label').textContent    = ui.label;
+  document.getElementById('clarify-preview').textContent  = clarified;
+  document.getElementById('clarify-send-label').textContent = ui.send;
+  document.getElementById('clarify-orig-label').textContent = ui.orig;
+  document.getElementById('clarify-modal').classList.add('open');
+}
+
+window.sendClarified = async () => {
+  document.getElementById('clarify-modal').classList.remove('open');
+  await doSend(pendingClarified, pendingImageFile, pendingAnnounce);
+};
+window.sendOriginal = async () => {
+  document.getElementById('clarify-modal').classList.remove('open');
+  await doSend(pendingText, pendingImageFile, pendingAnnounce);
+};
+
+// ── Core send logic ──
+async function doSend(text, imageFile, isAnnounce, overrideKey=null) {
+  document.getElementById('send-btn').disabled = true;
+  // Edit mode
+  if (overrideKey || editingKey) {
+    const key = overrideKey || editingKey;
+    cancelEdit();
+    try {
+      const targets = ['ja','en','zh'].filter(l=>l!==currentUser.lang);
+      let tr = {};
+      try { tr = await translate(text, currentUser.lang, targets); } catch(e) {}
+      tr[currentUser.lang] = text;
+      await update(ref(db, 'messages/' + key), { orig: text, tr, edited: true });
+    } catch(e) { console.error('Edit:', e); }
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('msg-input').focus();
     return;
   }
-  var h=now.getHours();
-  var d=dow(now);
-  // 明日の日付（祝日チェック用）
-  var tmr=new Date(now);tmr.setDate(tmr.getDate()+1);
-  var tmrIsHol=isHoliday(tmr);
-  var tmrD=dow(tmr);
-  // Coca-Cola: 金曜が締め切り（月曜配達の前週金曜）
-  if(d===5&&!todayIsHol){msgs.push('Coca-Cola deadline TODAY by 2:00 PM');}
-  // Costco: 金曜（月曜配達）・水曜（木曜配達）
-  if(d===5&&!todayIsHol)msgs.push('Costco deadline TODAY by 12:00 PM (Mon delivery)');
-  if(d===3&&!todayIsHol)msgs.push('Costco deadline TODAY by 12:00 PM (Thu delivery)');
-  // Fresh Island Fish: 当日が平日・非祝日で7時前
-  if(h<7&&d!==0&&d!==6&&!todayIsHol)msgs.push('Fresh Island Fish deadline TODAY by 7:00 AM');
-  // Eskimo Candy / Wong's: 明日が平日・非祝日なら今日が締め切り
-  // ただし今日が祝日の場合は前営業日に繰り上がっている（当日表示不要）
-  if(!todayIsHol&&tmrD>=1&&tmrD<=5&&!tmrIsHol){
-    if(h<15)msgs.push("Eskimo Candy deadline TODAY by 3:00 PM");
-    if(h<14)msgs.push("Wong's deadline TODAY by 2:00 PM");
+
+  // Image: send immediately without waiting for translation
+  if (imageFile && !text) {
+    try {
+      const imageUrl = await uploadImage(imageFile); removeImage();
+      const payload = { uid:currentUser.id, sLang:currentUser.lang, orig:'', tr:{}, ts:Date.now(), imageUrl };
+      if (isAnnounce) payload.announce = true;
+      await push(msgsRef, payload);
+      if (isAnnounce && announceMode) toggleAnnounce();
+    } catch(e) { console.error('Send img:', e); alert('Failed to send.'); }
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('msg-input').focus();
+    setTimeout(() => markAllRead(), 500);
+    return;
   }
-  // Apax Hawaii / Wismettac / Fukuoka / ATM / Ala Moana: 翌営業日配達の前日締め切り
-  // 今日が祝日の場合は前営業日に繰り上がる → 当日バナー不要
-  var b=document.getElementById('deadlineAlertBanner');
-  if(msgs.length){b.innerHTML='\u23f0 '+msgs.join(' \xb7 ');b.classList.add('show');}
-  else b.classList.remove('show');
-}
 
-function toggleFlexRow(){
-  var ex=document.getElementById('flexExpand');
-  ex.classList.toggle('open');
-}
+  // Show sending bubble immediately (with 15s timeout failsafe B2)
+  const tempKey = 'sending_' + Date.now();
+  const sendTimeout = setTimeout(() => {
+    const el = document.querySelector('[data-key="'+tempKey+'"]');
+    if (el) { el.remove(); shownIds.delete(tempKey); delete allMessages[tempKey]; }
+    document.getElementById('send-btn').disabled = false;
+  }, 15000);
+  const tempMsg = { uid:currentUser.id, sLang:currentUser.lang, orig:text||'', tr:{}, ts:Date.now(), _sending:true };
+  allMessages[tempKey] = { ...tempMsg, _key:tempKey };
+  shownIds.add(tempKey);
+  renderMessage(tempKey, tempMsg);
+  scrollBottom();
 
-function toggleFlex(){
-  flex=document.getElementById('flexToggle').checked;
-  var t=document.getElementById('flexTxt');
-  t.textContent=flex?'ON':'OFF';t.className='toggle-txt'+(flex?' on':'');
-  selDate=null;dateStr='';
-  document.getElementById('calDisplay').textContent='No date selected';
-  document.getElementById('calDeadline').textContent='';
-  document.getElementById('calDeadline').className='cal-deadline';
-  renderCal();updateGoBtn();
-}
-
-function renderUpcoming(){
-  var el=document.getElementById('upcomingList');
-  if(!el)return;
-  var now=new Date();now.setHours(0,0,0,0);
-  // ⑧ 今日から14日後をhorizonに設定
-  var horizon=new Date(now);horizon.setDate(horizon.getDate()+14);
-  var items=[];
-
-  var allPeriods=[];
-  Object.keys(HI_NAMES).forEach(function(d){allPeriods.push({type:'hi',name:HI_NAMES[d],start:d,end:d});});
-  // SCHOOL_BREAKSはカレンダー色分けのみ使用
-  JP_BUSY.forEach(function(b){allPeriods.push({type:'jp',name:b.name,start:b.start,end:b.end});});
-  EVENTS.forEach(function(b){
-    var type='event';
-    if(b.name.indexOf('Canada')>=0)type='canada';
-    else if(b.name.indexOf('Marathon')>=0)type='marathon';
-    allPeriods.push({type:type,name:b.name,start:b.start,end:b.end});
-  });
-  SLOW_SEASONS.forEach(function(b){allPeriods.push({type:'slow',name:'⚠ Slow Season — order conservatively',start:b.start,end:b.end});});
-
-  allPeriods.forEach(function(p){
-    var s=new Date(p.start+'T12:00:00');var e=new Date(p.end+'T12:00:00');
-    // 現在進行中 OR 14日以内にスタートするもの
-    var isNow=(s<=now&&e>=now);
-    var startsSoon=(s>now&&s<=horizon);
-    if(isNow||startsSoon){
-      items.push({type:p.type,name:p.name,start:p.start,end:p.end,sortKey:p.start,isNow:isNow});
+  try {
+    let imageUrl = null;
+    if (imageFile) { imageUrl = await uploadImage(imageFile); removeImage(); }
+    let tr = {};
+    if (text) {
+      const targets = ['ja','en','zh'].filter(l=>l!==currentUser.lang);
+      try { tr = await translate(text, currentUser.lang, targets); } catch(e) { console.error('Translation:', e); }
+      tr[currentUser.lang] = text;
     }
-  });
-
-  items.sort(function(a,b){return a.sortKey<b.sortKey?-1:a.sortKey>b.sortKey?1:0;});
-  var seen={};var unique=[];
-  items.forEach(function(it){
-    var k=it.name+it.start;
-    if(!seen[k]){seen[k]=true;unique.push(it);}
-  });
-
-  if(!unique.length){el.innerHTML='<div style="font-size:11px;color:var(--text-hint);">None in the next 90 days</div>';return;}
-
-  var html='';
-  unique.forEach(function(it){
-    var dotClass=it.type==='hi'?'dot-hi'
-      :it.type==='school'?'dot-school'
-      :it.type==='jp'?'dot-jp'
-      :it.type==='canada'?'dot-canada'
-      :it.type==='marathon'?'dot-marathon'
-      :it.type==='slow'?'dot-slow'
-      :'dot-event';
-    var dateLabel=it.start===it.end?fmtDate(it.start):fmtDate(it.start)+' – '+fmtDate(it.end);
-    var isNow=(new Date(it.start)<=now&&new Date(it.end)>=now);
-    var nowBadge=isNow?' <span style="background:#dc2626;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;vertical-align:middle;">NOW</span>':'';
-    html+='<div class="upcoming-item"><span class="upcoming-dot '+dotClass+'"></span>'
-      +'<span>'+it.name+nowBadge+'<br><span class="upcoming-dates">'+dateLabel+'</span></span></div>';
-  });
-  el.innerHTML=html;
-}
-
-function fmtDate(str){
-  var d=new Date(str+'T12:00:00');
-  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-}
-
-function autoResize(el){
-  el.style.height='auto';
-  el.style.height=(el.scrollHeight)+'px';
-}
-function renderVendors(){
-  var h='';
-  for(var i=0;i<V.length;i++){
-    var v=V[i];
-    var mc=v.method==='line'?'vm-line':(v.method==='sms'?'vm-sms':'vm-email');
-    h+='<button class="vbtn" id="vb'+v.id+'" onclick="selV(\''+v.id+'\')"><div class="vn">'+v.name+'</div><div class="vm '+mc+'">via '+ML[v.method]+'</div></button>';
+    const payload = { uid:currentUser.id, sLang:currentUser.lang, orig:text||'', tr, ts:Date.now() };
+    if (isAnnounce) payload.announce = true;
+    if (imageUrl) payload.imageUrl = imageUrl;
+    if (replyingTo) { payload.replyTo = replyingTo.key; cancelReply(); }
+    // Remove temp bubble
+    clearTimeout(sendTimeout);
+    document.querySelector(`[data-key="${tempKey}"]`)?.remove();
+    shownIds.delete(tempKey); delete allMessages[tempKey];
+    await push(msgsRef, payload);
+    if (isAnnounce && announceMode) toggleAnnounce();
+  } catch(e) {
+    clearTimeout(sendTimeout);
+    document.querySelector(`[data-key="${tempKey}"]`)?.remove();
+    shownIds.delete(tempKey); delete allMessages[tempKey];
+    console.error('Send:', e); alert('Failed to send. Please try again.');
   }
-  document.getElementById('vendorGrid').innerHTML=h;
+  document.getElementById('send-btn').disabled = false;
+  document.getElementById('msg-input').focus();
+  setTimeout(() => markAllRead(), 500);
 }
 
-function selV(id){
-  selId=id;selDate=null;dateStr='';
-  document.querySelectorAll('.vbtn').forEach(function(b){b.classList.remove('selected');});
-  document.getElementById('vb'+id).classList.add('selected');
-  qty={};custom=[];flex=false;
-  document.getElementById('flexToggle').checked=false;
-  document.getElementById('flexTxt').textContent='OFF';
-  document.getElementById('flexTxt').className='toggle-txt';
-  document.getElementById('orderNote').value='';
-  document.getElementById('calDisplay').textContent='No date selected';
-  document.getElementById('calDeadline').textContent='';
-  document.getElementById('calDeadline').className='cal-deadline';
-  // ⑤ 業者選択後は誘導メッセージを非表示
-  var hint=document.getElementById('calHint');if(hint)hint.style.display='none';
-  renderCal();renderItems();updateGoBtn();
-  // ⑩ 次回配達可能日を表示
-  showNextDelivery();
-  // ⑨ 最近の注文を表示
-  renderRecentOrders();
-}
+// ── Send ──
+async function sendMessage() {
+  if (!currentUser) return;
+  const input   = document.getElementById('msg-input');
+  const text    = input.value.trim();
+  const hasImg  = !!selectedFile;
+  if (!text && !hasImg) return;
 
-function renderCal(){
-  document.getElementById('calLabel').textContent=MON[cm]+' '+cy;
-  var h='';for(var i=0;i<7;i++)h+='<div class="cal-dh">'+DAY[i]+'</div>';
-  document.getElementById('calHeaders').innerHTML=h;
-  var first=new Date(cy,cm,1).getDay();
-  var dim=new Date(cy,cm+1,0).getDate();
-  var v=selId?gv(selId):null;var cells='';
-  for(var i=0;i<first;i++)cells+='<div class="cal-cell empty"></div>';
-  for(var d=1;d<=dim;d++){
-    var dt=new Date(cy,cm,d);dt.setHours(0,0,0,0);
-    var past=dt<today;
-    var ok=v?v.ok(dt):true;
-    var sel=selDate&&dt.getTime()===selDate.getTime();
-    var tod=dt.getTime()===today.getTime();
-    var c='cal-cell';
-    var hkey=cy+'-'+pad(cm+1)+'-'+pad(d);
-    var isHol=HI_NAMES[hkey]?true:false;
-    var isSlow=!past&&getSlowSeason(hkey);
-    var isMarathon=!past&&getMarathon(hkey);
-    if(sel)c+=' selected';
-    else if(past)c+=' unavail';
-    else if(!flex&&!ok)c+=' unavail';
-    else if(flex&&!ok)c+=' flex-ok';
-    else if(isMarathon)c+=' marathon';
-    else if(isSlow)c+=' slow';
-    else if(tod)c+=' today';
-    var click=(!past&&(flex||ok))?' onclick="pickD('+cy+','+cm+','+d+')"':'';
-    var title=isHol?' title="'+HI_NAMES[hkey]+'"':'';
-    var dot=isHol&&!past?'<span class="hol-dot"></span>':'';
-    cells+='<div class="'+c+'"'+click+title+'><span class="cal-num">'+d+'</span>'+dot+'</div>';
-  }
-  document.getElementById('calCells').innerHTML=cells;
-}
+  input.value = ''; input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+  if (emojiOpen) toggleEmoji();
+  document.getElementById('mention-picker').classList.remove('open');
 
-function goToday(){cy=today.getFullYear();cm=today.getMonth();renderCal();}
-function calPrev(){cm--;if(cm<0){cm=11;cy--;}renderCal();}
-function calNext(){cm++;if(cm>11){cm=0;cy++;}renderCal();}
+  updateTyping(false); clearTimeout(typingTimer);
+  // Edit mode: skip clarify
+  if (editingKey) { await doSend(text, null, false); return; }
 
-function deadlineClass(v,dt){
-  if(!v||v.tbd)return 'dl-ok';
-  var dl=v.dl(dt);if(!dl)return 'dl-ok';
-  var now=new Date();
-  var dlTime=null;
-  var m=dl.match(/by (\d+):(\d+) (AM|PM)/);
-  if(m){
-    var h=parseInt(m[1]);var min=parseInt(m[2]);
-    if(m[3]==='PM'&&h!==12)h+=12;
-    if(m[3]==='AM'&&h===12)h=0;
-    var dlDate=new Date(dt);
-    var dlText=dl.match(/Order by: (.+?) by/);
-    if(dlText){
-      var parsed=new Date(dlText[1]+', '+dt.getFullYear());
-      if(!isNaN(parsed)){dlDate=parsed;}
-    }
-    dlDate.setHours(h,min,0,0);
-    var diff=(dlDate-now)/3600000;
-    if(diff<2)return 'dl-urgent';
-    if(diff<24)return 'dl-soon';
-  }
-  return 'dl-ok';
-}
+  // Save pending state
+  pendingText      = text;
+  pendingImageFile = selectedFile ? selectedFile : null;
+  pendingAnnounce  = announceMode;
 
-function pickD(y,m,d){
-  selDate=new Date(y,m,d);selDate.setHours(0,0,0,0);
-  dateStr=selDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
-  var hkey2=selDate.getFullYear()+'-'+pad(selDate.getMonth()+1)+'-'+pad(selDate.getDate());
-  var hname=HI_NAMES[hkey2];
-  var sbname=getSchoolBreak(hkey2);
-  var noteHtml='';
-  if(hname)noteHtml+=' <span style="color:var(--orange);font-size:10px;font-weight:600;">&#x26a0; '+hname+'</span>';
-  if(sbname)noteHtml+=' <span style="color:#0369a1;font-size:10px;font-weight:600;">&#x1f4da; '+sbname+'</span>';
-  var jpname=getJpBusy(hkey2);
-  if(jpname)noteHtml+=' <span style="color:#be185d;font-size:10px;font-weight:600;">&#x1f1ef;&#x1f1f5; '+jpname+'</span>';
-  var evname=getEvent(hkey2);
-  if(evname)noteHtml+=' <span style="color:#166534;font-size:10px;font-weight:600;">&#x1f4cd; '+evname+'</span>';
-  document.getElementById('calDisplay').innerHTML='<span>'+dateStr+'</span>'+noteHtml;
-  renderLY(selDate);
-  // ④ 選択した配達日の天気を表示
-  showWeatherForDate(selDate);
-  var v=selId?gv(selId):null;
-  var dlEl=document.getElementById('calDeadline');
-  var dl=v&&!v.tbd?v.dl(selDate):null;
-  var ns=flex&&v&&!v.ok(selDate);
-  var txt=(dl?dl:'')+(ns?(dl?' \xb7 ':'')+'\u26a0 Non-standard \u2014 confirm with supplier':'');
-  dlEl.textContent=txt;
-  dlEl.className='cal-deadline '+(dl?deadlineClass(v,selDate):'dl-ok');
-  renderCal();updateGoBtn();
-}
+  // Image only: skip clarify
+  if (!text && hasImg) { await doSend('', pendingImageFile, pendingAnnounce); return; }
 
-function getItems(){
-  if(!selId)return[];
-  var v=gv(selId);
-  return v.items.map(function(x){return{n:x.n,u:x.u,p:x.p||0};}).concat(custom.map(function(n){return{n:n,u:'EA',p:0};}));
-}
-
-function renderItems(){
-  if(!selId){document.getElementById('itemsList').innerHTML='<div class="items-placeholder">Select a supplier above to see items</div>';return;}
-  var v=gv(selId);
-  var all=getItems();var h='';
-  var showPrice=!!(v&&v.minOrder);
-  for(var i=0;i<all.length;i++){
-    var k='i'+i;if(qty[k]===undefined)qty[k]=0;
-    var lineTotal=showPrice&&all[i].p?(all[i].p*qty[k]) :null;
-    var priceHtml=showPrice&&all[i].p?'<span class="iprice">$'+all[i].p.toFixed(2)+'/ea</span>':'';
-    var lineTotalHtml=lineTotal!==null?'<span class="iline-total" id="lt'+k+'">'+(lineTotal>0?'$'+lineTotal.toFixed(2):'')+'</span>':'';
-    h+='<div class="item-row"><span class="iname">'+all[i].n+priceHtml+'</span><span class="iunit">'+all[i].u+'</span>';
-    if(lineTotalHtml)h+=lineTotalHtml;
-    h+='<div class="qc"><button class="qbtn" onclick="cq(\''+k+'\',-1)">\u2212</button>';
-    h+='<span class="qnum" id="q'+k+'" onclick="startEdit(\''+k+'\')" title="Tap to type">'+qty[k]+'</span>';
-    h+='<button class="qbtn" onclick="cq(\''+k+'\',1)">+</button></div></div>';
-  }
-  if(showPrice){
-    var total=0;
-    for(var i=0;i<all.length;i++){total+=(all[i].p||0)*(qty['i'+i]||0);}
-    var minOrd=v.minOrder||0;
-    var pct=Math.min(100,Math.round(total/minOrd*100));
-    var done=total>=minOrd;
-    var remaining=Math.max(0,minOrd-total);
-    h+='<div class="costco-progress-wrap">'
-      +'<div class="costco-progress-label">'
-      +'<span class="costco-progress-left">Subtotal: $<span id="cp-total">'+total.toFixed(2)+'</span></span>'
-      +'<span class="costco-progress-right">Min. $'+minOrd+' &nbsp; <span id="cp-pct">'+pct+'</span>%</span>'
-      +'</div>'
-      +'<div class="costco-progress-bar"><div class="costco-progress-fill'+(done?' done':'')+'" id="cp-bar" style="width:'+pct+'%"></div></div>'
-      +'<div class="costco-progress-status" id="cp-status" style="color:'+(done?'#16a34a':'var(--text-hint)')+';">'
-      +(done?'✓ Minimum order met':'$'+remaining.toFixed(2)+' more to reach minimum')
-      +'</div>'
-      // ⑥ 価格は目安の注記
-      +'<div class="price-note">⚠ Prices shown are estimates. Actual invoice may differ due to Costco price changes.</div>'
-      +'</div>';
-  }
-  document.getElementById('itemsList').innerHTML=h;
-}
-
-// 数量直接入力
-function startEdit(k){
-  var el=document.getElementById('q'+k);
-  if(!el)return;
-  var cur=qty[k]||0;
-  var input=document.createElement('input');
-  input.type='number';input.min='0';input.value=cur;
-  input.className='qnum-input';
-  input.onblur=function(){finishEdit(k,input);};
-  input.onkeydown=function(e){if(e.key==='Enter'||e.key==='Tab')input.blur();};
-  el.replaceWith(input);
-  input.focus();input.select();
-}
-function finishEdit(k,input){
-  var val=parseInt(input.value)||0;
-  if(val<0)val=0;
-  qty[k]=val;
-  var span=document.createElement('span');
-  span.className='qnum';span.id='q'+k;span.textContent=val;
-  span.setAttribute('onclick','startEdit(\''+k+'\')');
-  span.setAttribute('title','Tap to type');
-  input.replaceWith(span);
-  updateGoBtn();updateCostcoTotal();
-}
-
-function cq(k,d){
-  qty[k]=Math.max(0,(qty[k]||0)+d);
-  var e=document.getElementById('q'+k);
-  if(e&&e.tagName==='SPAN')e.textContent=qty[k];
-  // 商品別合計更新
-  var ltEl=document.getElementById('lt'+k);
-  if(ltEl){
-    var v=gv(selId);var all=getItems();
-    var idx=parseInt(k.substring(1));
-    var price=all[idx]&&all[idx].p?all[idx].p:0;
-    var lt=price*qty[k];
-    ltEl.textContent=lt>0?'$'+lt.toFixed(2):'';
-  }
-  updateGoBtn();updateCostcoTotal();
-}
-
-function updateCostcoTotal(){
-  var v=gv(selId);
-  if(!v||!v.minOrder)return;
-  var all=getItems();
-  var total=0;
-  for(var i=0;i<all.length;i++){total+=(all[i].p||0)*(qty['i'+i]||0);}
-  var minOrd=v.minOrder;
-  var pct=Math.min(100,Math.round(total/minOrd*100));
-  var done=total>=minOrd;
-  var remaining=Math.max(0,minOrd-total);
-  var tEl=document.getElementById('cp-total');
-  var pEl=document.getElementById('cp-pct');
-  var bEl=document.getElementById('cp-bar');
-  var sEl=document.getElementById('cp-status');
-  if(tEl)tEl.textContent=total.toFixed(2);
-  if(pEl)pEl.textContent=pct;
-  if(bEl){bEl.style.width=pct+'%';bEl.className='costco-progress-fill'+(done?' done':'');}
-  if(sEl){sEl.style.color=done?'#16a34a':'var(--text-hint)';sEl.textContent=done?'✓ Minimum order met':'$'+remaining.toFixed(2)+' more to reach minimum';}
-  // 各商品行の合計も更新
-  for(var i=0;i<all.length;i++){
-    var k='i'+i;
-    var ltEl=document.getElementById('lt'+k);
-    if(ltEl){var price=all[i].p||0;var lt=price*(qty[k]||0);ltEl.textContent=lt>0?'$'+lt.toFixed(2):'';}
-  }
-}
-
-
-function toggleCustom(){
-  document.getElementById('customRow').classList.toggle('open');
-}
-
-function addCustomItem(){
-  if(!selId)return;
-  var inp=document.getElementById('newItemName');
-  var n=inp.value.trim();if(!n)return;
-  custom.push(n);inp.value='';renderItems();
-}
-
-function updateGoBtn(){
-  var all=getItems();var hasQty=false;
-  for(var i=0;i<all.length;i++){if((qty['i'+i]||0)>0){hasQty=true;break;}}
-  var btn=document.getElementById('goBtn');
-  var ready=!!(selId&&selDate&&hasQty);
-  btn.classList.toggle('go-btn-ready',ready);
-  btn.classList.toggle('go-btn-dim',!ready);
-  // Clear Allボタン：業者が選択されたら表示
-  var cb=document.getElementById('clearBtn');
-  if(cb) cb.style.display=selId?'':'none';
-}
-
-function goToSendOrHint(){
-  // ⑧ 未入力の項目をヒントで教える
-  if(!selId){showGoHint('👆 Please select a supplier first');return;}
-  if(!selDate){showGoHint('📅 Please select a delivery date');return;}
-  var all=getItems();var hasQty=false;
-  for(var i=0;i<all.length;i++){if((qty['i'+i]||0)>0){hasQty=true;break;}}
-  if(!hasQty){showGoHint('📦 Please enter at least one item quantity');return;}
-  goToSend();
-}
-
-function showGoHint(msg){
-  var btn=document.getElementById('goBtn');
-  var orig=btn.textContent;
-  btn.textContent=msg;
-  btn.style.background='#555';
-  setTimeout(function(){btn.textContent=orig;btn.style.background='';},2200);
-}
-
-function saveState(){
-  try{
-    var state={selId:selId,dateStr:dateStr,flex:flex,qty:qty,custom:custom,
-      note:document.getElementById('orderNote').value.trim(),cy:cy,cm:cm};
-    localStorage.setItem('st_order_state',JSON.stringify(state));
-  }catch(e){}
-}
-function clearAll(){
-  selId=null;selDate=null;dateStr='';qty={};custom=[];flex=false;
-  document.querySelectorAll('.vbtn').forEach(function(b){b.classList.remove('selected');});
-  document.getElementById('calDisplay').textContent='No date selected';
-  var hint=document.getElementById('calHint');if(hint)hint.style.display='';
-  document.getElementById('flexToggle').checked=false;
-  var t=document.getElementById('flexTxt');t.textContent='OFF';t.className='toggle-txt';
-  document.getElementById('orderNote').value='';
-  var nb=document.getElementById('nextDelivery');if(nb)nb.style.display='none';
-  var sdw=document.getElementById('selectedDateWeather');if(sdw)sdw.style.display='none';
-  var dl=document.getElementById('deadlineInfo');if(dl)dl.style.display='none';
-  localStorage.removeItem('st_order_state');
-  renderItems();renderCal();updateGoBtn();
-}
-function restoreState(){
-  try{
-    var raw=localStorage.getItem('st_order_state');
-    if(!raw)return;
-    var s=JSON.parse(raw);
-    // 業者・日付・数量が揃っていない場合は復元しない（送信完了後のクリア状態）
-    if(!s.selId||!s.dateStr)return;
-    selId=s.selId;flex=s.flex||false;qty=s.qty||{};custom=s.custom||[];
-    cy=s.cy||today.getFullYear();cm=s.cm||today.getMonth();
-    document.querySelectorAll('.vbtn').forEach(function(b){b.classList.remove('selected');});
-    var vb=document.getElementById('vb'+selId);if(vb)vb.classList.add('selected');
-    // ⑤ 業者復元後は誘導メッセージを非表示
-    var hint=document.getElementById('calHint');if(hint)hint.style.display='none';
-    if(flex){
-      document.getElementById('flexToggle').checked=true;
-      var t=document.getElementById('flexTxt');t.textContent='ON';t.className='toggle-txt on';
-    }
-    dateStr=s.dateStr;
-    var parsed=new Date(s.dateStr);
-    if(!isNaN(parsed)){
-      selDate=parsed;selDate.setHours(0,0,0,0);
-      var hname=HI_NAMES[selDate.getFullYear()+'-'+pad(selDate.getMonth()+1)+'-'+pad(selDate.getDate())];
-      var holNote=hname?' <span style="color:var(--orange);font-size:10px;font-weight:600;">&#x26a0; '+hname+'</span>':'';
-      document.getElementById('calDisplay').innerHTML='<span>'+dateStr+'</span>'+holNote;
-    }
-    if(s.note)document.getElementById('orderNote').value=s.note;
-    renderItems();renderCal();updateGoBtn();
-    showNextDelivery();
-    renderRecentOrders();
-  }catch(e){}
-}
-// ── ⑩ 次回配達可能日を自動表示 ──
-function showNextDelivery(){
-  var el=document.getElementById('nextDelivery');
-  var elDate=document.getElementById('nextDeliveryDate');
-  if(!el||!elDate)return;
-  if(!selId){el.style.display='none';return;}
-  var v=gv(selId);
-  if(!v||v.tbd){el.style.display='none';return;}
-  // 今日から最大60日間で最初のok日を探す
-  var d=new Date(today);
-  for(var i=0;i<60;i++){
-    d.setDate(d.getDate()+(i===0?0:1));
-    if(v.ok(d)&&!isHoliday(d)){
-      var label=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-      elDate.textContent=label;
-      el.style.display='block';
+  // Clarify check
+  if (text) {
+    const clarifyResult = await checkClarify(text, currentUser.lang);
+    if (clarifyResult.ambiguous && clarifyResult.clarified) {
+      pendingClarified = clarifyResult.clarified;
+      document.getElementById('send-btn').disabled = false;
+      showClarifyModal(clarifyResult.question || '', clarifyResult.clarified, currentUser.lang);
       return;
     }
   }
-  el.style.display='none';
+  await doSend(text, pendingImageFile, pendingAnnounce);
 }
 
-// ── ⑨ 最近の注文（保存・表示・再利用） ──
-var MAX_RECENT=3;
-function saveRecentOrder(){
-  if(!selId||!selDate)return;
-  var all=getItems();
-  var items=[];
-  for(var i=0;i<all.length;i++){var q=qty['i'+i]||0;if(q>0)items.push({n:all[i].n,u:all[i].u,q:q});}
-  if(!items.length)return;
-  var v=gv(selId);
-  var entry={
-    id:selId,
-    vendor:v?v.short:selId,
-    items:items,
-    qty:JSON.parse(JSON.stringify(qty)),
-    custom:custom.slice(),
-    savedAt:Date.now()
-  };
-  try{
-    var raw=localStorage.getItem('st_recent_orders');
-    var list=raw?JSON.parse(raw):[];
-    // 同じ業者の既存エントリを削除して最新を先頭に
-    list=list.filter(function(r){return r.id!==selId;});
-    list.unshift(entry);
-    if(list.length>MAX_RECENT)list=list.slice(0,MAX_RECENT);
-    localStorage.setItem('st_recent_orders',JSON.stringify(list));
-  }catch(e){}
+// ── Events ──
+document.getElementById('send-btn').onclick=sendMessage;
+document.getElementById('msg-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
+document.getElementById('msg-input').addEventListener('input',function(){
+  // typing indicator
+  if (this.value.trim()) {
+    updateTyping(true);
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(()=>updateTyping(false), 3000);
+  } else {
+    updateTyping(false);
+  }
+  this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,120)+'px';
+  const before=this.value.slice(0,this.selectionStart); const atMatch=before.match(/@(\w*)$/);
+  if (atMatch) updateMentionPicker(atMatch[1]);
+  else document.getElementById('mention-picker').classList.remove('open');
+});
+// ── Typing indicator ──
+function updateTyping(isTyping) {
+  if (!currentUser) return;
+  const tref = ref(db, 'typing/' + currentUser.id);
+  if (isTyping) {
+    set(tref, { name: currentUser.name, bg: currentUser.bg, initials: currentUser.initials, ts: Date.now() });
+  } else {
+    set(tref, null);
+  }
 }
-
-function renderRecentOrders(){
-  var wrap=document.getElementById('recentOrdersWrap');
-  if(!wrap||!selId)return;
-  try{
-    var raw=localStorage.getItem('st_recent_orders');
-    if(!raw){wrap.innerHTML='';return;}
-    var list=JSON.parse(raw).filter(function(r){return r.id===selId;});
-    if(!list.length){wrap.innerHTML='';return;}
-    var h='<div class="recent-wrap"><div class="recent-title">Recent Order — tap to reuse</div>';
-    list.forEach(function(r,idx){
-      var summary=r.items.slice(0,3).map(function(it){return it.q+'× '+it.n.split(' ').slice(0,2).join(' ');}).join(', ');
-      if(r.items.length>3)summary+=' +more';
-      var date=new Date(r.savedAt);
-      var dateLabel=date.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-      h+='<div class="recent-item" onclick="applyRecentOrder('+idx+')">'
-        +'<div class="recent-item-info">'
-        +'<div class="recent-item-vendor">'+r.vendor+'</div>'
-        +'<div class="recent-item-detail">'+summary+'</div>'
-        +'<div class="recent-item-detail" style="margin-top:1px;color:var(--text-hint);">Saved '+dateLabel+'</div>'
-        +'</div>'
-        +'<div class="recent-item-arrow">↩</div>'
-        +'</div>';
+function listenTyping() {
+  onValue(ref(db,'typing'), snap => {
+    const data = snap.val() || {};
+    // Remove existing typing indicators
+    document.querySelectorAll('.typing-wrap').forEach(e=>e.remove());
+    Object.entries(data).forEach(([uid, info]) => {
+      if (uid === currentUser?.id) return;
+      // Only show if recently active (< 5s)
+      if (Date.now() - info.ts > 5000) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'typing-wrap';
+      wrap.innerHTML = `<div class="msg-av" style="background:${info.bg};color:#fff;">${info.initials}</div>
+        <div class="msg-body"><div class="msg-meta"><span style="font-weight:500;color:var(--text);">${info.name}</span></div>
+        <div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+      document.getElementById('messages').appendChild(wrap);
     });
-    h+='</div>';
-    wrap.innerHTML=h;
-  }catch(e){wrap.innerHTML='';}
+    scrollBottom(false);
+  });
+}
+document.getElementById('msg-input').addEventListener('focus',()=>{
+  if (emojiOpen) { emojiOpen=false; document.getElementById('emoji-panel').classList.remove('open'); document.getElementById('emoji-toggle-btn').style.color='#007AFF'; }
+  setTimeout(scrollBottom,300);
+  setTimeout(()=>{unreadCount=0;updateBadge(0);markAllRead();},1000);
+});
+document.getElementById('messages').addEventListener('scroll',()=>{
+  const el=document.getElementById('messages');
+  const atBottom = el.scrollTop+el.clientHeight>=el.scrollHeight-80;
+  if (atBottom) { unreadCount=0; updateBadge(0); markAllRead(); updateScrollBtn(false); }
+  else updateScrollBtn(true);
+});
+document.body.addEventListener('touchmove',e=>{if(e.target.closest('#messages,.emoji-grid'))return;e.preventDefault();},{passive:false});
+
+// ── Font size ──
+const FS_SIZES = { s:'12px', m:'15px', l:'18px', xl:'21px' };
+const FS_KEY   = 'teppei_fs';
+window.setFontSize = function(size) {
+  localStorage.setItem(FS_KEY, size);
+  document.documentElement.style.setProperty('--msg-font', FS_SIZES[size]);
+  document.getElementById('msg-input').style.fontSize = FS_SIZES[size];
+  ['s','m','l','xl'].forEach(s => {
+    document.getElementById('fs-'+s).classList.toggle('active', s===size);
+  });
+};
+function loadFontSize() {
+  const s = localStorage.getItem(FS_KEY) || 'm';
+  window.setFontSize(s);
 }
 
-function applyRecentOrder(idx){
-  try{
-    var raw=localStorage.getItem('st_recent_orders');
-    if(!raw)return;
-    var list=JSON.parse(raw).filter(function(r){return r.id===selId;});
-    if(!list[idx])return;
-    var r=list[idx];
-    qty=r.qty||{};
-    custom=r.custom||[];
-    renderItems();updateGoBtn();
-    // 一時的にボタンをフラッシュ表示
-    var wrap=document.getElementById('recentOrdersWrap');
-    if(wrap){wrap.style.opacity='.5';setTimeout(function(){wrap.style.opacity='1';},300);}
-  }catch(e){}
+// ── Quick link i18n ──
+const QL_I18N = {
+  ja: { seasons:'繁忙期・閑散期', admin:'管理画面', fsLabel:'文字サイズ：' },
+  en: { seasons:'Seasons',        admin:'Admin',    fsLabel:'Text size:' },
+  zh: { seasons:'旺季/淡季',      admin:'管理后台',  fsLabel:'字体大小：' },
+};
+// ── Online Presence ──
+function setupPresence() {
+  if (!currentUser) return;
+  const presRef = ref(db, 'presence/' + currentUser.id);
+  const connRef = ref(db, '.info/connected');
+  onValue(connRef, snap => {
+    if (!snap.val()) return;
+    set(presRef, { online: true, name: currentUser.name, bg: currentUser.bg, initials: currentUser.initials, ts: Date.now() });
+    fbOnDisconnect(presRef).set({ online: false, name: currentUser.name, bg: currentUser.bg, initials: currentUser.initials, ts: Date.now() });
+  });
+  // Listen to all presence
+  onValue(ref(db, 'presence'), snap => {
+    onlineUsers = {};
+    const data = snap.val() || {};
+    Object.entries(data).forEach(([uid, info]) => { if (info.online) onlineUsers[uid] = info; });
+    updateOnlineDots();
+  });
+}
+function updateOnlineDots() {
+  document.querySelectorAll('.online-dot').forEach(d => d.remove());
+  document.querySelectorAll('.msg-av[data-uid]').forEach(av => {
+    const uid = av.dataset.uid;
+    if (onlineUsers[uid]) {
+      const dot = document.createElement('div'); dot.className = 'online-dot';
+      av.appendChild(dot);
+    }
+  });
 }
 
-function goToSend(){
-  if(!selId||!selDate)return;
-  // send.htmlから戻ったときにリセットされるよう、状態を保存しない
-  localStorage.removeItem('st_order_state');
-  // ⑨ 送信前に最近の注文として保存
-  saveRecentOrder();
-  var all=getItems();var items=[];
-  for(var i=0;i<all.length;i++){var q=qty['i'+i]||0;if(q>0)items.push({n:all[i].n,u:all[i].u,q:q});}
-  var note=document.getElementById('orderNote').value.trim();
-  var data={vendorId:selId,dateStr:dateStr,flex:flex,items:items,note:note};
-  var encoded=encodeURIComponent(JSON.stringify(data));
-  window.location.href='send.html?d='+encoded;
+// ── Web Notifications ──
+async function setupNotifications() {
+  notifEnabled = localStorage.getItem('teppei_notif') === '1';
+  updateNotifBtn();
+}
+window.toggleNotifications = async function() {
+  if (!('Notification' in window)) { alert('Notifications not supported on this browser.'); return; }
+  if (notifEnabled) {
+    notifEnabled = false; localStorage.setItem('teppei_notif', '0'); updateNotifBtn(); return;
+  }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    notifEnabled = true; localStorage.setItem('teppei_notif', '1'); updateNotifBtn();
+    new Notification('Teppei Chat', { body: 'Notifications enabled! 🔔', icon: './apple-touch-icon.png' });
+  } else {
+    alert('Please allow notifications in your browser settings.');
+  }
+}
+function updateNotifBtn() {
+  const btn = document.getElementById('ql-notif-btn');
+  if (!btn) return;
+  btn.classList.toggle('enabled', notifEnabled);
+  const sp = document.getElementById('ql-notif');
+  if (sp) sp.textContent = notifEnabled ? 'Notify ON' : 'Notify';
+}
+function sendNotification(msg) {
+  if (!notifEnabled || !('Notification' in window) || Notification.permission !== 'granted') return;
+  if (document.visibilityState === 'visible') return;
+  const m = getMember(msg.uid);
+  const body = msg.orig || '📷 Photo';
+  new Notification(`${m.name} — Steak Teppei`, { body: body.slice(0,80), icon: './apple-touch-icon.png', tag: 'teppei-msg' });
 }
 
-// ── CHANGELOG ──
-// ★ アップデートのたびに version・date・items を更新する
-var CHANGELOG = {
-  version: '5.14',
-  date: 'April 12, 2026',
-  items: [
-    { icon: '🔒', text: 'Security: Cloudflare Worker hardened with origin check, secret key auth, bot detection, and prompt sanitization' }
-  ]
+// ── Edit message ──
+window.ctxEdit = () => {
+  closeCtxMenu();
+  if (!ctxMsgData || !ctxMsgKey) return;
+  if (ctxMsgData.uid !== currentUser.id) return;
+  editingKey = ctxMsgKey;
+  const bar = document.getElementById('edit-bar');
+  const orig = document.getElementById('edit-orig');
+  const input = document.getElementById('msg-input');
+  orig.textContent = '✏️ ' + (ctxMsgData.orig || '').slice(0, 40) + (ctxMsgData.orig?.length > 40 ? '…' : '');
+  bar.classList.add('open');
+  input.value = ctxMsgData.orig || '';
+  input.focus();
+  input.dispatchEvent(new Event('input'));
+};
+window.cancelEdit = () => {
+  editingKey = null;
+  document.getElementById('edit-bar').classList.remove('open');
+  document.getElementById('msg-input').value = '';
+  document.getElementById('msg-input').dispatchEvent(new Event('input'));
 };
 
-function checkChangelog(){
-  var seen = localStorage.getItem('st_seen_version');
-  if(seen === CHANGELOG.version) return;
-  document.getElementById('cl-version').textContent = 'Version ' + CHANGELOG.version;
-  document.getElementById('cl-date').textContent = CHANGELOG.date;
-  var ul = document.getElementById('cl-items');
-  ul.innerHTML = '';
-  CHANGELOG.items.forEach(function(item){
-    var li = document.createElement('li');
-    li.innerHTML = '<span class="changelog-item-dot">' + (item.icon||'✦') + '</span><span>' + item.text + '</span>';
-    ul.appendChild(li);
-  });
-  document.getElementById('changelogOverlay').classList.add('open');
+function openSeasons() {
+  const lang = currentUser?.lang || 'en';
+  location.href = './seasons.html?lang=' + lang;
 }
 
-function handleOverlayClick(e){
-  if(e.target === document.getElementById('changelogOverlay')) closeChangelog();
+function updateQuickLinks() {
+  const lang = currentUser?.lang || 'en';
+  const t = QL_I18N[lang] || QL_I18N.en;
+  const qlS = document.getElementById('ql-seasons'); if(qlS) qlS.textContent = t.seasons;
+  const qlA = document.getElementById('ql-admin');   if(qlA) qlA.textContent = t.admin;
+  const fsL = document.getElementById('fs-label');   if(fsL) fsL.textContent = t.fsLabel;
+  updateNotifBtn();
+  // Show admin button only for admins
+  const adminBtn = document.getElementById('ql-admin-btn');
+  if(adminBtn) adminBtn.style.display = isAdmin() ? 'flex' : 'none';
+  // Show admin link on login screen (always visible so admins can find it)
+  const loginAdminLink = document.getElementById('login-admin-link');
+  if(loginAdminLink) loginAdminLink.style.display = 'block';
 }
 
-function closeChangelog(){
-  localStorage.setItem('st_seen_version', CHANGELOG.version);
-  document.getElementById('changelogOverlay').classList.remove('open');
-}
+// ── Init ──
+document.getElementById('ver-display').textContent = 'v' + CHAT_VERSION;
+buildEmojiPicker();
+loadFontSize();
 
-// ④ 選択した配達日の天気を表示
-function showWeatherForDate(deliveryDate){
-  var el=document.getElementById('selectedDateWeather');
-  if(!el)return;
-  // キャッシュから天気データを取得
-  var wdata=null;
-  try{
-    var cached=sessionStorage.getItem('st_weather_cache');
-    if(cached){var obj=JSON.parse(cached);wdata=obj.data;}
-  }catch(e){}
-  if(!wdata||!wdata.daily){el.style.display='none';return;}
-  // 配達日と一致する日を探す
-  var targetKey=deliveryDate.getFullYear()+'-'+pad(deliveryDate.getMonth()+1)+'-'+pad(deliveryDate.getDate());
-  var idx=-1;
-  for(var i=0;i<wdata.daily.time.length;i++){
-    if(wdata.daily.time[i]===targetKey){idx=i;break;}
-  }
-  if(idx<0){el.style.display='none';return;}
-  var wc=wdata.daily.weathercode[idx];
-  var tMaxF=Math.round(wdata.daily.temperature_2m_max[idx]);
-  var tMaxC=Math.round((tMaxF-32)*5/9);
-  var icon=wcToIcon(wc);
-  var cls=wcToClass(wc);
-  var badge='';
-  if(cls==='storm')badge='<span style="font-size:10px;color:#be185d;font-weight:700;margin-left:6px;">&#128101;&#8593;&#8593; More customers!</span>';
-  else if(cls==='rain')badge='<span style="font-size:10px;color:#0369a1;font-weight:700;margin-left:6px;">&#128101;&#8593; More customers!</span>';
-  var bg=cls==='storm'?'#fce7f3':cls==='rain'?'#e0f2fe':cls==='drizzle'?'#f0f9ff':'var(--bg)';
-  el.innerHTML='<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:'+bg+';border-radius:var(--radius-sm);font-size:12px;">'
-    +'<span style="font-size:20px;">'+icon+'</span>'
-    +'<span><strong>Delivery day weather:</strong> '+tMaxF+'°F / '+tMaxC+'°C</span>'
-    +badge+'</div>';
-  el.style.display='';
-}
-
-// ── 天気予報（Open-Meteo API・無料・APIキー不要）──
-function loadWeather(){
-  var el=document.getElementById('weatherRow');
-  if(!el)return;
-  // ④ SessionStorageに1時間キャッシュ
-  try{
-    var cached=sessionStorage.getItem('st_weather_cache');
-    if(cached){
-      var obj=JSON.parse(cached);
-      if(Date.now()-obj.ts < 60*60*1000){renderWeather(obj.data);return;}
-    }
-  }catch(e){}
-  var url='https://api.open-meteo.com/v1/forecast?latitude=21.3069&longitude=-157.8583'
-    +'&daily=weathercode,temperature_2m_max,temperature_2m_min'
-    +'&timezone=Pacific%2FHonolulu&forecast_days=7&temperature_unit=fahrenheit';
-  fetch(url)
-    .then(function(r){return r.json();})
-    .then(function(data){
-      try{sessionStorage.setItem('st_weather_cache',JSON.stringify({ts:Date.now(),data:data}));}catch(e){}
-      renderWeather(data);
-    })
-    .catch(function(){el.innerHTML='<div class="weather-loading" style="color:var(--text-hint);">Weather unavailable</div>';});
-}
-
-function renderWeather(data){
-  var el=document.getElementById('weatherRow');
-  var upEl=document.getElementById('weatherUpdated');
-  if(!el||!data.daily)return;
-  var days=data.daily;
-  var DAY_NAMES=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  var html='';
-  for(var i=0;i<7;i++){
-    var dateStr2=days.time[i];
-    var d=new Date(dateStr2+'T12:00:00');
-    var dow2=DAY_NAMES[d.getDay()];
-    var wc=days.weathercode[i];
-    var tMaxF=Math.round(days.temperature_2m_max[i]);
-    var tMinF=Math.round(days.temperature_2m_min[i]);
-    // ③ °C変換
-    var tMaxC=Math.round((tMaxF-32)*5/9);
-    var icon=wcToIcon(wc);
-    var cls=wcToClass(wc);
-    var isToday=(i===0);
-    // ⑦ 雨・嵐の日に売上期待バッジ
-    var salesBadge='';
-    if(cls==='storm')salesBadge='<div style="font-size:8px;color:#be185d;font-weight:700;margin-top:1px;">👥↑↑</div>';
-    else if(cls==='rain')salesBadge='<div style="font-size:8px;color:#0369a1;font-weight:700;margin-top:1px;">👥↑</div>';
-    html+='<div class="weather-day '+cls+'">'
-      +'<div class="weather-dow"'+(isToday?' style="font-weight:700;"':'')+'>'+dow2+'</div>'
-      +'<div class="weather-icon">'+icon+'</div>'
-      +'<div class="weather-temp">'+tMaxF+'°F</div>'
-      +'<div class="weather-temp" style="font-size:9px;opacity:.8;">'+tMaxC+'°C</div>'
-      +'<div class="weather-temp" style="font-weight:400;opacity:.6;font-size:9px;">Lo '+tMinF+'°</div>'
-      +salesBadge
-      +'</div>';
-  }
-  el.innerHTML=html;
-  if(upEl)upEl.textContent='Honolulu · 👥↑ = More customers expected';
-}
-
-// WMO天気コード → アイコン
-function wcToIcon(wc){
-  if(wc===0)return'☀️';
-  if(wc<=2)return'⛅';
-  if(wc<=3)return'☁️';
-  if(wc<=49)return'🌫️'; // 霧
-  if(wc<=59)return'🌦️'; // 小雨
-  if(wc<=67)return'🌧️'; // 雨
-  if(wc<=77)return'🌨️'; // 雪
-  if(wc<=82)return'🌧️'; // にわか雨
-  if(wc<=99)return'⛈️'; // 嵐
-  return'🌡️';
-}
-
-// WMO天気コード → CSSクラス（雨系を強調）
-function wcToClass(wc){
-  if(wc>=80&&wc<=99)return'storm'; // 嵐・強い雨 → 売上↑期待
-  if(wc>=51&&wc<=67)return'rain';  // 雨 → 売上↑期待
-  if(wc>=20&&wc<=50)return'drizzle'; // 小雨・霧
-  return''; // 晴れ・曇り → 通常
-}
-
-
-// ══ AI 7-Day Outlook ══
-// 1日1回だけClaude APIを呼び出してキャッシュ。3人使っても同じ日は1回のみ。
-
-var AI_CACHE_KEY = 'st_ai_outlook';
-var AI_FETCHING = false; // 多重呼び出し防止フラグ
-
-function getTodayKey(){
-  var d = new Date();
-  return d.getFullYear()+'-'+(d.getMonth()<9?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();
-}
-
-function loadAIOutlook(){
-  var el = document.getElementById('aiContent');
-  if(!el) return;
-
-  // キャッシュ確認：今日のデータがあればそれを使う
-  try{
-    var cached = localStorage.getItem(AI_CACHE_KEY);
-    if(cached){
-      var obj = JSON.parse(cached);
-      if(obj.date === getTodayKey() && obj.days && obj.days.length > 0){
-        renderAIDays(obj.days, obj.generated, false);
-        return;
-      }
-    }
-  }catch(e){}
-
-  // キャッシュなし → APIを呼び出す
-  fetchAIOutlook();
-}
-
-function fetchAIOutlook(){
-  if(AI_FETCHING) return; // 既に実行中なら無視
-  AI_FETCHING = true;
-  var el = document.getElementById('aiContent');
-  if(!el){ AI_FETCHING = false; return; }
-  el.innerHTML = '<div class="ai-loading">🤖 Analyzing weather, sales trends &amp; Hawaii news...</div>';
-
-  // 天気データを取得してからAI分析を実行
-  var weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=21.3069&longitude=-157.8583'
-    +'&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max'
-    +'&timezone=Pacific%2FHonolulu&forecast_days=7&temperature_unit=fahrenheit';
-
-  fetch(weatherUrl)
-    .then(function(r){ return r.json(); })
-    .then(function(wdata){
-      // 昨年売上データも取得
-      loadLYDataForAI(function(lyData){
-        callClaudeAPI(wdata, lyData);
-      });
-    })
-    .catch(function(){
-      // 天気取得失敗でも続行（天気なしで分析）
-      loadLYDataForAI(function(lyData){
-        callClaudeAPI(null, lyData);
-      });
-    });
-}
-
-function loadLYDataForAI(cb){
-  // 既にロード済みならそれを使う
-  if(lyCache){ cb(lyCache); return; }
-  var url='https://docs.google.com/spreadsheets/d/'+LY_SHEET_ID+'/gviz/tq?tqx=out:json&sheet='+encodeURIComponent('Daily Sales');
-  fetch(url)
-    .then(function(r){ return r.text(); })
-    .then(function(text){
-      try{
-        var json=JSON.parse(text.replace(/^[^\(]+\(/,'').replace(/\);?\s*$/,''));
-        var rows=json.table.rows.map(function(r){return r.c.map(function(c){return c?c.v:'';});});
-        lyCache={};
-        rows.forEach(function(r){
-          if(!r[0]) return;
-          var raw=r[0].toString();
-          var key;
-          var dm=raw.match(/Date\((\d+),(\d+),(\d+)\)/);
-          if(dm){
-            var y=parseInt(dm[1]),mo=parseInt(dm[2])+1,d=parseInt(dm[3]);
-            key=y+'-'+(mo<10?'0':'')+mo+'-'+(d<10?'0':'')+d;
-          } else { key=raw.substring(0,10); }
-          lyCache[key]={rev:parseFloat(r[1])||0,orders:parseInt(r[2])||0};
-        });
-        cb(lyCache);
-      }catch(e){ cb({}); }
-    })
-    .catch(function(){ cb({}); });
-}
-
-function buildContextForClaude(wdata, lyData){
-  var today = new Date();
-  var days = [];
-  var DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  var MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-  for(var i=0; i<7; i++){
-    var d = new Date(today);
-    d.setDate(d.getDate() + i);
-    var y = d.getFullYear();
-    var mo = d.getMonth()+1;
-    var dd = d.getDate();
-    var key = y+'-'+(mo<10?'0':'')+mo+'-'+(dd<10?'0':'')+dd;
-    var dayName = DAY_NAMES[d.getDay()];
-    var dateLabel = MONTH_NAMES[d.getMonth()]+' '+dd+', '+y;
-
-    // 昨年同日
-    var lyKey = (y-1)+'-'+(mo<10?'0':'')+mo+'-'+(dd<10?'0':'')+dd;
-    var ly = (lyData && lyData[lyKey]) ? lyData[lyKey] : null;
-
-    // 天気
-    var weather = null;
-    if(wdata && wdata.daily){
-      for(var j=0; j<wdata.daily.time.length; j++){
-        if(wdata.daily.time[j] === key){
-          weather = {
-            code: wdata.daily.weathercode[j],
-            maxF: Math.round(wdata.daily.temperature_2m_max[j]),
-            minF: Math.round(wdata.daily.temperature_2m_min[j]),
-            pop: wdata.daily.precipitation_probability_max[j] || 0
-          };
-          break;
-        }
-      }
-    }
-
-    // 繁忙期・閑散期チェック
-    var busy = getEvent(key) || getJpBusy(key);
-    var slow = getSlowSeason(key);
-    var holiday = HI_NAMES[key] || null;
-    var marathon = getMarathon(key);
-
-    days.push({
-      i: i,
-      key: key,
-      dayName: dayName,
-      dateLabel: dateLabel,
-      weather: weather,
-      ly: ly,
-      busy: busy,
-      slow: slow,
-      holiday: holiday,
-      marathon: marathon
-    });
-  }
-  return days;
-}
-
-function callClaudeAPI(wdata, lyData){
-  var el = document.getElementById('aiContent');
-  var contextDays = buildContextForClaude(wdata, lyData);
-  var today = new Date();
-
-  // コンテキストを文字列化
-  var contextStr = 'Today is ' + contextDays[0].dateLabel + ' (' + contextDays[0].dayName + ').\n\n';
-  contextStr += 'Steak Teppei is a Japanese steak restaurant at Makai Market Food Court, Ala Moana Center, Honolulu, Hawaii.\n';
-  contextStr += 'The restaurant needs to order supplies 1-3 days in advance from 10 different suppliers.\n\n';
-
-  contextStr += 'DATA FOR NEXT 7 DAYS:\n';
-  contextDays.forEach(function(day, idx){
-    contextStr += '\n--- ' + day.dateLabel + ' (' + day.dayName + '):\n';
-    if(day.weather){
-      var wdesc = day.weather.code >= 80 ? 'Thunderstorm/Heavy rain' :
-                  day.weather.code >= 61 ? 'Rain' :
-                  day.weather.code >= 51 ? 'Drizzle' :
-                  day.weather.code >= 3  ? 'Cloudy' : 'Sunny/Clear';
-      contextStr += '  Weather: ' + wdesc + ', High ' + day.weather.maxF + 'F/' + Math.round((day.weather.maxF-32)*5/9) + 'C, Rain probability ' + day.weather.pop + '%\n';
-    }
-    if(day.ly){
-      contextStr += '  Last year same date: $' + Math.round(day.ly.rev) + ' revenue, ' + day.ly.orders + ' orders\n';
-    } else {
-      contextStr += '  Last year same date: no data\n';
-    }
-    if(day.busy)  contextStr += '  Special period: ' + day.busy + '\n';
-    if(day.slow)  contextStr += '  Note: Slow season (order conservatively)\n';
-    if(day.holiday) contextStr += '  Holiday: ' + day.holiday + '\n';
-    if(day.marathon) contextStr += '  Note: Honolulu Marathon week - extremely busy!\n';
-  });
-
-  var prompt = contextStr + '\n\nBased on the data above, analyze customer traffic for Steak Teppei restaurant.\n'
-    + 'Consider: bad weather drives indoor mall traffic UP, good weather may reduce it. Spring Break and holidays increase tourism.\n\n'
-    + 'Provide a JSON response ONLY (no markdown, no backticks) with this exact structure:\n'
-    + '{"days":[{"date":"MMM DD","dayName":"Monday","weatherIcon":"⛈️","tempF":82,"score":"HIGH","scoreLabel":"Very Busy","analysis":"2-3 sentence analysis combining weather and last year sales data. Be specific and actionable.","recommendation":"Specific order recommendation e.g. Order 20-25% more than usual"}]}\n\n'
-    + 'Score values: HIGH (expect very busy), BUSY (above average), NORMAL (average day), SLOW (below average)\n'
-    + 'Keep each analysis to 2-3 sentences. Be direct and practical for restaurant staff.\n'
-    + 'Response must be valid JSON only. No markdown, no backticks, just pure JSON.';
-
-  // Cloudflare Worker経由でGemini APIを呼び出す
-  fetch('https://steak-teppei-ai.aki16-dan.workers.dev', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Client-Secret': 'ST2026-teppei-xK9mP3qR7nW2vY5j'
-    },
-    body: JSON.stringify({ prompt: prompt })
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(data){
-    var text = data.text || '';
-    // JSON部分を抽出
-    try{
-      var jsonStr = text.trim();
-      // バッククォートやマークダウンを除去
-      jsonStr = jsonStr.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
-      var parsed = JSON.parse(jsonStr);
-      if(parsed.days && parsed.days.length > 0){
-        // キャッシュに保存
-        var cacheObj = {
-          date: getTodayKey(),
-          days: parsed.days,
-          generated: new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})
-        };
-        try{ localStorage.setItem(AI_CACHE_KEY, JSON.stringify(cacheObj)); }catch(e){}
-        AI_FETCHING = false;
-        renderAIDays(parsed.days, cacheObj.generated, true);
-      } else {
-        throw new Error('No days in response');
-      }
-    }catch(e){
-      AI_FETCHING = false;
-      el.innerHTML = '<div class="ai-error">Analysis unavailable. <button class="ai-refresh-btn" onclick="fetchAIOutlook()">Retry</button></div>';
-    }
-  })
-  .catch(function(){
-    AI_FETCHING = false;
-    el.innerHTML = '<div class="ai-error">Analysis unavailable. <button class="ai-refresh-btn" onclick="fetchAIOutlook()">Retry</button></div>';
-  });
-}
-
-function renderAIDays(days, generated, isNew){
-  var el = document.getElementById('aiContent');
-  if(!el) return;
-
-  var html = '<div class="ai-days">';
-  var scoreClasses = { HIGH:'score-high', BUSY:'score-mid', NORMAL:'score-normal', SLOW:'score-low' };
-
-  days.forEach(function(day, idx){
-    var sc = scoreClasses[day.score] || 'score-normal';
-    var id = 'ai-day-'+idx;
-    html += '<div class="ai-day">'
-      + '<div class="ai-day-header" onclick="toggleAIDay(\''+id+'\')">'
-      + '<span class="ai-day-weather">'+(day.weatherIcon||'🌤️')+'</span>'
-      + '<span class="ai-day-date"><strong>'+day.date+'</strong> <span style="font-weight:400;color:var(--text-hint);">'+day.dayName+'</span></span>'
-      + (day.tempF ? '<span class="ai-day-temp">'+day.tempF+'°F</span>' : '')
-      + '<span class="ai-day-score '+sc+'">'+day.scoreLabel+'</span>'
-      + '<span class="ai-day-arrow" id="arr-'+id+'">›</span>'
-      + '</div>'
-      + '<div class="ai-day-body" id="'+id+'">'
-      + '<div style="padding-top:8px;">'+day.analysis+'</div>'
-      + '<div class="ai-day-rec">📦 '+day.recommendation+'</div>'
-      + '</div>'
-      + '</div>';
-  });
-  html += '</div>';
-
-  // 最初の日を自動展開
-  html += '<div class="ai-updated">Updated ' + generated
-    + (isNew ? ' · fresh' : ' · cached')
-    + ' <button class="ai-refresh-btn" onclick="fetchAIOutlook()">↺ refresh</button></div>';
-
-  el.innerHTML = html;
-
-  // 最初のカードを自動展開
-  setTimeout(function(){
-    var first = document.getElementById('ai-day-0');
-    if(first){ first.classList.add('open'); }
-    var arr = document.getElementById('arr-ai-day-0');
-    if(arr){ arr.classList.add('open'); }
-  }, 100);
-}
-
-function toggleAIDay(id){
-  var body = document.getElementById(id);
-  var arr  = document.getElementById('arr-'+id);
-  if(!body) return;
-  body.classList.toggle('open');
-  if(arr) arr.classList.toggle('open');
-}
-
-// ── Push通知（⑭：締め切りリマインダー）──
-function requestPushPermission(){
-  if(!('Notification' in window))return;
-  if(Notification.permission==='default'){
-    Notification.requestPermission();
-  }
-}
-
-function schedulePushReminders(){
-  if(!('Notification' in window)||Notification.permission!=='granted')return;
-  var now=new Date();
-  var dow=now.getDay();
-  var h=now.getHours();
-  var reminders=[];
-  // 毎日チェック：今日が締め切り日かどうか
-  if(dow===5){ // 金曜
-    if(h<14)reminders.push({msg:'⏰ Coca-Cola order deadline TODAY by 2:00 PM',tag:'cocacola-deadline'});
-    if(h<12)reminders.push({msg:'⏰ Costco order deadline TODAY by 12:00 PM (Mon delivery)',tag:'costco-mon-deadline'});
-  }
-  if(dow===3&&h<12)reminders.push({msg:'⏰ Costco order deadline TODAY by 12:00 PM (Thu delivery)',tag:'costco-thu-deadline'});
-  if(h<7&&dow!==0)reminders.push({msg:'⏰ Fresh Island Fish deadline TODAY by 7:00 AM',tag:'fish-deadline'});
-  var tmr=new Date(now);tmr.setDate(tmr.getDate()+1);
-  var tdow=tmr.getDay();
-  if(tdow>=1&&tdow<=5){
-    if(h<15)reminders.push({msg:'⏰ Eskimo Candy deadline TODAY by 3:00 PM',tag:'eskimo-deadline'});
-    if(h<14)reminders.push({msg:"⏰ Wong's deadline TODAY by 2:00 PM",tag:'wongs-deadline'});
-  }
-  reminders.forEach(function(r){
-    new Notification('Steak Teppei Orders',{body:r.msg,tag:r.tag,icon:'./icon-192.png'});
-  });
-}
-
-// Push通知許可をリクエスト（初回起動時）
-requestPushPermission();
-
-renderVendors();renderCal();checkBanner();restoreState();updateGoBtn();checkChangelog();renderUpcoming();loadWeather();schedulePushReminders();loadAIOutlook();
-// ⑫ バージョン番号を表示
-var verEl=document.getElementById('appVerDisplay');
-if(verEl)verEl.textContent='v'+CHANGELOG.version;
-// ⑤ 初期状態で業者未選択なら誘導メッセージを表示
-if(!selId){var hint=document.getElementById('calHint');if(hint)hint.style.display='';}
-else{var hint=document.getElementById('calHint');if(hint)hint.style.display='none';}
-
-// Last Year Sales
-var LY_SHEET_ID='1syr0EeXr5d6mRzE-VlzIFe-zDOaAhnFGau5bPg-leNQ';
-var lyCache=null;
-var lyLoaded=false;
-
-function loadLYData(cb){
-  if(lyCache){cb(lyCache);return;}
-  var url='https://docs.google.com/spreadsheets/d/'+LY_SHEET_ID+'/gviz/tq?tqx=out:json&sheet='+encodeURIComponent('Daily Sales');
-  fetch(url).then(function(r){return r.text();}).then(function(text){
-    var json=JSON.parse(text.replace(/^[^\(]+\(/,'').replace(/\);?\s*$/,''));
-    var rows=json.table.rows.map(function(r){return r.c.map(function(c){return c?c.v:'';}); });
-    lyCache={};
-    rows.forEach(function(r){
-      if(!r[0])return;
-      var raw=r[0].toString();
-      var key;
-      var dm=raw.match(/Date\((\d+),(\d+),(\d+)\)/);
-      if(dm){
-        var y=parseInt(dm[1]),mo=parseInt(dm[2])+1,d=parseInt(dm[3]);
-        key=y+'-'+(mo<10?'0':'')+mo+'-'+(d<10?'0':'')+d;
-      } else {
-        key=raw.substring(0,10);
-      }
-      lyCache[key]={rev:parseFloat(r[1])||0,orders:parseInt(r[2])||0};
-    });
-    lyLoaded=true;
-    cb(lyCache);
-  }).catch(function(){lyLoaded=true;cb({});});
-}
-
-function renderLY(deliveryDate){
-  if(!deliveryDate)return;
-  document.getElementById('lyWrap').style.display='';
-  var el=document.getElementById('lyList');
-  el.innerHTML='<div class="ly-loading">Loading...</div>';
-
-  // Last year same week: delivery date last year + 1 to + 7
-  var lyBase=new Date(deliveryDate);
-  lyBase.setFullYear(lyBase.getFullYear()-1);
-
-  var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  var dates=[];
-  for(var i=1;i<=7;i++){
-    var d=new Date(lyBase);
-    d.setDate(d.getDate()+i);
-    var key=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
-    dates.push({key:key,dow:days[d.getDay()],label:pad(d.getMonth()+1)+'/'+pad(d.getDate())});
-  }
-
-  loadLYData(function(cache){
-    var maxRev=0;
-    dates.forEach(function(d){var v=cache[d.key];if(v&&v.rev>maxRev)maxRev=v.rev;});
-    var html='';
-    dates.forEach(function(d){
-      var v=cache[d.key];
-      var rev=v?v.rev:0;var orders=v?v.orders:0;
-      var pct=maxRev>0?Math.round(rev/maxRev*100):0;
-      var revStr=rev>0?'$'+Math.round(rev).toLocaleString():'—';
-      var ordStr=orders>0?orders+'':'—';
-      html+='<div class="ly-row">'
-        +'<span class="ly-day">'+d.dow+'</span>'
-        +'<span class="ly-date">'+d.label+'</span>'
-        +'<div class="ly-bar-wrap"><div class="ly-bar" style="width:'+pct+'%"></div></div>'
-        +'<span class="ly-rev">'+revStr+'</span>'
-        +'<span class="ly-orders">'+ordStr+'</span>'
-        +'</div>';
-    });
-    el.innerHTML=html||'<div class="ly-loading">No data for this period</div>';
-  });
-}
-
-// ── 自動更新ロジック ──
-var IDLE_TIMEOUT = 5 * 60 * 1000;
-var idleTimer = null;
-var lastHidden = null;
-
-function resetIdleTimer(){
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(function(){
-    navigator.serviceWorker.getRegistration().then(function(reg){if(reg)reg.update();}).catch(function(){});
-    window.location.reload(true);
-  }, IDLE_TIMEOUT);
-}
-
-['touchstart','touchmove','click','keydown','scroll'].forEach(function(ev){
-  document.addEventListener(ev, resetIdleTimer, {passive:true});
-});
-resetIdleTimer();
-
-document.addEventListener('visibilitychange', function(){
-  if(document.hidden){
-    lastHidden = Date.now();
-  } else {
-    if(lastHidden && (Date.now() - lastHidden) > 60 * 1000){
-      window.location.reload(true);
-    } else {
-      navigator.serviceWorker.getRegistration().then(function(reg){if(reg)reg.update();}).catch(function(){});
-    }
-  }
-});
-
+(async () => {
+  await loadMembers();
+  const saved = localStorage.getItem(USER_KEY);
+  if (saved && MEMBERS[saved]) { currentUser=MEMBERS[saved]; enterChat(); }
+  else updateQuickLinks(); // show admin link on login
+})();
 </script>
 
 <script>
-// ── バージョンチェック（Service Worker非依存・iOS PWA対応）──
-// version.jsonをサーバーから毎回直接取得してバージョンを比較
-// キャッシュを完全にバイパスするためno-storeを使用
+// ── Service Worker 登録・強制更新 ──
+// type="module" の外に置くことで確実に実行される
+(function() {
+  if (!('serviceWorker' in navigator)) return;
 
-var APP_VERSION = '5.14'; // ★ バージョンアップ時はここも更新する
-
-function checkVersion(){
-  fetch('./version.json?_=' + Date.now(), {
-    cache: 'no-store',
-    headers: {'Cache-Control': 'no-cache, no-store'}
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(data){
-    var serverVer = String(data.version);
-    var localVer  = localStorage.getItem('st_app_version');
-
-    if(localVer && localVer !== serverVer){
-      // バージョンが変わっていたら全ページをハードリロード
-      localStorage.setItem('st_app_version', serverVer);
-      // Service Workerのキャッシュも全削除してからリロード
-      if('caches' in window){
-        caches.keys().then(function(keys){
-          Promise.all(keys.map(function(k){ return caches.delete(k); }))
-            .then(function(){ window.location.reload(true); });
-        });
-      } else {
-        window.location.reload(true);
+  // SW更新メッセージを受け取ったら強制リロード
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data?.type === 'SW_UPDATED') {
+      console.log('[App] New SW activated:', e.data.cache);
+      // すでにキャッシュクリア済みなのでそのままリロード
+      if (!sessionStorage.getItem('sw_reloaded')) {
+        sessionStorage.setItem('sw_reloaded', '1');
+        location.reload(true);
       }
-    } else {
-      // 初回または同じバージョン → 保存
-      localStorage.setItem('st_app_version', serverVer);
     }
-  })
-  .catch(function(){
-    // オフライン時は何もしない
   });
-}
 
-// 起動時に即チェック
-checkVersion();
+  navigator.serviceWorker.register('./sw-chat.js', { updateViaCache: 'none' })
+    .then(reg => {
+      // 待機中のSWがあれば即座に有効化
+      if (reg.waiting) {
+        reg.waiting.postMessage('skipWaiting');
+      }
 
-// アプリをバックグラウンドから戻したときもチェック
-document.addEventListener('visibilitychange', function(){
-  if(!document.hidden) checkVersion();
-});
+      // 新しいSWのインストールを検知
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            newWorker.postMessage('skipWaiting');
+          }
+        });
+      });
 
-// Service Workerは登録だけしてキャッシュ管理に使用（更新検知には使わない）
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js', {updateViaCache:'none'})
-    .catch(function(){});
-}
+      // 定期的に更新チェック（visibility changeのタイミング）
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) reg.update();
+      });
+    })
+    .catch(err => console.warn('[SW] Registration failed:', err));
 
-function doUpdate(){
-  localStorage.removeItem('st_app_version');
-  if('caches' in window){
-    caches.keys().then(function(keys){
-      Promise.all(keys.map(function(k){ return caches.delete(k); }))
-        .then(function(){ window.location.reload(true); });
-    });
-  } else {
-    window.location.reload(true);
-  }
-}
+  // controllerchange = 新しいSWが制御を取得 → リロード
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) {
+      refreshing = true;
+      sessionStorage.setItem('sw_reloaded', '1');
+      location.reload(true);
+    }
+  });
+})();
 </script>
 </body>
 </html>
